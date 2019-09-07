@@ -10,8 +10,8 @@ class UserSchema extends Schema {
       table.string('name').notNullable()
       table.string('email').notNullable().unique()
       table.string('password').notNullable()
-      table.string('cpf')
-      table.string('phone')
+      table.string('cpf').notNullable().unique()
+      table.string('phone').notNullable()
       table.timestamps()
     })
   }

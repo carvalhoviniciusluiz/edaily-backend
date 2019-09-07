@@ -2,12 +2,12 @@
 
 class SessionController {
   async store ({ request, response, auth }) {
-    const { email, password } = request.only([
-      'email',
+    const { cpf, password } = request.only([
+      'cpf',
       'password'
     ])
 
-    const { token } = await auth.attempt(email, password)
+    const { token } = await auth.attempt(cpf, password)
 
     return { token }
   }
