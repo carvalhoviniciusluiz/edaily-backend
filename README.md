@@ -19,3 +19,9 @@ Execute o seguinte comando para as migrações iniciais.
 ```js
 adonis migration:run
 ```
+
+## Tests
+
+```js
+adonis test
+```
