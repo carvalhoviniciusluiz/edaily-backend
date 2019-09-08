@@ -17,12 +17,7 @@ class UserController {
       password: '123456'
     })
 
-    return {
-      ...user.toJSON(),
-      password: undefined,
-      id: undefined,
-      created_at: undefined
-    }
+    return user
   }
 }
 

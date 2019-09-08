@@ -4,6 +4,9 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Organization = use('App/Models/Organization')
+
 /**
  * Resourceful controller for interacting with organizations
  */
@@ -17,19 +20,15 @@ class OrganizationController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-  }
+  async index () {
+    const organizations = await Organization
+      .query()
+      .with('users')
+      .with('author')
+      .with('revisor')
+      .fetch()
 
-  /**
-   * Render a form to be used for creating a new organization.
-   * GET organizations/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+    return organizations
   }
 
   /**
@@ -40,7 +39,23 @@ class OrganizationController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, auth }) {
+    const data = request.only([
+      'name',
+      'initials',
+      'cnpj',
+      'billing_email',
+      'phone1',
+      'phone2'
+    ])
+
+    const organization = await Organization.create({
+      ...data,
+      author_id: auth.user.id,
+      revisor_id: auth.user.id
+    })
+
+    return organization
   }
 
   /**
@@ -52,19 +67,21 @@ class OrganizationController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-  }
+  async show ({ params, response }) {
+    try {
+      const organization = await Organization.findByOrFail('uuid', params.id)
 
-  /**
-   * Render a form to update an existing organization.
-   * GET organizations/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+      await organization.load('author')
+      await organization.load('revisor')
+      await organization.load('users')
+      await organization.load('file')
+
+      return organization
+    } catch (error) {
+      return response
+        .status(error.status)
+        .send({ error: { message: 'Organização não localizada.' } })
+    }
   }
 
   /**
@@ -75,7 +92,37 @@ class OrganizationController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request, response, auth }) {
+    try {
+      const organization = await Organization.findByOrFail('uuid', params.id)
+
+      const data = request.only([
+        'name',
+        'initials',
+        'cnpj',
+        'billing_email',
+        'phone1',
+        'phone2'
+      ])
+
+      organization.merge({
+        ...data,
+        revisor_id: auth.user.id
+      })
+
+      await organization.save()
+
+      await organization.load('author')
+      await organization.load('revisor')
+      await organization.load('users')
+      await organization.load('file')
+
+      return organization
+    } catch (error) {
+      return response
+        .status(error.status)
+        .send({ error: { message: 'Organização não localizada.' } })
+    }
   }
 
   /**
@@ -87,6 +134,8 @@ class OrganizationController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+    // const organization = await Organization.findByOrFail('uuid', params.id)
+    // await organization.delete()
   }
 }
 

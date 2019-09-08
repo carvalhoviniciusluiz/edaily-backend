@@ -11,6 +11,8 @@
 |
 */
 
+const { cnpj } = require('cpf-cnpj-validator')
+
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
 
@@ -21,6 +23,22 @@ Factory.blueprint('App/Models/User', (faker, i, data = {}) => {
     password: faker.string(),
     cpf: faker.cpf(),
     phone: faker.phone(),
+    ...data
+  }
+})
+
+Factory.blueprint('App/Models/Organization', async (faker, i, data = {}) => {
+  const user = await Factory.model('App/Models/User').create()
+
+  return {
+    name: faker.company(),
+    initials: faker.word(),
+    cnpj: cnpj.generate(),
+    billing_email: faker.email(),
+    phone1: faker.phone(),
+    phone2: faker.phone(),
+    author_id: user.id,
+    revisor_id: user.id,
     ...data
   }
 })

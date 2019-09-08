@@ -10,5 +10,9 @@ Route.post('users', 'UserController.store')
 Route.post('forgot_password', 'ForgotPasswordController.store')
 Route.put('forgot_password', 'ForgotPasswordController.update')
 
-Route.get('files/:id', 'FileController.show')
-Route.post('files', 'FileController.store')
+Route.group(() => {
+  Route.post('files', 'FileController.store')
+  Route.get('files/:id', 'FileController.show')
+
+  Route.resource('organizations', 'OrganizationController').apiOnly()
+}).middleware(['auth'])

@@ -16,6 +16,10 @@ class Organization extends Model {
     })
   }
 
+  static get hidden () {
+    return ['id', 'author_id', 'revisor_id', 'file_id', 'created_at']
+  }
+
   author () {
     return this.belongsTo('App/Models/User', 'author_id')
   }
