@@ -1,15 +1,32 @@
-const { test, trait } = use('Test/Suite')('Sessions')
+const { test, trait } = use('Test/Suite')('ForgotPassword')
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
 
 trait('Test/ApiClient')
 
-test('deve retornar uma mensagem para email que não existirem', async ({ assert, client }) => {
+test('deve retornar uma mensagem de aviso', async ({ assert, client }) => {
   const response = await client
     .post('/forgot_password')
     .send({
       email: 'carvalho.viniciusluiz@gmail.com'
+    })
+    .end()
+
+  response.assertStatus(500)
+  assert.exists({
+    error: {
+      message: 'Algo não deu certo, contate o administrador do sistema.'
+    }
+  })
+})
+
+test('deve retornar uma mensagem para email que não existirem', async ({ assert, client }) => {
+  const response = await client
+    .post('/forgot_password')
+    .send({
+      email: 'carvalho.viniciusluiz@gmail.com',
+      redirect_url: 'htp://www.meusite.com'
     })
     .end()
 
@@ -21,18 +38,21 @@ test('deve retornar uma mensagem para email que não existirem', async ({ assert
   })
 })
 
-test('deve deve informar um email pare recuperação de senha', async ({ assert, client }) => {
+test('deve retornar 204 para email enviado', async ({ assert, client }) => {
   const forgotPasswordPayload = {
     email: 'carvalho.viniciusluiz@gmail.com'
   }
 
   await Factory
     .model('App/Models/User')
-    .create(forgotPasswordPayload)
+    .create({ ...forgotPasswordPayload })
 
   const response = await client
     .post('/forgot_password')
-    .send(forgotPasswordPayload)
+    .send({
+      ...forgotPasswordPayload,
+      redirect_url: 'htp://www.meusite.com'
+    })
     .end()
 
   response.assertStatus(204)

@@ -4,9 +4,22 @@ const crypto = require('crypto')
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User')
+const Mail = use('Mail')
+const Env = use('Env')
 
 class ForgotPasswordController {
   async store ({ request, response }) {
+    const redirectURL = request.input('redirect_url')
+    if (!redirectURL) {
+      return response
+        .status(500)
+        .send({
+          error: {
+            message: 'Algo não deu certo, contate o administrador do sistema.'
+          }
+        })
+    }
+
     try {
       const email = request.input('email')
       const user = await User.findByOrFail('email', email)
@@ -15,6 +28,23 @@ class ForgotPasswordController {
       user.token_created_at = new Date()
 
       await user.save()
+
+      if (process.env.NODE_ENV !== 'testing') {
+        await Mail.send(
+          ['emails.forgot_password'],
+          {
+            email,
+            token: user.token,
+            link: `${redirectURL}?token=${user.token}`
+          },
+          message => {
+            message
+              .to(user.email, user.name)
+              .from(Env.get('MAIL_FROM'), Env.get('MAIL_LOCAL'))
+              .subject('Recuperação de senha')
+          }
+        )
+      }
     } catch (error) {
       return response
         .status(error.status)
