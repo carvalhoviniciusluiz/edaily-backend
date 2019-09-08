@@ -41,7 +41,10 @@ class ForgotPasswordController {
           message => {
             message
               .to(user.email, user.name)
-              .from(Env.get('MAIL_FROM'), Env.get('MAIL_LOCAL'))
+              .from(
+                Env.get('MAIL_FROM', 'notreply@edaily.com'),
+                Env.get('MAIL_LOCAL', 'Team | Edaily')
+              )
               .subject('Recuperação de senha')
           }
         )

@@ -1,9 +1,11 @@
 'use strict'
 
+const uuid = require('uuid')
+
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
-const uuid = require('uuid')
+const Env = use('Env')
 
 class File extends Model {
   static boot () {
@@ -14,6 +16,14 @@ class File extends Model {
         file.uuid = uuid.v4()
       }
     })
+  }
+
+  static get computed () {
+    return ['url']
+  }
+
+  getUrl ({ uuid }) {
+    return `${Env.get('APP_URL')}/files/${uuid}`
   }
 }
 
