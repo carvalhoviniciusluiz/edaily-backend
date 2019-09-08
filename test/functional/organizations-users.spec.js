@@ -1,6 +1,6 @@
 const setup = require('../setup')
 
-const { test, trait, before } = use('Test/Suite')('Organizations')
+const { test, trait, before } = use('Test/Suite')('Organization Users')
 
 trait('Test/ApiClient')
 trait('Auth/Client')
@@ -12,13 +12,20 @@ const Organization = use('App/Models/Organization')
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
 
+let id
+let uuid
+
 before(async () => {
   await Organization.truncate()
+
+  const organization = await Factory.model('App/Models/Organization').create()
+  id = organization.id
+  uuid = organization.uuid
 })
 
 test('deve retornar uma lista vazia', async ({ user, client, assert }) => {
   const response = await client
-    .get('organizations')
+    .get(`organizations/${uuid}/users`)
     .loginVia(user, 'jwt')
     .end()
 
@@ -27,10 +34,10 @@ test('deve retornar uma lista vazia', async ({ user, client, assert }) => {
 })
 
 test('deve retornar uma lista não vazia', async ({ user, client, assert }) => {
-  await Factory.model('App/Models/Organization').create()
+  await Factory.model('App/Models/User').create({ organization_id: id })
 
   const response = await client
-    .get('organizations')
+    .get(`organizations/${uuid}/users`)
     .loginVia(user, 'jwt')
     .end()
 
@@ -38,24 +45,26 @@ test('deve retornar uma lista não vazia', async ({ user, client, assert }) => {
   assert.equal(response.body.length, 1)
 })
 
-test('deve cadastrar uma oganização', async ({ user, client, assert }) => {
-  const organization = await Factory.model('App/Models/Organization').make()
+test('deve cadastrar um usuário', async ({ user, client, assert }) => {
+  const newUser = await Factory.model('App/Models/User').make()
 
   const response = await client
-    .post('organizations')
+    .post(`organizations/${uuid}/users`)
     .loginVia(user, 'jwt')
-    .send(organization.toJSON())
+    .send(newUser.toJSON())
     .end()
 
   response.assertStatus(200)
   assert.exists(response.body.uuid)
 })
 
-test('deve retornar uma oganização', async ({ user, client, assert }) => {
-  const { uuid } = await Factory.model('App/Models/Organization').create()
+test('deve retornar um usuário', async ({ user, client, assert }) => {
+  const { uuid: userId } = await Factory
+    .model('App/Models/User')
+    .create({ organization_id: id })
 
   const response = await client
-    .get(`organizations/${uuid}`)
+    .get(`organizations/${uuid}/users/${userId}`)
     .loginVia(user, 'jwt')
     .end()
 
@@ -63,11 +72,13 @@ test('deve retornar uma oganização', async ({ user, client, assert }) => {
   assert.exists(response.body.uuid)
 })
 
-test('deve atualizar uma oganização', async ({ user, client, assert }) => {
-  const { uuid } = await Factory.model('App/Models/Organization').create()
+test('deve atualizar um usuário', async ({ user, client, assert }) => {
+  const { uuid: userId } = await Factory
+    .model('App/Models/User')
+    .create({ organization_id: id })
 
   const response = await client
-    .put(`organizations/${uuid}`)
+    .put(`organizations/${uuid}/users/${userId}`)
     .loginVia(user, 'jwt')
     .send({
       name: 'xpto'
@@ -78,11 +89,13 @@ test('deve atualizar uma oganização', async ({ user, client, assert }) => {
   assert.equal(response.body.name, 'xpto')
 })
 
-test('deve deletar uma oganização', async ({ user, client, assert }) => {
-  const { uuid } = await Factory.model('App/Models/Organization').create()
+test('deve deletar um usuário', async ({ user, client, assert }) => {
+  const { uuid: userId } = await Factory
+    .model('App/Models/User')
+    .create({ organization_id: id })
 
   const response = await client
-    .delete(`organizations/${uuid}`)
+    .delete(`organizations/${uuid}/users/${userId}`)
     .loginVia(user, 'jwt')
     .end()
 

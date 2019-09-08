@@ -24,7 +24,17 @@ class User extends Model {
   }
 
   static get hidden () {
-    return ['id', 'password', 'created_at', 'token', 'token_created_at']
+    return [
+      'id',
+      'organization_id',
+      'password',
+      'created_at',
+      'token',
+      'token_created_at',
+      'author_id',
+      'revisor_id',
+      'avatar_id'
+    ]
   }
 
   tokens () {
@@ -33,6 +43,10 @@ class User extends Model {
 
   organization () {
     return this.belongsTo('App/Models/Organization')
+  }
+
+  avatar () {
+    return this.belongsTo('App/Models/File', 'avatar_id')
   }
 }
 

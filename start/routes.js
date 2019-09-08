@@ -14,5 +14,11 @@ Route.group(() => {
   Route.post('files', 'FileController.store')
   Route.get('files/:id', 'FileController.show')
 
-  Route.resource('organizations', 'OrganizationController').apiOnly()
+  Route
+    .resource('organizations', 'OrganizationController')
+    .apiOnly()
+
+  Route
+    .resource('organizations.users', 'organization/UserController')
+    .apiOnly()
 }).middleware(['auth'])

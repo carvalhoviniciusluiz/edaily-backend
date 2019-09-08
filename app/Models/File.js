@@ -18,6 +18,10 @@ class File extends Model {
     })
   }
 
+  static get hidden () {
+    return ['id', 'created_at']
+  }
+
   static get computed () {
     return ['url']
   }

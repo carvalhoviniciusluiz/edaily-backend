@@ -2,7 +2,6 @@
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const File = use('App/Models/File')
@@ -12,23 +11,14 @@ const Helpers = use('Helpers')
 
 const Env = use('Env')
 
-/**
- * Resourceful controller for interacting with files
- */
 class FileController {
-  /**
-   * Create/save a new file.
-   * POST files
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
   async store ({ request, response }) {
     try {
       if (!request.file('file')) return
 
-      const upload = request.file('file', { size: Env.get('FILE_SIZE', '2mb') })
+      const upload = request.file('file', {
+        size: Env.get('FILE_SIZE', '2mb')
+      })
 
       const fileName = `${Date.now()}.${upload.subtype}`
 
@@ -47,11 +37,7 @@ class FileController {
         subtype: upload.subtype
       })
 
-      return {
-        ...file.toJSON(),
-        id: undefined,
-        created_at: undefined
-      }
+      return file
     } catch (error) {
       return response
         .status(error.status)
@@ -59,15 +45,6 @@ class FileController {
     }
   }
 
-  /**
-   * Display a single test.
-   * GET files/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
   async show ({ params, response }) {
     try {
       const file = await File.findByOrFail('uuid', params.id)
