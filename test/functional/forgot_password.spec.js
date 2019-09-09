@@ -15,9 +15,7 @@ test('deve informar quando não redirecionar', async ({ assert, client }) => {
     })
     .end()
 
-  response.assertStatus(500)
-  assert.equal(response.text,
-    '{"error":{"message":"Algo deu errado ao redirecionar a página."}}')
+  response.assertStatus(400)
 })
 
 test('deve informar quando o email não existir', async ({ assert, client }) => {
@@ -25,13 +23,11 @@ test('deve informar quando o email não existir', async ({ assert, client }) => 
     .post('/forgot_password')
     .send({
       email: 'carvalho.viniciusluiz@gmail.com',
-      redirect_url: 'htp://www.meusite.com'
+      redirect_url: 'http://www.meusite.com'
     })
     .end()
 
   response.assertStatus(404)
-  assert.equal(response.text,
-    '{"error":{"message":"Algo não deu certo, esse e-mail existe?"}}')
 })
 
 test('deve retornar 204 para email enviado', async ({ client }) => {
@@ -47,14 +43,14 @@ test('deve retornar 204 para email enviado', async ({ client }) => {
     .post('/forgot_password')
     .send({
       ...forgotPasswordPayload,
-      redirect_url: 'htp://www.meusite.com'
+      redirect_url: 'http://www.meusite.com'
     })
     .end()
 
   response.assertStatus(204)
 })
 
-test('deve informar se o token estiver errado', async ({ assert, client }) => {
+test('deve a confirmação de senha', async ({ assert, client }) => {
   await Factory
     .model('App/Models/User')
     .create({
@@ -70,9 +66,27 @@ test('deve informar se o token estiver errado', async ({ assert, client }) => {
     })
     .end()
 
+  response.assertStatus(400)
+})
+
+test('deve informar se o token estiver errado', async ({ assert, client }) => {
+  await Factory
+    .model('App/Models/User')
+    .create({
+      token: '12345',
+      token_created_at: new Date()
+    })
+
+  const response = await client
+    .put('/forgot_password')
+    .send({
+      token: '54321',
+      password: '123321',
+      password_confirmation: '123321'
+    })
+    .end()
+
   response.assertStatus(404)
-  assert.equal(response.text,
-    '{"error":{"message":"Algo deu errado ao resetar sua senha."}}')
 })
 
 test('deve informar caso token expirado', async ({ assert, client }) => {
@@ -91,13 +105,12 @@ test('deve informar caso token expirado', async ({ assert, client }) => {
     .put('/forgot_password')
     .send({
       ...sessionPayload,
-      password: '123321'
+      password: '123321',
+      password_confirmation: '123321'
     })
     .end()
 
   response.assertStatus(401)
-  assert.equal(response.text,
-    '{"error":{"message":"O token de recuperação está expirado."}}')
 })
 
 test('deve resetar a senha', async ({ client }) => {
@@ -116,7 +129,8 @@ test('deve resetar a senha', async ({ client }) => {
     .put('/forgot_password')
     .send({
       ...sessionPayload,
-      password: '123321'
+      password: '123321',
+      password_confirmation: '123321'
     })
     .end()
 

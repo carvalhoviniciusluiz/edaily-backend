@@ -25,3 +25,17 @@ adonis migration:run
 ```js
 adonis test
 ```
+
+## Server
+
+Para subir o server de desenvolvimento
+
+```js
+adonis serve --dev
+```
+
+Para subir o server de produção
+
+```js
+adonis start
+```
