@@ -21,6 +21,8 @@ class User extends Model {
         user.password = await Hash.make(user.password)
       }
     })
+
+    this.addHook('beforeUpdate', 'UserHook.sendUpdateUserMail')
   }
 
   static get hidden () {

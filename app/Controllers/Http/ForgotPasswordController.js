@@ -30,7 +30,7 @@ class ForgotPasswordController {
 
       await user.save()
 
-      if (process.env.NODE_ENV !== 'testing') {
+      if (Env.get('NODE_ENV') !== 'testing') {
         await Mail.send(
           ['emails.forgot_password'],
           {

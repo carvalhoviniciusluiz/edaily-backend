@@ -1,0 +1,21 @@
+<strong>Fala {{ user.userName }}, beleza?</strong>
+
+<p>Sua conta de usuário recebeu uma atualização, abaixo segue os dados para confirmação:</p>
+
+<ul>
+  <li><strong>Código: </strong><span>{{user.uuid}}</span></li>
+  <li><strong>Nome: </strong><span>{{user.name}}</span></li>
+  <li><strong>CPF: </strong><span>{{user.cpf}}</span></li>
+  <li><strong>Email: </strong><span>{{user.email}}</span></li>
+  <li><strong>Contato: </strong><span>{{user.phone}}</span></li>
+</ul>
+
+@if(hasOrganization)
+  <ul>
+    <li><strong>Organização: </strong><span>{{organization.name}}</span></li>
+    <li><strong>Iniciais: </strong><span>{{organization.initials}}</span></li>
+    <li><strong>CNPJ: </strong><span>{{organization.cnpj}}</span></li>
+    <li><strong>Email: </strong><span>{{organization.billing_email}}</span></li>
+    <li><strong>Contato: </strong><span>{{organization.phone1}}</span></li>
+  </ul>
+@endif
