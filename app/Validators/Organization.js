@@ -1,5 +1,7 @@
 'use strict'
 
+const Antl = use('Antl')
+
 class Organization {
   get validateAll () {
     return true
@@ -13,6 +15,10 @@ class Organization {
       billing_email: 'required|email',
       phone1: 'required'
     }
+  }
+
+  get messages () {
+    return Antl.list('validation')
   }
 }
 

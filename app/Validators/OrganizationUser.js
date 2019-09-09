@@ -1,5 +1,7 @@
 'use strict'
 
+const Antl = use('Antl')
+
 class OrganizationUser {
   get validateAll () {
     return true
@@ -12,6 +14,10 @@ class OrganizationUser {
       cpf: 'required',
       phone: 'required'
     }
+  }
+
+  get messages () {
+    return Antl.list('validation')
   }
 }
 
