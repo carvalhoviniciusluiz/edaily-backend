@@ -22,7 +22,7 @@ class User extends Model {
       }
     })
 
-    this.addHook('beforeUpdate', 'UserHook.sendUpdateUserMail')
+    this.addHook('beforeUpdate', 'UserHook.sendAccountModificationEmail')
   }
 
   static get hidden () {
