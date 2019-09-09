@@ -7,13 +7,16 @@
 const Organization = use('App/Models/Organization')
 
 class OrganizationController {
-  async index () {
+  async index ({ request }) {
+    const { page } = request.get('page')
+    const { limit } = request.get('limit')
+
     const organizations = await Organization
       .query()
       .with('users')
       .with('author')
       .with('revisor')
-      .fetch()
+      .paginate(page, limit)
 
     return organizations
   }

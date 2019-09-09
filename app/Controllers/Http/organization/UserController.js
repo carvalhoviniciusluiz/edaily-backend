@@ -10,12 +10,15 @@ const User = use('App/Models/User')
 const Organization = use('App/Models/Organization')
 
 class UserController {
-  async index ({ params, response }) {
+  async index ({ params, request, response }) {
     try {
+      const { page } = request.get('page')
+      const { limit } = request.get('limit')
+
       const organization = await Organization
         .findByOrFail('uuid', params.organizations_id)
 
-      const users = await organization.users().fetch()
+      const users = await organization.users().paginate(page, limit)
 
       return users
     } catch (error) {

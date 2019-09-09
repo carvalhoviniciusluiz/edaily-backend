@@ -23,7 +23,7 @@ test('deve retornar uma lista vazia', async ({ user, client, assert }) => {
     .end()
 
   response.assertStatus(200)
-  assert.isEmpty(response.body)
+  assert.equal(response.body.total, '0')
 })
 
 test('deve retornar uma lista não vazia', async ({ user, client, assert }) => {
@@ -35,7 +35,21 @@ test('deve retornar uma lista não vazia', async ({ user, client, assert }) => {
     .end()
 
   response.assertStatus(200)
-  assert.equal(response.body.length, 1)
+  assert.equal(response.body.total, '1')
+})
+
+test('deve retornar uma lista paginada', async ({ user, client, assert }) => {
+  await Factory.model('App/Models/Organization').create()
+  await Factory.model('App/Models/Organization').create()
+  await Factory.model('App/Models/Organization').create()
+
+  const response = await client
+    .get('organizations?limit=1')
+    .loginVia(user, 'jwt')
+    .end()
+
+  response.assertStatus(200)
+  assert.equal(response.body.data.length, 1)
 })
 
 test('deve cadastrar uma oganização', async ({ user, client, assert }) => {
