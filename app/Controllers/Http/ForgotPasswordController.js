@@ -5,8 +5,11 @@ const crypto = require('crypto')
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User')
-const Mail = use('Mail')
+// const Mail = use('Mail')
 const Env = use('Env')
+
+const Kue = use('Kue')
+const Job = use('App/Jobs/SendForgotPasswordMail')
 
 class ForgotPasswordController {
   async store ({ request, response }) {
@@ -31,23 +34,30 @@ class ForgotPasswordController {
       await user.save()
 
       if (Env.get('NODE_ENV') !== 'testing') {
-        await Mail.send(
-          ['emails.forgot_password'],
-          {
-            email,
-            token: user.token,
-            link: `${redirectURL}?token=${user.token}`
-          },
-          message => {
-            message
-              .to(user.email, user.name)
-              .from(
-                Env.get('MAIL_FROM', 'notreply@edaily.com'),
-                Env.get('MAIL_LOCAL', 'Team | Edaily')
-              )
-              .subject('Recuperação de senha')
-          }
-        )
+        Kue.dispatch(Job.key, {
+          name: user.name,
+          email: user.email,
+          token: user.token,
+          link: `${redirectURL}?token=${user.token}`
+        }, { attempts: 3 })
+
+        // await Mail.send(
+        //   ['emails.forgot_password'],
+        //   {
+        //     email,
+        //     token: user.token,
+        //     link: `${redirectURL}?token=${user.token}`
+        //   },
+        //   message => {
+        //     message
+        //       .to(user.email, user.name)
+        //       .from(
+        //         Env.get('MAIL_FROM', 'notreply@edaily.com'),
+        //         Env.get('MAIL_LOCAL', 'Team | Edaily')
+        //       )
+        //       .subject('Recuperação de senha')
+        //   }
+        // )
       }
     } catch (error) {
       return response
