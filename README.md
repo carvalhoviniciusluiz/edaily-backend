@@ -26,6 +26,12 @@ adonis migration:run
 adonis test
 ```
 
+Ou
+
+```js
+adonis test --files test/functional/users.spec.js
+```
+
 ## Server
 
 Para subir o server de desenvolvimento

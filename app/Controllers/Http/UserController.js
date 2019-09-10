@@ -1,5 +1,7 @@
 'use strict'
 
+const crypto = require('crypto')
+
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User')
 const Env = use('Env')
@@ -15,8 +17,7 @@ class UserController {
       'phone'
     ])
 
-    const password = Math.random().toString(36).substring(2) +
-      Date.now().toString(36)
+    const password = crypto.randomBytes(10).toString('hex')
 
     const user = await User.create({
       ...data,
