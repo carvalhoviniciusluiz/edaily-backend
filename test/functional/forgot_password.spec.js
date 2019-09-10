@@ -1,6 +1,4 @@
-const crypto = require('crypto')
-
-const { test, trait } = use('Test/Suite')('ForgotPassword')
+const { test, trait } = use('Test/Suite')('Forgot Password')
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
@@ -44,93 +42,6 @@ test('deve retornar 204 para email enviado', async ({ client }) => {
     .send({
       ...forgotPasswordPayload,
       redirect_url: 'http://www.meusite.com'
-    })
-    .end()
-
-  response.assertStatus(204)
-})
-
-test('deve confirmação a senha', async ({ assert, client }) => {
-  await Factory
-    .model('App/Models/User')
-    .create({
-      recovery_token: '12345',
-      recovery_token_created_at: new Date()
-    })
-
-  const response = await client
-    .put('/forgot_password')
-    .send({
-      recovery_token: '54321',
-      password: '123321'
-    })
-    .end()
-
-  response.assertStatus(400)
-})
-
-test('deve informar se o token estiver errado', async ({ assert, client }) => {
-  await Factory
-    .model('App/Models/User')
-    .create({
-      recovery_token: '12345',
-      recovery_token_created_at: new Date()
-    })
-
-  const response = await client
-    .put('/forgot_password')
-    .send({
-      recovery_token: '54321',
-      password: '123321',
-      password_confirmation: '123321'
-    })
-    .end()
-
-  response.assertStatus(404)
-})
-
-test('deve informar caso token expirado', async ({ assert, client }) => {
-  const sessionPayload = {
-    recovery_token: crypto.randomBytes(10).toString('hex')
-  }
-
-  await Factory
-    .model('App/Models/User')
-    .create({
-      ...sessionPayload,
-      recovery_token_created_at: new Date('December 25, 1995 23:15:30')
-    })
-
-  const response = await client
-    .put('/forgot_password')
-    .send({
-      ...sessionPayload,
-      password: '123321',
-      password_confirmation: '123321'
-    })
-    .end()
-
-  response.assertStatus(401)
-})
-
-test('deve resetar a senha', async ({ client }) => {
-  const sessionPayload = {
-    recovery_token: crypto.randomBytes(10).toString('hex')
-  }
-
-  await Factory
-    .model('App/Models/User')
-    .create({
-      ...sessionPayload,
-      recovery_token_created_at: new Date()
-    })
-
-  const response = await client
-    .put('/forgot_password')
-    .send({
-      ...sessionPayload,
-      password: '123321',
-      password_confirmation: '123321'
     })
     .end()
 

@@ -11,8 +11,12 @@ Route
   .post('forgot_password', 'ForgotPasswordController.store')
   .validator('ForgotPassword')
 
+// Route
+//   .put('forgot_password', 'ForgotPasswordController.update')
+//   .validator('ResetPassword')
+
 Route
-  .put('forgot_password', 'ForgotPasswordController.update')
+  .post('reset_password', 'ResetPasswordController.store')
   .validator('ResetPassword')
 
 Route.group(() => {
