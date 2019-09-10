@@ -3,26 +3,13 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
-/** @type {import('@adonisjs/framework/src/Hash')} */
-const Hash = use('Hash')
-
-const uuid = require('uuid')
-
 class User extends Model {
   static boot () {
     super.boot()
 
-    this.addHook('beforeSave', async user => {
-      if (!user.uuid) {
-        user.uuid = uuid.v4()
-      }
+    this.addHook('beforeSave', 'UserHook.configPasswordAndUUID')
 
-      if (user.dirty.password) {
-        user.password = await Hash.make(user.password)
-      }
-    })
-
-    this.addHook('beforeUpdate', 'UserHook.sendAccountModificationEmail')
+    this.addHook('afterUpdate', 'UserHook.sendAccountModificationEmail')
   }
 
   static get hidden () {
@@ -32,7 +19,9 @@ class User extends Model {
       'password',
       'created_at',
       'recovery_token',
+      'confirmation_token',
       'recovery_token_created_at',
+      'confirmation_token_created_at',
       'author_id',
       'revisor_id',
       'avatar_id'

@@ -14,7 +14,9 @@ class UserSchema extends Schema {
       table.string('cpf').notNullable().unique()
       table.string('phone').notNullable()
       table.string('recovery_token')
+      table.string('confirmation_token')
       table.timestamp('recovery_token_created_at')
+      table.timestamp('confirmation_token_created_at')
       table.timestamps()
     })
   }
