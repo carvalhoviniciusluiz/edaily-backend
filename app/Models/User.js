@@ -31,8 +31,8 @@ class User extends Model {
       'organization_id',
       'password',
       'created_at',
-      'token',
-      'token_created_at',
+      'recovery_token',
+      'recovery_token_created_at',
       'author_id',
       'revisor_id',
       'avatar_id'

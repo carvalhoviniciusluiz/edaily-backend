@@ -4,10 +4,9 @@ const moment = require('moment')
 const crypto = require('crypto')
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const User = use('App/Models/User')
-// const Mail = use('Mail')
-const Env = use('Env')
 
+const User = use('App/Models/User')
+const Env = use('Env')
 const Kue = use('Kue')
 const Job = use('App/Jobs/SendForgotPasswordMail')
 
@@ -28,8 +27,8 @@ class ForgotPasswordController {
       const email = request.input('email')
       const user = await User.findByOrFail('email', email)
 
-      user.token = crypto.randomBytes(10).toString('hex')
-      user.token_created_at = new Date()
+      user.recovery_token = crypto.randomBytes(10).toString('hex')
+      user.recovery_token_created_at = new Date()
 
       await user.save()
 
@@ -37,27 +36,9 @@ class ForgotPasswordController {
         Kue.dispatch(Job.key, {
           name: user.name,
           email: user.email,
-          token: user.token,
-          link: `${redirectURL}?token=${user.token}`
+          token: user.recovery_token,
+          link: `${redirectURL}?token=${user.recovery_token}`
         }, { attempts: 3 })
-
-        // await Mail.send(
-        //   ['emails.forgot_password'],
-        //   {
-        //     email,
-        //     token: user.token,
-        //     link: `${redirectURL}?token=${user.token}`
-        //   },
-        //   message => {
-        //     message
-        //       .to(user.email, user.name)
-        //       .from(
-        //         Env.get('MAIL_FROM', 'notreply@edaily.com'),
-        //         Env.get('MAIL_LOCAL', 'Team | Edaily')
-        //       )
-        //       .subject('Recuperação de senha')
-        //   }
-        // )
       }
     } catch (error) {
       return response
@@ -72,13 +53,13 @@ class ForgotPasswordController {
 
   async update ({ request, response }) {
     try {
-      const { token, password } = request.all()
+      const { recovery_token: token, password } = request.all()
 
-      const user = await User.findByOrFail('token', token)
+      const user = await User.findByOrFail('recovery_token', token)
 
       const tokenExpired = moment()
         .subtract('2', 'days')
-        .isAfter(user.token_created_at)
+        .isAfter(user.recovery_token_created_at)
 
       if (tokenExpired) {
         return response
@@ -90,8 +71,8 @@ class ForgotPasswordController {
           })
       }
 
-      user.token = null
-      user.token_created_at = null
+      user.recovery_token = null
+      user.recovery_token_created_at = null
       user.password = password
 
       await user.save()

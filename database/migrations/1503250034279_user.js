@@ -13,8 +13,8 @@ class UserSchema extends Schema {
       table.string('password').notNullable()
       table.string('cpf').notNullable().unique()
       table.string('phone').notNullable()
-      table.string('token')
-      table.timestamp('token_created_at')
+      table.string('recovery_token')
+      table.timestamp('recovery_token_created_at')
       table.timestamps()
     })
   }

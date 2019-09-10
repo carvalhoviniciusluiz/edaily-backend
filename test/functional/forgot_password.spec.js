@@ -50,18 +50,18 @@ test('deve retornar 204 para email enviado', async ({ client }) => {
   response.assertStatus(204)
 })
 
-test('deve a confirmação de senha', async ({ assert, client }) => {
+test('deve confirmação a senha', async ({ assert, client }) => {
   await Factory
     .model('App/Models/User')
     .create({
-      token: '12345',
-      token_created_at: new Date()
+      recovery_token: '12345',
+      recovery_token_created_at: new Date()
     })
 
   const response = await client
     .put('/forgot_password')
     .send({
-      token: '54321',
+      recovery_token: '54321',
       password: '123321'
     })
     .end()
@@ -73,14 +73,14 @@ test('deve informar se o token estiver errado', async ({ assert, client }) => {
   await Factory
     .model('App/Models/User')
     .create({
-      token: '12345',
-      token_created_at: new Date()
+      recovery_token: '12345',
+      recovery_token_created_at: new Date()
     })
 
   const response = await client
     .put('/forgot_password')
     .send({
-      token: '54321',
+      recovery_token: '54321',
       password: '123321',
       password_confirmation: '123321'
     })
@@ -91,14 +91,14 @@ test('deve informar se o token estiver errado', async ({ assert, client }) => {
 
 test('deve informar caso token expirado', async ({ assert, client }) => {
   const sessionPayload = {
-    token: crypto.randomBytes(10).toString('hex')
+    recovery_token: crypto.randomBytes(10).toString('hex')
   }
 
   await Factory
     .model('App/Models/User')
     .create({
       ...sessionPayload,
-      token_created_at: new Date('December 25, 1995 23:15:30')
+      recovery_token_created_at: new Date('December 25, 1995 23:15:30')
     })
 
   const response = await client
@@ -115,14 +115,14 @@ test('deve informar caso token expirado', async ({ assert, client }) => {
 
 test('deve resetar a senha', async ({ client }) => {
   const sessionPayload = {
-    token: crypto.randomBytes(10).toString('hex')
+    recovery_token: crypto.randomBytes(10).toString('hex')
   }
 
   await Factory
     .model('App/Models/User')
     .create({
       ...sessionPayload,
-      token_created_at: new Date()
+      recovery_token_created_at: new Date()
     })
 
   const response = await client
