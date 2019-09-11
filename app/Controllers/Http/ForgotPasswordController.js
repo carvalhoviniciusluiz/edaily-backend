@@ -11,17 +11,6 @@ const Job = use('App/Jobs/SendForgotPasswordMail')
 
 class ForgotPasswordController {
   async store ({ request, response }) {
-    const redirectURL = request.input('redirect_url')
-    if (!redirectURL) {
-      return response
-        .status(500)
-        .send({
-          error: {
-            message: 'Algo deu errado ao redirecionar a página.'
-          }
-        })
-    }
-
     try {
       const email = request.input('email')
       const user = await User.findByOrFail('email', email)
@@ -36,7 +25,8 @@ class ForgotPasswordController {
           name: user.name,
           email: user.email,
           token: user.recovery_token,
-          link: `${redirectURL}?token=${user.recovery_token}`
+          link: `${request.input('redirect_url')}?token=${user.recovery_token}`,
+          team: Env.get('APP_NAME', 'Edaily')
         }, { attempts: 3 })
       }
     } catch (error) {

@@ -12,12 +12,12 @@ class SendForgotPasswordMail {
     return 'SendForgotPasswordMail-job'
   }
 
-  async handle ({ name, email, token, link }) {
+  async handle ({ name, email, token, link, team }) {
     console.log(`Job: ${SendForgotPasswordMail.key}`)
 
     await Mail.send(
       ['emails.forgot_password'],
-      { email, token, link },
+      { email, name, token, link, team },
       message => {
         message
           .to(email, name)

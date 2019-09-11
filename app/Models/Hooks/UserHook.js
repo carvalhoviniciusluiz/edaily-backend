@@ -3,7 +3,7 @@
 const uuid = require('uuid')
 
 const Kue = use('Kue')
-const JobAccountModification = use('App/Jobs/SendAccountModificationEmail')
+const Job = use('App/Jobs/SendAccountModificationEmail')
 const Env = use('Env')
 const Hash = use('Hash')
 
@@ -20,13 +20,14 @@ UserHook.configPasswordAndUUID = async user => {
 }
 
 UserHook.sendAccountModificationEmail = async user => {
-  if (!user.dirty.token && Env.get('NODE_ENV') !== 'testing') {
+  if (!user.dirty.recovery_token && Env.get('NODE_ENV') !== 'testing') {
     const avatar = await user.avatar().fetch()
 
-    Kue.dispatch(JobAccountModification.key, {
+    Kue.dispatch(Job.key, {
       user,
       avatar,
-      hasAttachment: !!avatar
+      hasAttachment: !!avatar,
+      team: Env.get('APP_NAME', 'Edaily')
     }, { attempts: 3 })
   }
 }

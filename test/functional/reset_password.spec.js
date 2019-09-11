@@ -47,21 +47,21 @@ test('deve informar se o token estiver errado', async ({ assert, client }) => {
 })
 
 test('deve informar caso token expirado', async ({ assert, client }) => {
-  const sessionPayload = {
+  const resetPasswordPayload = {
     recovery_token: crypto.randomBytes(10).toString('hex')
   }
 
   await Factory
     .model('App/Models/User')
     .create({
-      ...sessionPayload,
+      ...resetPasswordPayload,
       recovery_token_created_at: new Date('December 25, 1995 23:15:30')
     })
 
   const response = await client
     .post('/reset_password')
     .send({
-      ...sessionPayload,
+      ...resetPasswordPayload,
       password: '123321',
       password_confirmation: '123321'
     })
@@ -71,21 +71,21 @@ test('deve informar caso token expirado', async ({ assert, client }) => {
 })
 
 test('deve resetar a senha', async ({ client }) => {
-  const sessionPayload = {
+  const resetPasswordPayload = {
     recovery_token: crypto.randomBytes(10).toString('hex')
   }
 
   await Factory
     .model('App/Models/User')
     .create({
-      ...sessionPayload,
+      ...resetPasswordPayload,
       recovery_token_created_at: new Date()
     })
 
   const response = await client
     .post('/reset_password')
     .send({
-      ...sessionPayload,
+      ...resetPasswordPayload,
       password: '123321',
       password_confirmation: '123321'
     })

@@ -13,14 +13,15 @@ class SendAccountModificationEmail {
     return 'SendAccountModificationEmail-job'
   }
 
-  async handle ({ user, avatar, hasAttachment }) {
-    console.log(`Job: ${SendAccountModificationEmail.key}`)
+  async handle ({ user, avatar, hasAttachment, team }) {
+    console.log(`Job: ${SendAccountModificationEmail.key} ${team}`)
 
     await Mail.send(
       ['emails.update_user'],
       {
         user,
-        hasAttachment
+        hasAttachment,
+        team
       },
       message => {
         message
