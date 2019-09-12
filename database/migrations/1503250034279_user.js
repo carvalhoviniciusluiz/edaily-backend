@@ -17,6 +17,11 @@ class UserSchema extends Schema {
       table.timestamp('recovery_token_created_at')
       table.string('confirmation_token')
       table.timestamp('confirmed_at')
+      table.integer('sign_in_count').default(0)
+      table.date('last_sign_in_at')
+      table.date('current_sign_in_at')
+      table.string('last_sign_in_ip_address')
+      table.string('current_sign_in_ip_address')
       table.timestamps()
     })
   }

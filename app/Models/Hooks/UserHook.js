@@ -22,6 +22,7 @@ UserHook.configurePasswordAndUUID = async user => {
 UserHook.sendAccountModificationEmail = async user => {
   if (!user.dirty.recovery_token &&
     !user.dirty.confirmed_at &&
+    !user.dirty.sign_in_count &&
     Env.get('NODE_ENV') !== 'testing') {
     const avatar = await user.avatar().fetch()
 
