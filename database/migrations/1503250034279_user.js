@@ -16,7 +16,7 @@ class UserSchema extends Schema {
       table.string('recovery_token')
       table.timestamp('recovery_token_created_at')
       table.string('confirmation_token')
-      table.timestamp('confirmation_token_created_at')
+      table.timestamp('confirmed_at')
       table.timestamps()
     })
   }

@@ -20,7 +20,9 @@ UserHook.configurePasswordAndUUID = async user => {
 }
 
 UserHook.sendAccountModificationEmail = async user => {
-  if (!user.dirty.recovery_token && Env.get('NODE_ENV') !== 'testing') {
+  if (!user.dirty.recovery_token &&
+    !user.dirty.confirmed_at &&
+    Env.get('NODE_ENV') !== 'testing') {
     const avatar = await user.avatar().fetch()
 
     Kue.dispatch(JobAccountModification.key, {

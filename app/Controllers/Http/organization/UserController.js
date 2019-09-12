@@ -50,6 +50,7 @@ class UserController {
     user.merge({
       ...data,
       password,
+      confirmation_token: crypto.randomBytes(32).toString('hex'),
       author_id: auth.user.id,
       revisor_id: auth.user.id
     })
@@ -63,6 +64,7 @@ class UserController {
       Kue.dispatch(JobAccountConfirmation.key, {
         user,
         password,
+        link: `${Env.get('APP_URL')}/confirm?token=${user.confirmation_token}`,
         team: Env.get('APP_NAME', 'Edaily')
       }, { attempts: 3 })
     }

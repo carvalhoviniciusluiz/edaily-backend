@@ -15,13 +15,15 @@ class UserController {
       'name',
       'email',
       'cpf',
-      'phone'
+      'phone',
+      'avatar_id'
     ])
 
     const password = crypto.randomBytes(10).toString('hex')
 
     const user = await User.create({
       ...data,
+      confirmation_token: crypto.randomBytes(32).toString('hex'),
       password
     })
 
@@ -29,15 +31,12 @@ class UserController {
       Kue.dispatch(JobAccountConfirmation.key, {
         user,
         password,
+        link: `${Env.get('APP_URL')}/confirm?token=${user.confirmation_token}`,
         team: Env.get('APP_NAME', 'Edaily')
       }, { attempts: 3 })
     }
 
     return user
-  }
-
-  async confirm ({ response }) {
-    response.redirect('https://digitalocean.com')
   }
 }
 

@@ -1,7 +1,7 @@
 'use strict'
 
 class SessionController {
-  async store ({ request, response, auth }) {
+  async store ({ request, auth }) {
     const { cpf, password } = request.only([
       'cpf',
       'password'
