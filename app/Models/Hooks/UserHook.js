@@ -2,14 +2,14 @@
 
 const uuid = require('uuid')
 
-const Kue = use('Kue')
-const Job = use('App/Jobs/SendAccountModificationEmail')
 const Env = use('Env')
 const Hash = use('Hash')
+const Kue = use('Kue')
+const JobAccountModification = use('App/Jobs/SendAccountModificationEmail')
 
 const UserHook = exports = module.exports = {}
 
-UserHook.configPasswordAndUUID = async user => {
+UserHook.configurePasswordAndUUID = async user => {
   if (!user.uuid) {
     user.uuid = uuid.v4()
   }
@@ -23,7 +23,7 @@ UserHook.sendAccountModificationEmail = async user => {
   if (!user.dirty.recovery_token && Env.get('NODE_ENV') !== 'testing') {
     const avatar = await user.avatar().fetch()
 
-    Kue.dispatch(Job.key, {
+    Kue.dispatch(JobAccountModification.key, {
       user,
       avatar,
       hasAttachment: !!avatar,

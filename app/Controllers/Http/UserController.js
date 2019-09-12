@@ -4,6 +4,7 @@ const crypto = require('crypto')
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User')
+
 const Env = use('Env')
 const Kue = use('Kue')
 const JobAccountConfirmation = use('App/Jobs/SendAccountConfirmationEmail')
@@ -24,18 +25,19 @@ class UserController {
       password
     })
 
-    if (!user.dirty.token && Env.get('NODE_ENV') !== 'testing') {
-      const avatar = await user.avatar().fetch()
-
+    if (Env.get('NODE_ENV') !== 'testing') {
       Kue.dispatch(JobAccountConfirmation.key, {
         user,
         password,
-        avatar,
-        hasAttachment: !!avatar
+        team: Env.get('APP_NAME', 'Edaily')
       }, { attempts: 3 })
     }
 
     return user
+  }
+
+  async confirm ({ response }) {
+    response.redirect('https://digitalocean.com')
   }
 }
 

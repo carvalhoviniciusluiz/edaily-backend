@@ -15,7 +15,7 @@ class ForgotPasswordController {
       const email = request.input('email')
       const user = await User.findByOrFail('email', email)
 
-      user.recovery_token = crypto.randomBytes(10).toString('hex')
+      user.recovery_token = crypto.randomBytes(32).toString('hex')
       user.recovery_token_created_at = new Date()
 
       await user.save()

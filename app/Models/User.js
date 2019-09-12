@@ -7,7 +7,7 @@ class User extends Model {
   static boot () {
     super.boot()
 
-    this.addHook('beforeSave', 'UserHook.configPasswordAndUUID')
+    this.addHook('beforeSave', 'UserHook.configurePasswordAndUUID')
 
     this.addHook('afterUpdate', 'UserHook.sendAccountModificationEmail')
   }

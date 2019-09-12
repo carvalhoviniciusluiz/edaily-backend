@@ -2,7 +2,6 @@
 
 const Mail = use('Mail')
 const Env = use('Env')
-const Helpers = use('Helpers')
 
 class SendAccountConfirmationEmail {
   static get concurrency () {
@@ -13,15 +12,15 @@ class SendAccountConfirmationEmail {
     return 'SendAccountConfirmationEmail-job'
   }
 
-  async handle ({ user, password, avatar, hasAttachment }) {
-    console.log(`Job: ${SendAccountConfirmationEmail.key}`)
+  async handle ({ user, password, team }) {
+    console.log(`Job: ${SendAccountConfirmationEmail.key} - ${user.email}`)
 
     await Mail.send(
       ['emails.confirmation_instructions'],
       {
         user,
         password,
-        hasAttachment
+        team
       },
       message => {
         message
@@ -31,12 +30,6 @@ class SendAccountConfirmationEmail {
             Env.get('MAIL_LOCAL', 'Team | Edaily')
           )
           .subject('Confirmação de conta')
-
-        if (hasAttachment) {
-          message.attach(Helpers.tmpPath(`uploads/${avatar.file}`), {
-            filename: avatar.name
-          })
-        }
       }
     )
   }

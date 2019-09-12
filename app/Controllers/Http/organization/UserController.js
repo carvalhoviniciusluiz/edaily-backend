@@ -1,13 +1,16 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
+const crypto = require('crypto')
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User')
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Organization = use('App/Models/Organization')
+
+const Env = use('Env')
+const Kue = use('Kue')
+const JobAccountConfirmation = use('App/Jobs/SendAccountConfirmationEmail')
 
 class UserController {
   async index ({ params, request, response }) {
@@ -42,9 +45,11 @@ class UserController {
 
     const user = new User()
 
+    const password = crypto.randomBytes(10).toString('hex')
+
     user.merge({
       ...data,
-      password: '123456',
+      password,
       author_id: auth.user.id,
       revisor_id: auth.user.id
     })
@@ -53,6 +58,14 @@ class UserController {
 
     await user.load('organization')
     await user.load('avatar')
+
+    if (Env.get('NODE_ENV') !== 'testing') {
+      Kue.dispatch(JobAccountConfirmation.key, {
+        user,
+        password,
+        team: Env.get('APP_NAME', 'Edaily')
+      }, { attempts: 3 })
+    }
 
     return user
   }

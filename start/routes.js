@@ -6,6 +6,7 @@ const Route = use('Route')
 Route.post('sessions', 'SessionController.store').validator('Session')
 
 Route.post('users', 'UserController.store').validator('User')
+Route.post('users/confirm', 'UserController.confirm')
 
 Route
   .post('forgot_password', 'ForgotPasswordController.store')

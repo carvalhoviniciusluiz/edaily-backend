@@ -48,7 +48,7 @@ test('deve informar se o token estiver errado', async ({ assert, client }) => {
 
 test('deve informar caso token expirado', async ({ assert, client }) => {
   const resetPasswordPayload = {
-    recovery_token: crypto.randomBytes(10).toString('hex')
+    recovery_token: crypto.randomBytes(32).toString('hex')
   }
 
   await Factory
@@ -72,7 +72,7 @@ test('deve informar caso token expirado', async ({ assert, client }) => {
 
 test('deve resetar a senha', async ({ client }) => {
   const resetPasswordPayload = {
-    recovery_token: crypto.randomBytes(10).toString('hex')
+    recovery_token: crypto.randomBytes(32).toString('hex')
   }
 
   await Factory
