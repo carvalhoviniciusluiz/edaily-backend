@@ -221,6 +221,13 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
+"@conceptho/adonis-validators@^0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@conceptho/adonis-validators/-/adonis-validators-0.0.11.tgz#4bead249017e8385a4a1772dc245222e779ec160"
+  integrity sha512-mLmr7m+GasLOjyJAbMZiMDre08p0c6dvJxFdwXkBPBjKFKejoVQ/ubhM17gVW57/qS5Yy25IzDGqxBviChoD2A==
+  dependencies:
+    lodash "^4.17.11"
+
 "@hapi/address@2.x.x":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.1.tgz#61395b5ed94c4cb19c2dc4c85969cff3d40d583f"

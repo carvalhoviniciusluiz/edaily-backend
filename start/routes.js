@@ -32,6 +32,9 @@ Route.group(() => {
     .resource('organizations.users', 'organization/UserController')
     .apiOnly()
     .validator(new Map(
-      [[['organizations.users.store'], ['OrganizationUser']]]
+      [
+        [['organizations.users.store'], ['organization/UserCreate']],
+        [['organizations.users.update'], ['organization/UserUpdate']]
+      ]
     ))
 }).middleware(['auth'])

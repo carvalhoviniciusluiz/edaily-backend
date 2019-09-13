@@ -2,17 +2,17 @@
 
 const Antl = use('Antl')
 
-class OrganizationUser {
+class UserUpdate {
   get validateAll () {
     return true
   }
 
   get rules () {
     return {
-      name: 'required',
-      email: 'required|email',
-      cpf: 'required',
-      phone: 'required'
+      name: 'string',
+      email: 'email',
+      cpf: 'cpf',
+      phone: 'string'
     }
   }
 
@@ -21,4 +21,4 @@ class OrganizationUser {
   }
 }
 
-module.exports = OrganizationUser
+module.exports = UserUpdate

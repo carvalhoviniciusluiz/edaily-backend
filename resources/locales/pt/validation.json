@@ -1,4 +1,6 @@
 {
+  "cnpj": "Falha na validação do cnpj",
+  "cpf": "Falha na validação do cpf",
   "above": "O {{field}} deve estar acima de {{argument.0}}.",
   "accepted": "O {{field}} deveria ter sido aceito",
   "after": "O {{field}} deve ser uma data após {{argument.0}}",
