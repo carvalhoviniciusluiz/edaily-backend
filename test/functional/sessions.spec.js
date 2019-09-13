@@ -8,7 +8,7 @@ const Factory = use('Factory')
 
 trait('Test/ApiClient')
 
-test('deve retornar um token JWT quando criar a sessão', async ({ assert, client }) => {
+test('deve retornar um token JWT', async ({ assert, client }) => {
   const sessionPayload = {
     cpf: '78545870272',
     password: '123456'

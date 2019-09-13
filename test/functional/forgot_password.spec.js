@@ -5,7 +5,7 @@ const Factory = use('Factory')
 
 trait('Test/ApiClient')
 
-test('deve informar quando não redirecionar', async ({ assert, client }) => {
+test('deve informar quando não redirecionar', async ({ client }) => {
   const response = await client
     .post('/forgot_password')
     .send({
@@ -16,7 +16,7 @@ test('deve informar quando não redirecionar', async ({ assert, client }) => {
   response.assertStatus(400)
 })
 
-test('deve informar quando o email não existir', async ({ assert, client }) => {
+test('deve informar quando o email não existir', async ({ client }) => {
   const response = await client
     .post('/forgot_password')
     .send({

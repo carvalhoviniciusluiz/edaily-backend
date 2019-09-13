@@ -104,7 +104,7 @@ test('deve atualizar um usuário', async ({ user, client, assert }) => {
   assert.equal(response.body.name, 'xpto')
 })
 
-test('deve deletar um usuário', async ({ user, client, assert }) => {
+test('deve deletar um usuário', async ({ user, client }) => {
   const { uuid: userId } = await Factory
     .model('App/Models/User')
     .create({ organization_id: id })

@@ -1,5 +1,3 @@
-const crypto = require('crypto')
-
 const { test, trait } = use('Test/Suite')('Reset Password')
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
@@ -7,7 +5,7 @@ const Factory = use('Factory')
 
 trait('Test/ApiClient')
 
-test('deve confirmação a senha', async ({ assert, client }) => {
+test('deve confirmação a senha', async ({ client }) => {
   await Factory
     .model('App/Models/User')
     .create({
@@ -26,7 +24,7 @@ test('deve confirmação a senha', async ({ assert, client }) => {
   response.assertStatus(400)
 })
 
-test('deve informar se o token estiver errado', async ({ assert, client }) => {
+test('deve informar se o token estiver errado', async ({ client }) => {
   await Factory
     .model('App/Models/User')
     .create({
@@ -46,9 +44,9 @@ test('deve informar se o token estiver errado', async ({ assert, client }) => {
   response.assertStatus(404)
 })
 
-test('deve informar caso token expirado', async ({ assert, client }) => {
+test('deve informar caso token expirado', async ({ client }) => {
   const resetPasswordPayload = {
-    recovery_token: crypto.randomBytes(32).toString('hex')
+    recovery_token: Factory.genToken()
   }
 
   await Factory
@@ -72,7 +70,7 @@ test('deve informar caso token expirado', async ({ assert, client }) => {
 
 test('deve resetar a senha', async ({ client }) => {
   const resetPasswordPayload = {
-    recovery_token: crypto.randomBytes(32).toString('hex')
+    recovery_token: Factory.genToken()
   }
 
   await Factory

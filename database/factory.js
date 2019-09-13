@@ -11,10 +11,14 @@
 |
 */
 
+const crypto = require('crypto')
+
 const { cnpj } = require('cpf-cnpj-validator')
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
+
+Factory.genToken = (size = 32) => crypto.randomBytes(size).toString('hex')
 
 Factory.blueprint('App/Models/User', (faker, i, data = {}) => {
   return {

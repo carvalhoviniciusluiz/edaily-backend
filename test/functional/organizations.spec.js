@@ -92,7 +92,7 @@ test('deve atualizar uma oganização', async ({ user, client, assert }) => {
   assert.equal(response.body.name, 'xpto')
 })
 
-test('deve deletar uma oganização', async ({ user, client, assert }) => {
+test('deve deletar uma oganização', async ({ user, client }) => {
   const { uuid } = await Factory.model('App/Models/Organization').create()
 
   const response = await client
