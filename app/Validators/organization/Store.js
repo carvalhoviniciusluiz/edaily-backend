@@ -2,7 +2,7 @@
 
 const Antl = use('Antl')
 
-class Organization {
+class Store {
   get validateAll () {
     return true
   }
@@ -11,7 +11,7 @@ class Organization {
     return {
       name: 'required',
       initials: 'required',
-      cnpj: 'required',
+      cnpj: 'required|cnpj',
       billing_email: 'required|email',
       phone1: 'required'
     }
@@ -22,4 +22,4 @@ class Organization {
   }
 }
 
-module.exports = Organization
+module.exports = Store
