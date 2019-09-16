@@ -3,10 +3,14 @@
 const crypto = require('crypto')
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const File = use('App/Models/File')
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User')
 
 const Env = use('Env')
 const Kue = use('Kue')
+
 const JobAccountConfirmation = use('App/Jobs/SendAccountConfirmationEmail')
 
 class UserController {
@@ -35,6 +39,24 @@ class UserController {
         team: Env.get('APP_NAME', 'Edaily')
       }, { attempts: 3 })
     }
+
+    return user
+  }
+
+  async update ({ request, auth }) {
+    const { avatar_uuid: uuidFile, ...data } = request.all()
+
+    if (uuidFile) {
+      const file = await File.findBy('uuid', uuidFile)
+
+      data.avatar_id = file ? file.id : undefined
+    }
+
+    const user = await auth.getUser()
+    user.merge(data)
+
+    await user.save()
+    await user.load('avatar')
 
     return user
   }

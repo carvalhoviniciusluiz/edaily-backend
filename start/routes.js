@@ -7,7 +7,7 @@ Route.post('sessions', 'SessionController.store').validator('Session')
 
 Route.get('confirm', 'ConfirmationController.store').validator('Confirmation')
 
-Route.post('users', 'UserController.store').validator('User')
+Route.post('users', 'UserController.store').validator('user/Store')
 
 Route
   .post('forgot_password', 'ForgotPasswordController.store')
@@ -20,6 +20,8 @@ Route
 Route.group(() => {
   Route.post('files', 'FileController.store')
   Route.get('files/:id', 'FileController.show')
+
+  Route.put('users', 'UserController.update').validator('user/Update')
 
   Route
     .resource('organizations', 'OrganizationController')

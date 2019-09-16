@@ -8,11 +8,13 @@ class User {
   }
 
   get rules () {
+    const userId = this.ctx.auth.user.id
+
     return {
-      name: 'required',
-      email: 'required|email|unique:users',
-      cpf: 'required',
-      phone: 'required'
+      name: 'string',
+      email: `unique:users,email,id,${userId}`,
+      cpf: 'cpf',
+      phone: 'string'
     }
   }
 
