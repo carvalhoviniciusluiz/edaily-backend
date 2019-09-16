@@ -13,7 +13,7 @@ class ResetPasswordController {
       const user = await User.findByOrFail('recovery_token', token)
 
       const tokenExpired = moment()
-        .subtract('2', 'days')
+        .subtract('1', 'days')
         .isAfter(user.recovery_token_created_at)
 
       if (tokenExpired) {

@@ -1,31 +1,47 @@
 'use strict'
 
+const { cpf } = require('cpf-cnpj-validator')
+
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User')
 
 class SessionController {
-  async store ({ request, auth }) {
-    const { cpf, password } = request.only([
-      'cpf',
+  async store ({ request, response, auth }) {
+    const { credential, password } = request.only([
+      'credential',
       'password'
     ])
 
-    const user = await User.findByOrFail('cpf', cpf)
+    const query = User.query()
 
-    user.sign_in_count = user.sign_in_count + 1
-    user.last_sign_in_at = user.current_sign_in_at
-    user.last_sign_in_ip_address = user.current_sign_in_ip_address
+    if (cpf.isValid(credential)) {
+      query.where('cpf', credential)
+    } else {
+      query.where('email', credential)
+    }
 
-    user.current_sign_in_at = new Date()
+    const user = await query.first()
 
-    // @TODO https://www.npmjs.com/package/request-ip
-    user.current_sign_in_ip_address = '//** ip address **//'
+    try {
+      const { token } = await auth.attempt(user.cpf, password)
 
-    await user.save()
+      user.sign_in_count = user.sign_in_count + 1
+      user.last_sign_in_at = user.current_sign_in_at
+      user.last_sign_in_ip_address = user.current_sign_in_ip_address
 
-    const { token } = await auth.attempt(cpf, password)
+      user.current_sign_in_at = new Date()
 
-    return { token }
+      // @TODO https://www.npmjs.com/package/request-ip
+      user.current_sign_in_ip_address = '//** ip address **//'
+
+      await user.save()
+
+      return { token }
+    } catch (error) {
+      return response
+        .status(error.status)
+        .send({ error: { message: 'As credenciais de acesso são inválidas.' } })
+    }
   }
 }
 

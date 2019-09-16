@@ -9,7 +9,7 @@ class Session {
 
   get rules () {
     return {
-      cpf: 'required',
+      credential: 'required',
       password: 'required'
     }
   }

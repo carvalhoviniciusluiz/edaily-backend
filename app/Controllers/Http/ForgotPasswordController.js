@@ -25,7 +25,7 @@ class ForgotPasswordController {
           name: user.name,
           email: user.email,
           token: user.recovery_token,
-          link: `${request.input('redirect_url')}?token=${user.recovery_token}`,
+          link: `${request.input('redirect_url')}/reset?token=${user.recovery_token}`,
           team: Env.get('APP_NAME', 'Edaily')
         }, { attempts: 3 })
       }
