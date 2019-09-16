@@ -43,22 +43,38 @@ class UserController {
     return user
   }
 
-  async update ({ request, auth }) {
-    const { avatar_uuid: uuidFile, ...data } = request.all()
+  async update ({ request, response, auth }) {
+    try {
+      const {
+        avatar_uuid: uuidFile,
+        old_password: password,
+        password_confirmation: confirmation,
+        ...data
+      } = request.all()
 
-    if (uuidFile) {
-      const file = await File.findBy('uuid', uuidFile)
+      const user = await auth.getUser()
 
-      data.avatar_id = file ? file.id : undefined
+      if (password) {
+        await auth.attempt(user.cpf, password)
+      }
+
+      if (uuidFile) {
+        const file = await File.findBy('uuid', uuidFile)
+
+        data.avatar_id = file ? file.id : undefined
+      }
+
+      user.merge(data)
+
+      await user.save()
+      await user.load('avatar')
+
+      return user
+    } catch (error) {
+      return response
+        .status(error.status)
+        .send({ erro: { message: 'Dados inválidos.' } })
     }
-
-    const user = await auth.getUser()
-    user.merge(data)
-
-    await user.save()
-    await user.load('avatar')
-
-    return user
   }
 }
 

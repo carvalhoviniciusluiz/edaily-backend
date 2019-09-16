@@ -3,7 +3,7 @@ const Factory = use('Factory')
 module.exports = async (suite) => {
   const user = await Factory
     .model('App/Models/User')
-    .create()
+    .create({ password: '123456' })
 
   suite.Context.getter('user', () => {
     return user

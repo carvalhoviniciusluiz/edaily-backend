@@ -14,7 +14,9 @@ class User {
       name: 'string',
       email: `unique:users,email,id,${userId}`,
       cpf: 'cpf',
-      phone: 'string'
+      phone: 'string',
+      old_password: 'string|min:6',
+      password: 'required_if:old_password|min:6|confirmed'
     }
   }
 
