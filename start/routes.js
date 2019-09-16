@@ -17,9 +17,10 @@ Route
   .post('reset_password', 'ResetPasswordController.store')
   .validator('ResetPassword')
 
+Route.get('files/:id', 'FileController.show')
+
 Route.group(() => {
   Route.post('files', 'FileController.store')
-  Route.get('files/:id', 'FileController.show')
 
   Route.put('users', 'UserController.update').validator('user/Update')
 
