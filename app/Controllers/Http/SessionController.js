@@ -20,6 +20,9 @@ class SessionController {
       query.where('email', credential)
     }
 
+    query.with('organization')
+    query.with('avatar')
+
     const user = await query.first()
 
     try {
@@ -36,7 +39,34 @@ class SessionController {
 
       await user.save()
 
-      return { token }
+      const { uuid, name, email, organization: o, avatar: a } = user.toJSON()
+
+      const organization = o
+        ? {
+          uuid: o.uuid,
+          name: o.name,
+          initials: o.initials,
+          email: o.billing_email
+        }
+        : null
+
+      const avatar = a
+        ? {
+          uuid: a.uuid,
+          url: a.url
+        }
+        : null
+
+      return {
+        user: {
+          uuid,
+          name,
+          email,
+          avatar,
+          organization
+        },
+        token
+      }
     } catch (error) {
       return response
         .status(error.status)
