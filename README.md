@@ -1,3 +1,5 @@
+
+
 # Edaily backend
 
 API server em AdonisJs, vem pré-configurado com:
@@ -7,6 +9,14 @@ API server em AdonisJs, vem pré-configurado com:
 3. CORS
 4. Lucid ORM
 5. Migrations and seeds
+
+## Interface
+
+| Projeto | Descrição |
+|---------|--------------|
+| [frontend] | Interface web com React |
+
+[frontend]: https://github.com/carvalhoviniciusluiz/edaily-frontend
 
 ## Setup
 
