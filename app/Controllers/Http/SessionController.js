@@ -14,16 +14,20 @@ class SessionController {
 
     const query = User.query()
 
-    if (cpf.isValid(credential)) {
-      query.where('cpf', credential)
-    } else {
-      query.where('email', credential)
-    }
+    cpf.isValid(credential)
+      ? query.where('cpf', credential)
+      : query.where('email', credential)
 
     query.with('organization')
     query.with('avatar')
 
     const user = await query.first()
+
+    if (!user) {
+      return response
+        .status(400)
+        .send({ error: { message: 'As credenciais de acesso são inválidas.' } })
+    }
 
     try {
       const { token } = await auth.attempt(user.cpf, password)
