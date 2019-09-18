@@ -16,10 +16,17 @@ const JobAccountConfirmation = use('App/Jobs/SendAccountConfirmationEmail')
 class UserController {
   async store ({ request }) {
     const data = request.only([
-      'name',
+      'firstname',
+      'lastname',
       'email',
       'cpf',
       'phone',
+      'zipcode',
+      'street',
+      'street_number',
+      'neighborhood',
+      'city',
+      'state',
       'avatar_id'
     ])
 

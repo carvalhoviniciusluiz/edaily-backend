@@ -9,10 +9,17 @@ class User {
 
   get rules () {
     return {
-      name: 'required',
+      firstname: 'required',
+      lastname: 'required',
       email: 'required|email|unique:users',
       cpf: 'required|cpf',
-      phone: 'required'
+      phone: 'required',
+      zipcode: 'required',
+      street: 'required',
+      street_number: 'required',
+      neighborhood: 'required',
+      city: 'required',
+      state: 'required'
     }
   }
 

@@ -11,11 +11,9 @@ class User {
     const userId = this.ctx.auth.user.id
 
     return {
-      name: 'string',
-      email: `unique:users,email,id,${userId}`,
-      cpf: 'cpf',
-      phone: 'string',
-      old_password: 'string|min:6',
+      email: `email|unique:users,email,id,${userId}`,
+      cpf: `cpf|unique:users,cpf,id,${userId}`,
+      old_password: 'min:6',
       password: 'required_if:old_password|min:6|confirmed'
     }
   }

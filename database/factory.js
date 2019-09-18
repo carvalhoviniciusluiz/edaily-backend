@@ -22,11 +22,18 @@ Factory.genToken = (size = 32) => crypto.randomBytes(size).toString('hex')
 
 Factory.blueprint('App/Models/User', (faker, i, data = {}) => {
   return {
-    name: faker.name(),
+    firstname: faker.first(),
+    lastname: faker.last(),
     email: faker.email(),
     password: faker.string(),
     cpf: faker.cpf(),
     phone: faker.phone(),
+    zipcode: faker.zip(),
+    street: faker.street(),
+    street_number: faker.postal(),
+    neighborhood: faker.province({ full: true }),
+    city: faker.city(),
+    state: faker.state(),
     ...data
   }
 })

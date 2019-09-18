@@ -26,13 +26,15 @@ test('deve atualizar o perfil', async ({ user, assert, client }) => {
     .put('/users')
     .loginVia(user, 'jwt')
     .send({
-      name: 'vinicius carvalho',
+      firstname: 'vinicius',
+      lastname: 'carvalho',
       email: user.email
     })
     .end()
 
   response.assertStatus(200)
-  assert.equal(response.body.name, 'vinicius carvalho')
+  assert.equal(response.body.firstname, 'vinicius')
+  assert.equal(response.body.lastname, 'carvalho')
 })
 
 test('deve informar o password', async ({ user, assert, client }) => {
