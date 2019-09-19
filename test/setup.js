@@ -5,7 +5,5 @@ module.exports = async (suite) => {
     .model('App/Models/User')
     .create({ password: '123456' })
 
-  suite.Context.getter('user', () => {
-    return user
-  })
+  suite.Context.getter('user', () => user)
 }

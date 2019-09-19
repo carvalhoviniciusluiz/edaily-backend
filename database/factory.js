@@ -27,6 +27,7 @@ Factory.blueprint('App/Models/User', (faker, i, data = {}) => {
     email: faker.email(),
     password: faker.string(),
     cpf: faker.cpf(),
+    rg: faker.string(),
     phone: faker.phone(),
     zipcode: faker.zip(),
     street: faker.street(),
@@ -42,6 +43,7 @@ Factory.blueprint('App/Models/Organization', async (faker, i, data = {}) => {
   const user = await Factory.model('App/Models/User').create()
 
   return {
+    definition: faker.string(),
     name: faker.company(),
     initials: faker.word(),
     cnpj: cnpj.generate(),
@@ -50,6 +52,12 @@ Factory.blueprint('App/Models/Organization', async (faker, i, data = {}) => {
     phone2: faker.phone(),
     author_id: user.id,
     revisor_id: user.id,
+    zipcode: faker.zip(),
+    street: faker.street(),
+    street_number: faker.postal(),
+    neighborhood: faker.province({ full: true }),
+    city: faker.city(),
+    state: faker.state(),
     ...data
   }
 })

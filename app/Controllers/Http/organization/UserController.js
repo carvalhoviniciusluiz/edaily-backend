@@ -33,10 +33,18 @@ class UserController {
 
   async store ({ params, request, auth }) {
     const data = request.only([
-      'name',
+      'firstname',
+      'lastname',
       'email',
       'cpf',
+      'rg',
       'phone',
+      'zipcode',
+      'street',
+      'street_number',
+      'neighborhood',
+      'city',
+      'state',
       'avatar_id'
     ])
 
@@ -44,7 +52,6 @@ class UserController {
       .findByOrFail('uuid', params.organizations_id)
 
     const user = new User()
-
     const password = crypto.randomBytes(10).toString('hex')
 
     user.merge({
@@ -92,10 +99,18 @@ class UserController {
       const user = await User.findByOrFail('uuid', params.id)
 
       const data = request.only([
-        'name',
+        'firstname',
+        'lastname',
         'email',
         'cpf',
+        'rg',
         'phone',
+        'zipcode',
+        'street',
+        'street_number',
+        'neighborhood',
+        'city',
+        'state',
         'avatar_id'
       ])
 

@@ -12,7 +12,7 @@ class User {
       firstname: 'required',
       lastname: 'required',
       email: 'required|email|unique:users',
-      cpf: 'required|cpf',
+      cpf: 'required|cpf|unique:users',
       phone: 'required',
       zipcode: 'required',
       street: 'required',

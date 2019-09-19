@@ -96,12 +96,14 @@ test('deve atualizar um usuário', async ({ user, client, assert }) => {
     .put(`organizations/${uuid}/users/${userId}`)
     .loginVia(user, 'jwt')
     .send({
-      name: 'xpto'
+      firstname: 'vinicius',
+      lastname: 'carvalho'
     })
     .end()
 
   response.assertStatus(200)
-  assert.equal(response.body.name, 'xpto')
+  assert.equal(response.body.firstname, 'vinicius')
+  assert.equal(response.body.lastname, 'carvalho')
 })
 
 test('deve deletar um usuário', async ({ user, client }) => {

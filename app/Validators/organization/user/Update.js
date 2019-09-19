@@ -9,10 +9,8 @@ class Update {
 
   get rules () {
     return {
-      name: 'string',
       email: 'email',
-      cpf: 'cpf',
-      phone: 'string'
+      cpf: 'cpf'
     }
   }
 
