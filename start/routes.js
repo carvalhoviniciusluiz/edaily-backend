@@ -3,11 +3,24 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
+/*
+  |--------------------------------------------------------------------------
+  | public routes config
+  |--------------------------------------------------------------------------
+  |
+  | Routes with authentication not required.
+  |
+  */
+Route.post('organizations', 'OrganizationController.store')
+  .validator('organization/Store')
+
+Route.get('files/:id', 'FileController.show')
+
+Route.post('users', 'UserController.store').validator('user/Store')
+
 Route.post('sessions', 'SessionController.store').validator('Session')
 
 Route.get('confirm', 'ConfirmationController.store').validator('Confirmation')
-
-Route.post('users', 'UserController.store').validator('user/Store')
 
 Route
   .post('forgot_password', 'ForgotPasswordController.store')
@@ -17,7 +30,14 @@ Route
   .post('reset_password', 'ResetPasswordController.store')
   .validator('ResetPassword')
 
-Route.get('files/:id', 'FileController.show')
+/*
+  |--------------------------------------------------------------------------
+  | authenticated route configuration
+  |--------------------------------------------------------------------------
+  |
+  | Routes requiring token validation.
+  |
+  */
 
 Route.group(() => {
   Route.post('files', 'FileController.store')
@@ -27,9 +47,9 @@ Route.group(() => {
   Route
     .resource('organizations', 'OrganizationController')
     .apiOnly()
+    .except(['store'])
     .validator(new Map(
       [
-        [['organizations.store'], ['organization/Store']],
         [['organizations.update'], ['organization/Update']]
       ]
     ))

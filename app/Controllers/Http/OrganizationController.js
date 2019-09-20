@@ -23,7 +23,7 @@ class OrganizationController {
     return organizations
   }
 
-  async store ({ request, auth }) {
+  async store ({ request }) {
     const {
       responsible_firstname: firstname,
       responsible_lastname: lastname,
@@ -36,38 +36,11 @@ class OrganizationController {
       responsible_street_number: streetNumber,
       responsible_neighborhood: neighborhood,
       responsible_city: city,
-      responsible_state: state
-    } = request.only([
-      'responsible_firstname',
-      'responsible_lastname',
-      'responsible_email',
-      'responsible_cpf',
-      'responsible_rg',
-      'responsible_phone',
-      'responsible_zipcode',
-      'responsible_street',
-      'responsible_street_number',
-      'responsible_neighborhood',
-      'responsible_city',
-      'responsible_state'
-    ])
+      responsible_state: state,
+      ...rest
+    } = request.all()
 
-    const data = request.only([
-      'definition',
-      'name',
-      'initials',
-      'cnpj',
-      'billing_email',
-      'phone1',
-      'zipcode',
-      'street',
-      'street_number',
-      'neighborhood',
-      'city',
-      'state'
-    ])
-
-    const user = await UserHelper.register({
+    const data = {
       firstname,
       lastname,
       email,
@@ -81,12 +54,14 @@ class OrganizationController {
       city,
       state,
       is_responsible: true
-    })
+    }
+
+    const user = await UserHelper.register(data)
 
     const organization = await Organization.create({
-      ...data,
-      author_id: auth.user.id,
-      revisor_id: auth.user.id
+      ...rest,
+      author_id: user.id,
+      revisor_id: user.id
     })
 
     user.organization_id = organization.id

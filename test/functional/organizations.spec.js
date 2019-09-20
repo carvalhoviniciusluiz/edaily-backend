@@ -61,10 +61,10 @@ test('deve retornar uma lista paginada', async ({ client, assert }) => {
   assert.equal(response.body.data.length, 1)
 })
 
-test('deve cadastrar uma oganização', async ({ client, assert }) => {
-  const user = await Factory
-    .model('App/Models/User')
-    .create()
+test('(PUBLICA ROUTE) deve cadastrar uma oganização', async ({ client, assert }) => {
+  // const user = await Factory
+  //   .model('App/Models/User')
+  //   .create()
 
   const {
     firstname,
@@ -98,7 +98,7 @@ test('deve cadastrar uma oganização', async ({ client, assert }) => {
 
   const response = await client
     .post('organizations')
-    .loginVia(user, 'jwt')
+    // .loginVia(user, 'jwt')
     .send({
       definition: 'company',
       name,
