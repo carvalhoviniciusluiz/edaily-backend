@@ -62,69 +62,19 @@ test('deve retornar uma lista paginada', async ({ client, assert }) => {
 })
 
 test('(PUBLICA ROUTE) deve cadastrar uma oganização', async ({ client, assert }) => {
-  // const user = await Factory
-  //   .model('App/Models/User')
-  //   .create()
+  const responsible = (
+    await Factory.model('App/Models/User').make()
+  ).toJSON()
 
-  const {
-    firstname,
-    lastname,
-    email,
-    cpf,
-    rg,
-    phone,
-    zipcode: userZipcode,
-    street: userStreet,
-    street_number: userStreetNumber,
-    neighborhood: userNeighborhood,
-    city: userCity,
-    state: userState
-  } = await Factory.model('App/Models/User').make()
-
-  const {
-    name,
-    initials,
-    cnpj,
-    billing_email: billingEmail,
-    phone1,
-    phone2,
-    zipcode,
-    street,
-    street_number: streetNumber,
-    neighborhood,
-    city,
-    state
-  } = await Factory.model('App/Models/Organization').make()
+  const company = (
+    await Factory.model('App/Models/Organization').make()
+  ).toJSON()
 
   const response = await client
     .post('organizations')
-    // .loginVia(user, 'jwt')
     .send({
-      definition: 'company',
-      name,
-      initials,
-      cnpj,
-      billing_email: billingEmail,
-      phone1,
-      phone2,
-      zipcode,
-      street,
-      street_number: streetNumber,
-      neighborhood,
-      city,
-      state,
-      responsible_firstname: firstname,
-      responsible_lastname: lastname,
-      responsible_email: email,
-      responsible_cpf: cpf,
-      responsible_rg: rg,
-      responsible_phone: phone,
-      responsible_zipcode: userZipcode,
-      responsible_street: userStreet,
-      responsible_street_number: userStreetNumber,
-      responsible_neighborhood: userNeighborhood,
-      responsible_city: userCity,
-      responsible_state: userState
+      company,
+      responsible
     })
     .end()
 

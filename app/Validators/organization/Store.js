@@ -9,36 +9,36 @@ class Store {
 
   get rules () {
     return {
-      definition: 'required',
-      name: 'required',
-      initials: 'required',
-      cnpj: 'required|cnpj',
-      billing_email: 'required|email',
-      phone1: 'required',
-      zipcode: 'required',
-      street: 'required',
-      street_number: 'required',
-      neighborhood: 'required',
-      city: 'required',
-      state: 'required',
+      'company.definition': 'required',
+      'company.name': 'required',
+      'company.initials': 'required',
+      'company.cnpj': 'required|cnpj',
+      'company.billing_email': 'required|email',
+      'company.phone1': 'required',
+      'company.zipcode': 'required',
+      'company.street': 'required',
+      'company.street_number': 'required',
+      'company.neighborhood': 'required',
+      'company.city': 'required',
+      'company.state': 'required',
 
       // responsible data
-      responsible_firstname: 'required',
-      responsible_lastname: 'required',
-      responsible_email: 'required|email',
-      responsible_cpf: 'required|cpf',
-      responsible_rg: 'required',
-      responsible_phone: 'required',
-      responsible_zipcode: 'required',
-      responsible_street: 'required',
-      responsible_street_number: 'required',
-      responsible_neighborhood: 'required',
-      responsible_city: 'required',
-      responsible_state: 'required',
+      'responsible.firstname': 'required',
+      'responsible.lastname': 'required',
+      'responsible.email': 'required|email',
+      'responsible.cpf': 'required|cpf',
+      'responsible.rg': 'required',
+      'responsible.phone': 'required',
+      'responsible.zipcode': 'required',
+      'responsible.street': 'required',
+      'responsible.street_number': 'required',
+      'responsible.neighborhood': 'required',
+      'responsible.city': 'required',
+      'responsible.state': 'required',
 
       // substitute data
-      substitute_email: 'email',
-      substitute_cpf: 'cpf'
+      'substitute.email': 'email',
+      'substitute.cpf': 'cpf'
     }
   }
 

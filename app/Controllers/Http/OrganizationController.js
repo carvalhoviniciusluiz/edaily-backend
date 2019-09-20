@@ -24,42 +24,15 @@ class OrganizationController {
   }
 
   async store ({ request }) {
-    const {
-      responsible_firstname: firstname,
-      responsible_lastname: lastname,
-      responsible_email: email,
-      responsible_cpf: cpf,
-      responsible_rg: rg,
-      responsible_phone: phone,
-      responsible_zipcode: zipcode,
-      responsible_street: street,
-      responsible_street_number: streetNumber,
-      responsible_neighborhood: neighborhood,
-      responsible_city: city,
-      responsible_state: state,
-      ...rest
-    } = request.all()
+    const { company, responsible } = request.all()
 
-    const data = {
-      firstname,
-      lastname,
-      email,
-      cpf,
-      rg,
-      phone,
-      zipcode,
-      street,
-      street_number: streetNumber,
-      neighborhood,
-      city,
-      state,
+    const user = await UserHelper.register({
+      ...responsible,
       is_responsible: true
-    }
-
-    const user = await UserHelper.register(data)
+    })
 
     const organization = await Organization.create({
-      ...rest,
+      ...company,
       author_id: user.id,
       revisor_id: user.id
     })
