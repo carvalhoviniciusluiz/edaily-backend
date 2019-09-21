@@ -61,7 +61,7 @@ test('deve retornar uma lista paginada', async ({ client, assert }) => {
   assert.equal(response.body.data.length, 1)
 })
 
-test('(PUBLICA ROUTE) deve cadastrar uma oganização', async ({ client, assert }) => {
+test('(PUBLICA ROUTE) deve aceitar os termos', async ({ client, assert }) => {
   const responsible = (
     await Factory.model('App/Models/User').make()
   ).toJSON()
@@ -75,6 +75,29 @@ test('(PUBLICA ROUTE) deve cadastrar uma oganização', async ({ client, assert 
     .send({
       company,
       responsible
+    })
+    .end()
+
+  response.assertStatus(400)
+})
+
+test('(PUBLICA ROUTE) deve cadastrar uma oganização', async ({ client, assert }) => {
+  const responsible = (
+    await Factory.model('App/Models/User').make()
+  ).toJSON()
+
+  const company = (
+    await Factory.model('App/Models/Organization').make()
+  ).toJSON()
+
+  const response = await client
+    .post('organizations')
+    .send({
+      company,
+      responsible,
+      sending_authorized_email: true,
+      billing_authorized_email: true,
+      authorized_and_accepted_policy_terms: true
     })
     .end()
 

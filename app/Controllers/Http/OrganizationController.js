@@ -24,7 +24,13 @@ class OrganizationController {
   }
 
   async store ({ request }) {
-    const { company, responsible } = request.all()
+    const {
+      company,
+      responsible,
+      sending_authorized_email: shippingAllowed,
+      billing_authorized_email: chargeAllowed,
+      authorized_and_accepted_policy_terms: termsAccepted
+    } = request.all()
 
     const user = await UserHelper.register({
       ...responsible,
@@ -33,6 +39,9 @@ class OrganizationController {
 
     const organization = await Organization.create({
       ...company,
+      sending_authorized_email: !!shippingAllowed,
+      billing_authorized_email: !!chargeAllowed,
+      authorized_and_accepted_policy_terms: !!termsAccepted,
       author_id: user.id,
       revisor_id: user.id
     })

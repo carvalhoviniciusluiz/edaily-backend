@@ -9,6 +9,10 @@ class Store {
 
   get rules () {
     return {
+      sending_authorized_email: 'required',
+      billing_authorized_email: 'required',
+      authorized_and_accepted_policy_terms: 'required',
+
       company: 'required|object',
       'company.definition': 'required',
       'company.name': 'required',
@@ -24,6 +28,7 @@ class Store {
       'company.state': 'required',
 
       // responsible data
+      responsible: 'required|object',
       'responsible.firstname': 'required',
       'responsible.lastname': 'required',
       'responsible.email': 'required|email|unique:users,email',
