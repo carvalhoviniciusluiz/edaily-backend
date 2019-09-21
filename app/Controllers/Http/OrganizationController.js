@@ -27,12 +27,13 @@ class OrganizationController {
     const {
       company,
       responsible,
+      substitute,
       sending_authorized_email: shippingAllowed,
       billing_authorized_email: chargeAllowed,
       authorized_and_accepted_policy_terms: termsAccepted
     } = request.all()
 
-    const user = await UserHelper.register({
+    const userResponsible = await UserHelper.register({
       ...responsible,
       is_responsible: true
     })
@@ -42,19 +43,22 @@ class OrganizationController {
       sending_authorized_email: !!shippingAllowed,
       billing_authorized_email: !!chargeAllowed,
       authorized_and_accepted_policy_terms: !!termsAccepted,
-      author_id: user.id,
-      revisor_id: user.id
+      author_id: userResponsible.id,
+      revisor_id: userResponsible.id
     })
 
-    user.organization_id = organization.id
-    await user.save()
+    userResponsible.organization_id = organization.id
+    await userResponsible.save()
 
-    await organization.load('file')
-    await organization.load('users')
-    await organization.load('author')
-    await organization.load('revisor')
+    if (substitute) {
+      const userSubstitute = await UserHelper.register({
+        ...substitute,
+        is_responsible: true
+      })
 
-    return organization
+      userSubstitute.organization_id = organization.id
+      await userSubstitute.save()
+    }
   }
 
   async show ({ params, response }) {

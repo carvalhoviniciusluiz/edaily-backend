@@ -8,11 +8,7 @@ class Store {
   }
 
   get rules () {
-    return {
-      sending_authorized_email: 'required',
-      billing_authorized_email: 'required',
-      authorized_and_accepted_policy_terms: 'required',
-
+    const rules = {
       company: 'required|object',
       'company.definition': 'required',
       'company.name': 'required',
@@ -42,10 +38,31 @@ class Store {
       'responsible.city': 'required',
       'responsible.state': 'required',
 
-      // substitute data
-      'substitute.email': 'email|unique:users,email',
-      'substitute.cpf': 'cpf|unique:users,cpf'
+      // terms data
+      sending_authorized_email: 'required',
+      billing_authorized_email: 'required',
+      authorized_and_accepted_policy_terms: 'required'
     }
+
+    const { substitute } = this.ctx.request.all()
+
+    const complementaryRules = substitute ? {
+      substitute: 'required|object',
+      'substitute.firstname': 'required',
+      'substitute.lastname': 'required',
+      'substitute.email': 'required|email|unique:users,email',
+      'substitute.cpf': 'required|cpf|unique:users,cpf',
+      'substitute.rg': 'required',
+      'substitute.phone': 'required',
+      'substitute.zipcode': 'required',
+      'substitute.street': 'required',
+      'substitute.street_number': 'required',
+      'substitute.neighborhood': 'required',
+      'substitute.city': 'required',
+      'substitute.state': 'required'
+    } : {}
+
+    return { ...rules, ...complementaryRules }
   }
 
   get messages () {

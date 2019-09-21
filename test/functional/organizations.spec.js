@@ -101,8 +101,35 @@ test('(PUBLICA ROUTE) deve cadastrar uma oganização', async ({ client, assert 
     })
     .end()
 
-  response.assertStatus(200)
-  assert.exists(response.body.uuid)
+  response.assertStatus(204)
+})
+
+test('(PUBLICA ROUTE) deve cadastrar uma suplente', async ({ client, assert }) => {
+  const responsible = (
+    await Factory.model('App/Models/User').make()
+  ).toJSON()
+
+  const substitute = (
+    await Factory.model('App/Models/User').make()
+  ).toJSON()
+
+  const company = (
+    await Factory.model('App/Models/Organization').make()
+  ).toJSON()
+
+  const response = await client
+    .post('organizations')
+    .send({
+      company,
+      responsible,
+      substitute,
+      sending_authorized_email: true,
+      billing_authorized_email: true,
+      authorized_and_accepted_policy_terms: true
+    })
+    .end()
+
+  response.assertStatus(204)
 })
 
 test('deve retornar uma oganização', async ({ client, assert }) => {
