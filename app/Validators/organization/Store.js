@@ -9,11 +9,12 @@ class Store {
 
   get rules () {
     return {
+      company: 'required|object',
       'company.definition': 'required',
       'company.name': 'required',
       'company.initials': 'required',
-      'company.cnpj': 'required|cnpj',
-      'company.billing_email': 'required|email',
+      'company.cnpj': 'required|cnpj|unique:organizations,cnpj',
+      'company.billing_email': 'required|email|unique:organizations,billing_email',
       'company.phone1': 'required',
       'company.zipcode': 'required',
       'company.street': 'required',
@@ -25,8 +26,8 @@ class Store {
       // responsible data
       'responsible.firstname': 'required',
       'responsible.lastname': 'required',
-      'responsible.email': 'required|email',
-      'responsible.cpf': 'required|cpf',
+      'responsible.email': 'required|email|unique:users,email',
+      'responsible.cpf': 'required|cpf|unique:users,cpf',
       'responsible.rg': 'required',
       'responsible.phone': 'required',
       'responsible.zipcode': 'required',
@@ -37,8 +38,8 @@ class Store {
       'responsible.state': 'required',
 
       // substitute data
-      'substitute.email': 'email',
-      'substitute.cpf': 'cpf'
+      'substitute.email': 'email|unique:users,email',
+      'substitute.cpf': 'cpf|unique:users,cpf'
     }
   }
 
