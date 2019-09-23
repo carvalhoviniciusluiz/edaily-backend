@@ -49,7 +49,11 @@ class UserController {
         data.avatar_id = file ? file.id : undefined
       }
 
-      user.merge(data)
+      // @TODO enquanto a solicitação de atualização não existir
+      // somente esses campos estarão liberados para serem atualizados.
+      const { firstname, lastname, phone } = data
+
+      user.merge({ firstname, lastname, phone })
 
       await user.save()
       await user.load('avatar')
