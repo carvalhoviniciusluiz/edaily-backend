@@ -43,34 +43,7 @@ class SessionController {
 
       await user.save()
 
-      const { uuid, name, email, organization: o, avatar: a } = user.toJSON()
-
-      const organization = o
-        ? {
-          uuid: o.uuid,
-          name: o.name,
-          initials: o.initials,
-          email: o.billing_email
-        }
-        : null
-
-      const avatar = a
-        ? {
-          uuid: a.uuid,
-          url: a.url
-        }
-        : null
-
-      return {
-        user: {
-          uuid,
-          name,
-          email,
-          avatar,
-          organization
-        },
-        token
-      }
+      return { token, user }
     } catch (error) {
       return response
         .status(error.status)
