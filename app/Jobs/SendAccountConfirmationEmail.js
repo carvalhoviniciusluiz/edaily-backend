@@ -5,33 +5,38 @@ const Env = use('Env')
 
 class SendAccountConfirmationEmail {
   static get concurrency () {
-    return 1
+    return 5
   }
 
   static get key () {
     return 'SendAccountConfirmationEmail-job'
   }
 
-  async handle ({ user, password, team }) {
-    console.log(`Job: ${SendAccountConfirmationEmail.key} - ${user.email}`)
+  async handle ({ user, password, link, team }) {
+    try {
+      console.log(`Job: ${SendAccountConfirmationEmail.key} - ${user.email}`)
 
-    await Mail.send(
-      ['emails.confirmation_instructions'],
-      {
-        user,
-        password,
-        team
-      },
-      message => {
-        message
-          .to(user.email, user.name)
-          .from(
-            Env.get('MAIL_FROM', 'notreply@edaily.com'),
-            Env.get('MAIL_LOCAL', 'Team | Edaily')
-          )
-          .subject('Confirmação de conta')
-      }
-    )
+      await Mail.send(
+        ['emails.confirmation_instructions'],
+        {
+          user,
+          password,
+          link,
+          team
+        },
+        message => {
+          message
+            .to(user.email, `${user.firstname} ${user.lastname}`)
+            .from(
+              Env.get('MAIL_FROM', 'notreply@edaily.com'),
+              Env.get('MAIL_LOCAL', 'Team | Edaily')
+            )
+            .subject('Confirmação de conta')
+        }
+      )
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
 

@@ -25,7 +25,7 @@ class SendAccountModificationEmail {
       },
       message => {
         message
-          .to(user.email, user.name)
+          .to(user.email, `${user.firstname} ${user.lastname}`)
           .from(
             Env.get('MAIL_FROM', 'notreply@edaily.com'),
             Env.get('MAIL_LOCAL', 'Team | Edaily')

@@ -12,15 +12,19 @@ class SendForgotPasswordMail {
     return 'SendForgotPasswordMail-job'
   }
 
-  async handle ({ name, email, token, link, team }) {
-    console.log(`Job: ${SendForgotPasswordMail.key}`)
+  async handle ({ user, link, team }) {
+    console.log(`Job: ${SendForgotPasswordMail.key} - ${user.email}`)
 
     await Mail.send(
       ['emails.forgot_password'],
-      { email, name, token, link, team },
+      {
+        user,
+        link,
+        team
+      },
       message => {
         message
-          .to(email, name)
+          .to(user.email, `${user.firstname} ${user.lastname}`)
           .from(
             Env.get('MAIL_FROM', 'notreply@edaily.com'),
             Env.get('MAIL_LOCAL', 'Team | Edaily')

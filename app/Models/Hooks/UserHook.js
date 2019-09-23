@@ -26,6 +26,8 @@ UserHook.sendAccountModificationEmail = async user => {
     Env.get('NODE_ENV') !== 'testing') {
     const avatar = await user.avatar().fetch()
 
+    await user.load('organization')
+
     Kue.dispatch(JobAccountModification.key, {
       user,
       avatar,

@@ -1,18 +1,72 @@
-<strong>Olá {{ user.name }},</strong>
+<strong>Olá {{ user.firstname }},</strong>
 
-<p>Sua conta recebeu uma alteração, estamos encaminhando os seus dados para que você possa avalia-los:</p>
+<p>Sua conta recebeu uma alteração, estamos encaminhando os seus dados para que você possa avalia-los.</p>
+
+<p>Dados de usuário: </p>
 
 <ul>
   <li><strong>Código: </strong><span>{{user.uuid}}</span></li>
-  <li><strong>Nome: </strong><span>{{user.name}}</span></li>
+  <li><strong>Nome: </strong><span>{{user.firstname}} {{user.lastname}}</span></li>
   <li><strong>CPF: </strong><span>{{user.cpf}}</span></li>
   <li><strong>Email: </strong><span>{{user.email}}</span></li>
   <li><strong>Contato: </strong><span>{{user.phone}}</span></li>
+  <li><strong>CEP: </strong><span>{{user.zipcode}}</span></li>
+  <li>
+      <strong>Logradouro: </strong>
+      <span>
+        {{user.street}}, {{user.street_number}}, {{user.neighborhood}}, {{user.city}} - {{user.state}}
+      </span>
+  </li>
 </ul>
+
+<p>Locação atual: </p>
+
+<ul>
+    <li><strong>Código: </strong><span>{{user.organization.uuid}}</span></li>
+    <li><strong>Nome: </strong><span>{{user.organization.name}}</span></li>
+    <li><strong>Iniciais: </strong><span>{{user.organization.initials}}</span></li>
+    <li><strong>CNPJ: </strong><span>{{user.organization.cnpj}}</span></li>
+    <li><strong>Email de cobrança: </strong><span>{{user.organization.billing_email}}</span></li>
+    <li><strong>Primeiro contato: </strong><span>{{user.organization.phone1}}</span></li>
+    <li><strong>Segundo contato: </strong><span>{{user.organization.phone2 || ''}}</span></li>
+    <li><strong>CEP: </strong><span>{{user.organization.zipcode}}</span></li>
+    <li>
+        <strong>Logradouro: </strong>
+        <span>
+          {{user.organization.street}}, {{user.organization.street_number}}, {{user.organization.neighborhood}}, {{user.organization.city}} - {{user.organization.state}}
+        </span>
+    </li>
+  </ul>
 
 <p>Caso essa alteração não tenha sido realizada por você, por favor considere a possibilidade de alterar a sua senha.</p>
 
 <p>
   <strong>Equipe {{ team }}</strong>
 </p>
+
+<style>
+  @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+  * {
+    color: #333;
+  }
+  strong {
+    font-size: 16px;
+  }
+  p strong {
+    font-size: 14px;
+  }
+  ul{
+    list-style: none;
+    padding: 14px;
+    background: #eee;
+    border-radius: 4px;
+  }
+  ul li {
+    margin: 16px;
+  }
+
+  ul li strong {
+    font-size: 14px;
+  }
+</style>
 

@@ -22,9 +22,7 @@ class ForgotPasswordController {
 
       if (Env.get('NODE_ENV') !== 'testing') {
         Kue.dispatch(Job.key, {
-          name: user.name,
-          email: user.email,
-          token: user.recovery_token,
+          user,
           link: `${request.input('redirect_url')}/reset?token=${user.recovery_token}`,
           team: Env.get('APP_NAME', 'Edaily')
         }, { attempts: 3 })
