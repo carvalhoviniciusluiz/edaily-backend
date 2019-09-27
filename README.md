@@ -22,6 +22,20 @@ API server em AdonisJs, vem pré-configurado com:
 
 Manualmente após clona o projeto execute `yarn`.
 
+## Database
+
+Usando o docker para subir um container postgres
+
+```js
+docker run --name=postgis -d -e POSTGRES_DBNAME=edaily-develop -e POSTGRES_USER=postgres -e POSTGRES_PASS=docker -p 5432:5432 kartoza/postgis
+```
+
+Test
+
+```js
+docker exec -it postgis psql -h localhost -U postgres -p 5432
+```
+
 ### Migrations
 
 Execute o seguinte comando para as migrações iniciais.
