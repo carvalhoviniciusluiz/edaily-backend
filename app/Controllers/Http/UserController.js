@@ -53,7 +53,13 @@ class UserController {
       // somente esses campos estarão liberados para serem atualizados.
       const { firstname, lastname, phone } = data
 
-      user.merge({ firstname, lastname, phone })
+      user.merge({
+        firstname,
+        lastname,
+        phone,
+        avatar_id: data.avatar_id,
+        password: data.password
+      })
 
       await user.save()
       await user.load('avatar')
