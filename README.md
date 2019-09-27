@@ -27,13 +27,13 @@ Manualmente após clona o projeto execute `yarn`.
 Usando o docker para subir um container postgres
 
 ```js
-docker run --name=postgis -d -e POSTGRES_DBNAME=edaily-develop -e POSTGRES_USER=postgres -e POSTGRES_PASS=docker -p 5432:5432 kartoza/postgis
+docker run --name postgres -e POSTGRES_PASSWORD=docker -e POSTGRES_DB=edaily-develop -p 5432:5432 -d postgres
 ```
 
 Test
 
 ```js
-docker exec -it postgis psql -h localhost -U postgres -p 5432
+docker exec -it postgres psql -h localhost -U postgres -p 5432
 ```
 
 ### Migrations
