@@ -7,39 +7,29 @@ const User = use('App/Models/User')
 
 class ResetPasswordController {
   async store ({ request, response }) {
-    try {
-      const { recovery_token: token, password } = request.all()
+    const { recovery_token: token, password } = request.all()
 
-      const user = await User.findByOrFail('recovery_token', token)
+    const user = await User.findByOrFail('recovery_token', token)
 
-      const tokenExpired = moment()
-        .subtract('1', 'days')
-        .isAfter(user.recovery_token_created_at)
+    const tokenExpired = moment()
+      .subtract('1', 'days')
+      .isAfter(user.recovery_token_created_at)
 
-      if (tokenExpired) {
-        return response
-          .status(401)
-          .send({
-            error: {
-              message: 'O token de recuperação está expirado.'
-            }
-          })
-      }
-
-      user.recovery_token = null
-      user.recovery_token_created_at = null
-      user.password = password
-
-      await user.save()
-    } catch (error) {
+    if (tokenExpired) {
       return response
-        .status(error.status)
+        .status(401)
         .send({
           error: {
-            message: 'Algo deu errado ao resetar sua senha.'
+            message: 'O token de recuperação está expirado.'
           }
         })
     }
+
+    user.recovery_token = null
+    user.recovery_token_created_at = null
+    user.password = password
+
+    await user.save()
   }
 }
 

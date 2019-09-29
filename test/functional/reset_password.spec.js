@@ -24,7 +24,7 @@ test('deve confirmação a senha', async ({ client }) => {
   response.assertStatus(400)
 })
 
-test('deve informar se o token estiver errado', async ({ client }) => {
+test('deve informar se o token não existir', async ({ assert, client }) => {
   await Factory
     .model('App/Models/User')
     .create({
@@ -41,7 +41,12 @@ test('deve informar se o token estiver errado', async ({ client }) => {
     })
     .end()
 
-  response.assertStatus(404)
+  response.assertStatus(400)
+  assert.include(response.body[0], {
+    message: 'O recovery_token não existe.',
+    field: 'recovery_token',
+    validation: 'exists'
+  })
 })
 
 test('deve informar caso token expirado', async ({ client }) => {

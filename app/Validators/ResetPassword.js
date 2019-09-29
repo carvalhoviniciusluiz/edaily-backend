@@ -9,7 +9,7 @@ class ResetPassword {
 
   get rules () {
     return {
-      recovery_token: 'required',
+      recovery_token: 'required|exists:users,recovery_token',
       password: 'required|confirmed'
     }
   }
