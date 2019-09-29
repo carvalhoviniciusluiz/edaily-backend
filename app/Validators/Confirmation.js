@@ -9,7 +9,7 @@ class Confirmation {
 
   get rules () {
     return {
-      token: 'required'
+      token: 'required|exists:users,confirmation_token'
     }
   }
 

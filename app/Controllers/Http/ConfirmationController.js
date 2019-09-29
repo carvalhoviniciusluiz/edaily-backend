@@ -7,26 +7,16 @@ const User = use('App/Models/User')
 
 class ConfirmationController {
   async store ({ response, request }) {
-    try {
-      const token = request.input('token')
+    const token = request.input('token')
 
-      const user = await User.findByOrFail('confirmation_token', token)
+    const user = await User.findByOrFail('confirmation_token', token)
 
-      user.confirmation_token = null
-      user.confirmed_at = new Date()
+    user.confirmation_token = null
+    user.confirmed_at = new Date()
 
-      await user.save()
+    await user.save()
 
-      response.redirect(Env.get('CLIENT_URL'))
-    } catch (error) {
-      return response
-        .status(error.status)
-        .send({
-          error: {
-            message: 'Token inválido!'
-          }
-        })
-    }
+    response.redirect(Env.get('CLIENT_URL'))
   }
 }
 
