@@ -73,7 +73,7 @@ test('deve logar o email e retornar um token', async ({ assert, client }) => {
   response.assertStatus(200)
 })
 
-test('deve os dados o usuário e a organização', async ({ assert, client }) => {
+test('deve retornar o usuário e a organização', async ({ assert, client }) => {
   const sessionPayload = {
     password: '123456'
   }
