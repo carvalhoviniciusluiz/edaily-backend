@@ -94,42 +94,33 @@ class UserController {
     }
   }
 
-  async update ({ params, request, response, auth }) {
-    try {
-      const user = await User.findByOrFail('uuid', params.id)
+  async update ({ params, request, auth }) {
+    const user = await User.findByOrFail('uuid', params.id)
 
-      const data = request.only([
-        'firstname',
-        'lastname',
-        'email',
-        'cpf',
-        'rg',
-        'phone',
-        'zipcode',
-        'street',
-        'street_number',
-        'neighborhood',
-        'city',
-        'state',
-        'avatar_id'
-      ])
+    const data = request.only([
+      'firstname',
+      'lastname',
+      'email',
+      'cpf',
+      'rg',
+      'phone',
+      'zipcode',
+      'street',
+      'street_number',
+      'neighborhood',
+      'city',
+      'state',
+      'avatar_id'
+    ])
 
-      user.merge({
-        ...data,
-        revisor_id: auth.user.id
-      })
+    user.merge({
+      ...data,
+      revisor_id: auth.user.id
+    })
 
-      await user.save()
+    await user.save()
 
-      await user.load('organization')
-      await user.load('avatar')
-
-      return user
-    } catch (error) {
-      return response
-        .status(error.status)
-        .send({ error: { message: 'Usuário não encontrado.' } })
-    }
+    return user
   }
 
   async destroy ({ params }) {
