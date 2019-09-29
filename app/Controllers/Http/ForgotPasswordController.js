@@ -11,30 +11,20 @@ const Job = use('App/Jobs/SendForgotPasswordMail')
 
 class ForgotPasswordController {
   async store ({ request, response }) {
-    try {
-      const email = request.input('email')
-      const user = await User.findByOrFail('email', email)
+    const email = request.input('email')
+    const user = await User.findByOrFail('email', email)
 
-      user.recovery_token = crypto.randomBytes(32).toString('hex')
-      user.recovery_token_created_at = new Date()
+    user.recovery_token = crypto.randomBytes(32).toString('hex')
+    user.recovery_token_created_at = new Date()
 
-      await user.save()
+    await user.save()
 
-      if (Env.get('NODE_ENV') !== 'testing') {
-        Kue.dispatch(Job.key, {
-          user,
-          link: `${request.input('redirect_url')}/reset?token=${user.recovery_token}`,
-          team: Env.get('APP_NAME', 'Edaily')
-        }, { attempts: 3 })
-      }
-    } catch (error) {
-      return response
-        .status(error.status)
-        .send({
-          error: {
-            message: 'Algo não deu certo, esse e-mail existe?'
-          }
-        })
+    if (Env.get('NODE_ENV') !== 'testing') {
+      Kue.dispatch(Job.key, {
+        user,
+        link: `${request.input('redirect_url')}/reset?token=${user.recovery_token}`,
+        team: Env.get('APP_NAME', 'Edaily')
+      }, { attempts: 3 })
     }
   }
 }

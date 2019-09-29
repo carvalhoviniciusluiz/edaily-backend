@@ -18,6 +18,7 @@
   "different": "O {{field}} e o {{argument.0}} devem ser diferentes.",
   "email": "O {{field}} deve ser um endereço de email válido.",
   "ends_with": "O {{field}} deve terminar com as letras especificadas ({{argument}}).",
+  "exists": "O {{field}} não existe.",
   "equals": "O {{field}} deve ser igual a {{argument.0}}.",
   "in": "O {{field}} deve estar dentro dos valores definidos de ({{argument}}).",
   "includes": "O {{field}} deve incluir letras de definição ({{argument}}).",

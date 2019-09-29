@@ -16,7 +16,7 @@ test('deve informar quando não redirecionar', async ({ client }) => {
   response.assertStatus(400)
 })
 
-test('deve informar quando o email não existir', async ({ client }) => {
+test('deve informar quando o email não existir', async ({ assert, client }) => {
   const response = await client
     .post('/forgot_password')
     .send({
@@ -25,7 +25,12 @@ test('deve informar quando o email não existir', async ({ client }) => {
     })
     .end()
 
-  response.assertStatus(404)
+  response.assertStatus(400)
+  assert.include(response.body[0], {
+    message: 'O email não existe.',
+    field: 'email',
+    validation: 'exists'
+  })
 })
 
 test('deve retornar 204 para email enviado', async ({ client }) => {
