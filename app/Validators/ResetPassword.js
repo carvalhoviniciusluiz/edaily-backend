@@ -1,21 +1,13 @@
 'use strict'
 
-const Antl = use('Antl')
+const ValidatorBase = use('App/Validators/ValidatorBase')
 
-class ResetPassword {
-  get validateAll () {
-    return true
-  }
-
+class ResetPassword extends ValidatorBase {
   get rules () {
     return {
       recovery_token: 'required|exists:users,recovery_token',
       password: 'required|confirmed'
     }
-  }
-
-  get messages () {
-    return Antl.list('validation')
   }
 }
 

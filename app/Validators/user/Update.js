@@ -1,12 +1,8 @@
 'use strict'
 
-const Antl = use('Antl')
+const ValidatorBase = use('App/Validators/ValidatorBase')
 
-class User {
-  get validateAll () {
-    return true
-  }
-
+class User extends ValidatorBase {
   get rules () {
     const userId = this.ctx.auth.user.id
 
@@ -16,10 +12,6 @@ class User {
       old_password: 'min:6',
       password: 'required_if:old_password|min:6|confirmed'
     }
-  }
-
-  get messages () {
-    return Antl.list('validation')
   }
 }
 

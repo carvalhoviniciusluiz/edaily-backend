@@ -1,21 +1,13 @@
 'use strict'
 
-const Antl = use('Antl')
+const ValidatorBase = use('App/Validators/ValidatorBase')
 
-class Session {
-  get validateAll () {
-    return true
-  }
-
+class Session extends ValidatorBase {
   get rules () {
     return {
       credential: 'required',
       password: 'required'
     }
-  }
-
-  get messages () {
-    return Antl.list('validation')
   }
 }
 

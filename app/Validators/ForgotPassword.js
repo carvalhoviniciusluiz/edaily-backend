@@ -1,21 +1,13 @@
 'use strict'
 
-const Antl = use('Antl')
+const ValidatorBase = use('App/Validators/ValidatorBase')
 
-class ForgotPassword {
-  get validateAll () {
-    return true
-  }
-
+class ForgotPassword extends ValidatorBase {
   get rules () {
     return {
       email: 'required|email|exists:users,email',
       redirect_url: 'required|url'
     }
-  }
-
-  get messages () {
-    return Antl.list('validation')
   }
 }
 

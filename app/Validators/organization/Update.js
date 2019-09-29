@@ -1,12 +1,8 @@
 'use strict'
 
-const Antl = use('Antl')
+const ValidatorBase = use('App/Validators/ValidatorBase')
 
-class Update {
-  get validateAll () {
-    return true
-  }
-
+class Update extends ValidatorBase {
   get rules () {
     return {
       name: 'string',
@@ -15,10 +11,6 @@ class Update {
       billing_email: 'email',
       phone1: 'string'
     }
-  }
-
-  get messages () {
-    return Antl.list('validation')
   }
 }
 

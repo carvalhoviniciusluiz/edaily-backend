@@ -1,12 +1,8 @@
 'use strict'
 
-const Antl = use('Antl')
+const ValidatorBase = use('App/Validators/ValidatorBase')
 
-class Store {
-  get validateAll () {
-    return true
-  }
-
+class Store extends ValidatorBase {
   get rules () {
     return {
       firstname: 'required',
@@ -21,10 +17,6 @@ class Store {
       city: 'required',
       state: 'required'
     }
-  }
-
-  get messages () {
-    return Antl.list('validation')
   }
 }
 

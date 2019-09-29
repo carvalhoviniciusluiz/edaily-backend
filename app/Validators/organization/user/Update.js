@@ -1,12 +1,8 @@
 'use strict'
 
-const Antl = use('Antl')
+const ValidatorBase = use('App/Validators/ValidatorBase')
 
-class Update {
-  get validateAll () {
-    return true
-  }
-
+class Update extends ValidatorBase {
   get rules () {
     return {
       organizations_id: 'exists:organizations,uuid',
@@ -14,17 +10,6 @@ class Update {
       email: 'email',
       cpf: 'cpf'
     }
-  }
-
-  get data () {
-    const rawBody = this.ctx.request.all()
-    const params = this.ctx.params
-
-    return { ...rawBody, ...params }
-  }
-
-  get messages () {
-    return Antl.list('validation')
   }
 }
 

@@ -1,20 +1,12 @@
 'use strict'
 
-const Antl = use('Antl')
+const ValidatorBase = use('App/Validators/ValidatorBase')
 
-class Confirmation {
-  get validateAll () {
-    return true
-  }
-
+class Confirmation extends ValidatorBase {
   get rules () {
     return {
       token: 'required|exists:users,confirmation_token'
     }
-  }
-
-  get messages () {
-    return Antl.list('validation')
   }
 }
 
