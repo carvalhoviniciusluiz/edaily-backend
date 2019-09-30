@@ -1,6 +1,6 @@
 'use strict'
 
-const moment = require('moment')
+const { parseISO, isBefore, subHours } = require('date-fns')
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User')
@@ -11,16 +11,14 @@ class ResetPasswordController {
 
     const user = await User.findByOrFail('recovery_token', token)
 
-    const tokenExpired = moment()
-      .subtract('1', 'days')
-      .isAfter(user.recovery_token_created_at)
+    const tokenCreatedAt = user.recovery_token_created_at
 
-    if (tokenExpired) {
+    if (isBefore(parseISO(tokenCreatedAt), subHours(new Date(), 2))) {
       return response
-        .status(401)
+        .status(400)
         .send({
           error: {
-            message: 'O token de recuperação está expirado.'
+            message: 'Token expirado, por favor tente novamente.'
           }
         })
     }

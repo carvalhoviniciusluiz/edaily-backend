@@ -33,7 +33,7 @@
     "@sentry/node": "5.6.2",
     "adonis-kue": "^5.0.1",
     "cpf-cnpj-validator": "^0.1.0",
-    "moment": "^2.24.0",
+    "date-fns": "^2.4.1",
     "pg": "^7.12.1"
   },
   "devDependencies": {

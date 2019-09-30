@@ -1,5 +1,7 @@
 const { test, trait } = use('Test/Suite')('Reset Password')
 
+const { subHours, format } = require('date-fns')
+
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
 
@@ -49,30 +51,6 @@ test('deve informar se o token não existir', async ({ assert, client }) => {
   })
 })
 
-test('deve informar caso token expirado', async ({ client }) => {
-  const resetPasswordPayload = {
-    recovery_token: Factory.genToken()
-  }
-
-  await Factory
-    .model('App/Models/User')
-    .create({
-      ...resetPasswordPayload,
-      recovery_token_created_at: new Date('December 25, 1995 23:15:30')
-    })
-
-  const response = await client
-    .post('/reset_password')
-    .send({
-      ...resetPasswordPayload,
-      password: '123321',
-      password_confirmation: '123321'
-    })
-    .end()
-
-  response.assertStatus(401)
-})
-
 test('deve resetar a senha', async ({ client }) => {
   const resetPasswordPayload = {
     recovery_token: Factory.genToken()
@@ -95,4 +73,30 @@ test('deve resetar a senha', async ({ client }) => {
     .end()
 
   response.assertStatus(204)
+})
+
+test('deve expirar o token após 2h', async ({ client }) => {
+  const resetPasswordPayload = {
+    recovery_token: Factory.genToken()
+  }
+
+  const dateWithSub = format(subHours(new Date(), 2), 'yyyy-MM-dd HH:ii:ss')
+
+  await Factory
+    .model('App/Models/User')
+    .create({
+      ...resetPasswordPayload,
+      recovery_token_created_at: dateWithSub
+    })
+
+  const response = await client
+    .post('/reset_password')
+    .send({
+      ...resetPasswordPayload,
+      password: '123321',
+      password_confirmation: '123321'
+    })
+    .end()
+
+  response.assertStatus(400)
 })
