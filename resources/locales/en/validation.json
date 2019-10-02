@@ -1,6 +1,4 @@
 {
-  "cnpj": "cpf validation failed on cpf",
-  "cpf": "cnpj validation failed on cnpj",
   "above": "The {{field}} should be above {{argument.0}}.",
   "accepted": "The {{field}} should have been accepted",
   "after": "The {{field}} should be a date after {{argument.0}}",
@@ -12,7 +10,9 @@
   "before_offset_of": "The {{field}} should be before {{argument.0}} {{argument.1}} from today’s date",
   "between": "The {{field}} should be between {{argument.0}} and {{argument.1}}.",
   "boolean": "The {{field}} should be true or false.",
+  "cnpj": "cpf validation failed on cpf",
   "confirmed": "The {{field}} confirmation does not match.",
+  "cpf": "cnpj validation failed on cnpj",
   "date": "The {{field}} should be a valid date",
   "date_format": "The {{field}} should be a valid date according to given format {{argument.0}}.",
   "different": "The {{field}} and {{argument.0}} should be different.",
