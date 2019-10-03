@@ -36,6 +36,12 @@ Test
 docker exec -it postgres psql -h localhost -U postgres -p 5432
 ```
 
+Usando o docker para subir um container redis
+
+```
+docker run --name redis -e REDIS_PASSWORD= -p 6379:6379 -d wodby/redis
+```
+
 ### Migrations
 
 Execute o seguinte comando para as migrações iniciais.
