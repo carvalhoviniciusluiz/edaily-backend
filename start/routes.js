@@ -50,7 +50,8 @@ Route.group(() => {
     .except(['store'])
     .validator(new Map(
       [
-        [['organizations.update'], ['organization/Update']]
+        [['organizations.update'], ['organization/Update']],
+        [['organizations.show'], ['organization/Show']]
       ]
     ))
 

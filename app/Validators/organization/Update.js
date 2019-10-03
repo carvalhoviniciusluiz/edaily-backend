@@ -5,6 +5,7 @@ const ValidatorBase = use('App/Validators/ValidatorBase')
 class Update extends ValidatorBase {
   get rules () {
     return {
+      id: 'exists:organizations,uuid',
       name: 'string',
       initials: 'string',
       cnpj: 'cnpj',
