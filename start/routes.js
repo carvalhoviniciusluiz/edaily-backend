@@ -14,7 +14,7 @@ const Route = use('Route')
 Route.post('organizations', 'OrganizationController.store')
   .validator('organization/Store')
 
-Route.get('avatars/:id', 'AvatarController.show')
+Route.get('avatars/:id', 'AvatarController.show').validator('avatar/Show')
 
 Route.post('users', 'UserController.store').validator('user/Store')
 
@@ -40,7 +40,7 @@ Route
   */
 
 Route.group(() => {
-  Route.post('avatars', 'AvatarController.store')
+  Route.post('avatars', 'AvatarController.store').validator('avatar/Store')
 
   Route.put('users', 'UserController.update').validator('user/Update')
 

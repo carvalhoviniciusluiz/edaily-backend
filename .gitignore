@@ -2,7 +2,8 @@
 node_modules
 
 # Adonis directory for storing tmp files
-tmp
+tmp/*
+!tmp/avatar.jpeg
 
 # Environment variables, never commit this file
 .env
