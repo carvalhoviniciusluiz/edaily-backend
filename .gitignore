@@ -10,3 +10,6 @@ tmp/*
 
 # The development sqlite file
 database/*.sqlite
+
+# tmp file
+.DS_Store
