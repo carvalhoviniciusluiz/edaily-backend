@@ -27,7 +27,7 @@ class File extends Model {
   }
 
   getUrl ({ uuid }) {
-    return `${Env.get('APP_URL')}/files/${uuid}`
+    return `${Env.get('APP_URL')}/avatars/${uuid}`
   }
 }
 

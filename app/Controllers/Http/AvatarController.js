@@ -19,7 +19,7 @@ class AvatarController {
 
     const fileName = `${Date.now()}.${upload.subtype}`
 
-    await upload.move(Helpers.tmpPath('uploads'), {
+    await upload.move(Helpers.tmpPath('avatars'), {
       name: fileName
     })
 
@@ -40,7 +40,7 @@ class AvatarController {
   async show ({ params, response }) {
     const file = await File.findByOrFail('uuid', params.id)
 
-    return response.download(Helpers.tmpPath(`uploads/${file.file}`))
+    return response.download(Helpers.tmpPath(`avatars/${file.file}`))
   }
 }
 
