@@ -14,7 +14,7 @@ const Env = use('Env')
 class AvatarController {
   async store ({ request }) {
     const upload = request.file('file', {
-      size: Env.get('FILE_SIZE', '3mb')
+      size: Env.get('IMAGE_SIZE', '3mb')
     })
 
     const fileName = `${Date.now()}.${upload.subtype}`
@@ -34,7 +34,7 @@ class AvatarController {
       subtype: upload.subtype
     })
 
-    return file
+    return { ...file.toJSON(), url: undefined }
   }
 
   async show ({ params, response }) {

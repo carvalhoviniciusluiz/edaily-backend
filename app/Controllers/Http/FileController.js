@@ -14,7 +14,7 @@ const Env = use('Env')
 class FileController {
   async store ({ request, response }) {
     const upload = request.file('file', {
-      size: Env.get('FILE_SIZE', '6mb')
+      size: Env.get('FILE_SIZE', '10mb')
     })
 
     const fileName = `${Date.now()}.${upload.subtype}`
@@ -34,7 +34,7 @@ class FileController {
       subtype: upload.subtype
     })
 
-    return file
+    return { ...file.toJSON(), avatar: undefined }
   }
 
   async show ({ params, response }) {

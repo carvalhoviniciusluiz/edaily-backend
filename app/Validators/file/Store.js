@@ -7,7 +7,7 @@ const Env = use('Env')
 class Store extends ValidatorBase {
   get rules () {
     return {
-      file: `required|file|file_ext:pdf,doc,docx,odt|file_size:${Env.get('FILE_SIZE', '6mb')}|file_types:application`
+      file: `required|file|file_ext:pdf|file_size:${Env.get('FILE_SIZE', '10mb')}|file_types:application`
     }
   }
 

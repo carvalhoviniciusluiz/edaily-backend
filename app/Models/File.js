@@ -23,11 +23,15 @@ class File extends Model {
   }
 
   static get computed () {
-    return ['url']
+    return ['avatar', 'url']
+  }
+
+  getAvatar ({ uuid }) {
+    return `${Env.get('APP_URL')}/avatars/${uuid}`
   }
 
   getUrl ({ uuid }) {
-    return `${Env.get('APP_URL')}/avatars/${uuid}`
+    return `${Env.get('APP_URL')}/files/${uuid}`
   }
 }
 
