@@ -34,6 +34,7 @@
     "adonis-kue": "^5.0.1",
     "cpf-cnpj-validator": "^0.1.0",
     "date-fns": "^2.4.1",
+    "mongoose": "^5.7.5",
     "pg": "^7.12.1"
   },
   "devDependencies": {
