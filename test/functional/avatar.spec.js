@@ -17,8 +17,6 @@ test('deve poder fazer upload de avatar', async ({ assert, client }) => {
     .attach('file', Helpers.tmpPath('avatar.jpeg'))
     .end()
 
-  console.log(response)
-
   response.assertStatus(200)
   assert.exists(response.body.avatar)
 })
