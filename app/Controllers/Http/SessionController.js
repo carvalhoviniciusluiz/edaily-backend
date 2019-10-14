@@ -43,7 +43,13 @@ class SessionController {
 
       await user.save()
 
-      return { token, user }
+      return {
+        token,
+        user: {
+          ...user.toJSON(),
+          avatar: { ...user.toJSON().avatar, url: undefined }
+        }
+      }
     } catch (error) {
       return response
         .status(error.status)
