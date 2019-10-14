@@ -4,6 +4,7 @@ node_modules
 # Adonis directory for storing tmp files
 tmp/*
 !tmp/avatar.jpeg
+!tmp/helloworld.pdf
 
 # Environment variables, never commit this file
 .env
