@@ -18,6 +18,15 @@ API server em AdonisJs, vem pré-configurado com:
 
 [frontend]: https://github.com/carvalhoviniciusluiz/edaily-frontend
 
+## Dependency
+
+Adiciona o suporte para processar pdf em texto
+```
+@see http://www.xpdfreader.com/download.html
+
+brew install Xpdf
+```
+
 ## Setup
 
 Manualmente após clona o projeto execute `yarn`.
