@@ -11,15 +11,19 @@ const Helpers = use('Helpers')
 
 const Env = use('Env')
 
+const PdfService = use('App/Services/PdfService')
+
 class FileController {
-  async store ({ request, response }) {
+  async store ({ request }) {
     const upload = request.file('file', {
       size: Env.get('FILE_SIZE', '10mb')
     })
 
+    const tmpPath = Helpers.tmpPath('files')
     const fileName = `${Date.now()}.${upload.subtype}`
+    const filePath = `${tmpPath}/${fileName}`
 
-    await upload.move(Helpers.tmpPath('files'), {
+    await upload.move(tmpPath, {
       name: fileName
     })
 
@@ -33,6 +37,10 @@ class FileController {
       type: upload.type,
       subtype: upload.subtype
     })
+
+    const pages = await PdfService.PdfToText(filePath)
+
+    console.log(pages[0])
 
     return { ...file.toJSON(), avatar: undefined }
   }
