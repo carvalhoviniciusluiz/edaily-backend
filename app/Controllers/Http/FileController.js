@@ -21,11 +21,15 @@ class FileController {
     })
 
     const tmpPath = Helpers.tmpPath('files')
-    const fileName = `${Date.now()}.${upload.subtype}`
-    const filePath = `${tmpPath}/${fileName}`
+
+    const timestamp = Date.now()
+    const filename = `${timestamp}.${upload.subtype}`
+
+    const htmlpath = `${tmpPath}/${timestamp}`
+    const pathname = `${tmpPath}/${filename}`
 
     await upload.move(tmpPath, {
-      name: fileName
+      name: filename
     })
 
     if (!upload.moved()) {
@@ -33,18 +37,20 @@ class FileController {
     }
 
     const file = await File.create({
-      file: fileName,
+      file: filename,
       name: upload.clientName,
       type: upload.type,
       subtype: upload.subtype
     })
 
-    const pages = await PdfService.pdfToText(filePath)
+    const pages = await PdfService.pdfToText(pathname)
 
     console.log(pages[0])
 
+    await PdfService.pdfToHTML(pathname, htmlpath)
+
     if (Env.get('NODE_ENV') !== 'testing') {
-      await BucketService.writeFile(filePath, fileName)
+      await BucketService.writeFile(pathname, filename)
     }
 
     return { ...file.toJSON(), avatar: undefined }
