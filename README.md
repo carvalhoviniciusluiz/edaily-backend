@@ -51,6 +51,8 @@ Usando o docker para subir um container redis
 docker run --name redis -e REDIS_PASSWORD= -p 6379:6379 -d wodby/redis
 ```
 
+Usando o docker para subir um container mongo
+
 ```js
 docker run --name mongo -p 27017:27017 -d -t mongo
 ```
