@@ -3,7 +3,7 @@
 const extract = require('pdf-text-extract')
 
 class PdfService {
-  static PdfToText (filePath, options = {}) {
+  static pdfToText (filePath, options = {}) {
     return new Promise((resolve, reject) => {
       const pdftotextOptions = {
         layout: 'raw',
