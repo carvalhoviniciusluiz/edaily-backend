@@ -12,6 +12,7 @@ const Helpers = use('Helpers')
 const Env = use('Env')
 
 const PdfService = use('App/Services/PdfService')
+const BucketService = use('App/Services/BucketService')
 
 class FileController {
   async store ({ request }) {
@@ -38,7 +39,9 @@ class FileController {
       subtype: upload.subtype
     })
 
-    const pages = await PdfService.PdfToText(filePath)
+    await BucketService.writeFile(filePath, fileName)
+
+    const pages = await PdfService.pdfToText(filePath)
 
     console.log(pages[0])
 
