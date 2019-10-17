@@ -31,10 +31,12 @@ const sequelizeConf = {
   |
   */
 
-const bucket = SQLGrid(sequelizeConf, { bucketName: 'bucket' })
+if (Env.get('NODE_ENV') !== 'testing') {
+  const bucket = SQLGrid(sequelizeConf, { bucketName: 'bucket' })
 
-bucket.initBucket()
+  bucket.initBucket()
 
-module.exports = {
-  bucket
+  module.exports = {
+    bucket
+  }
 }

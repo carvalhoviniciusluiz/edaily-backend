@@ -39,11 +39,13 @@ class FileController {
       subtype: upload.subtype
     })
 
-    await BucketService.writeFile(filePath, fileName)
-
     const pages = await PdfService.pdfToText(filePath)
 
     console.log(pages[0])
+
+    if (Env.get('NODE_ENV') !== 'testing') {
+      await BucketService.writeFile(filePath, fileName)
+    }
 
     return { ...file.toJSON(), avatar: undefined }
   }
