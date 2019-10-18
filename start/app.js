@@ -80,7 +80,8 @@ const jobs = [
   'App/Jobs/SendAccountModificationEmail',
   'App/Jobs/SendAccountConfirmationEmail',
   'App/Jobs/PdfToHtml',
-  'App/Jobs/PdfToText'
+  'App/Jobs/PdfToText',
+  'App/Jobs/PersistFile'
 ]
 
 module.exports = { providers, aceProviders, aliases, commands, jobs }

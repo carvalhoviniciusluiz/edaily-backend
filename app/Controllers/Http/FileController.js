@@ -11,11 +11,10 @@ const Helpers = use('Helpers')
 
 const Env = use('Env')
 
-const FileService = use('App/Services/FileService')
-
 const Kue = use('Kue')
 const PdfToHtmlJob = use('App/Jobs/PdfToHtml')
 const PdfToTextJob = use('App/Jobs/PdfToText')
+const PersistFileJob = use('App/Jobs/PersistFile')
 
 class FileController {
   async store ({ request }) {
@@ -49,8 +48,7 @@ class FileController {
     if (Env.get('NODE_ENV') !== 'testing') {
       Kue.dispatch(PdfToHtmlJob.key, { pathname, htmlpath }, { attempts: 3 })
       Kue.dispatch(PdfToTextJob.key, { pathname }, { attempts: 3 })
-
-      await FileService.persist(pathname, filename)
+      Kue.dispatch(PersistFileJob.key, { pathname, filename }, { attempts: 3 })
     }
 
     return { ...file.toJSON(), avatar: undefined }
