@@ -6,7 +6,7 @@ const Helpers = use('Helpers')
 
 class SendAccountModificationEmail {
   static get concurrency () {
-    return 2
+    return 1
   }
 
   static get key () {

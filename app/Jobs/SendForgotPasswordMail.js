@@ -5,7 +5,7 @@ const Env = use('Env')
 
 class SendForgotPasswordMail {
   static get concurrency () {
-    return 2
+    return 1
   }
 
   static get key () {

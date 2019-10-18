@@ -5,7 +5,7 @@ const Env = use('Env')
 
 class SendAccountConfirmationEmail {
   static get concurrency () {
-    return 5
+    return 1
   }
 
   static get key () {
