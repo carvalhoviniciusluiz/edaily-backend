@@ -11,7 +11,7 @@ const Helpers = use('Helpers')
 
 const Env = use('Env')
 
-const BucketService = use('App/Services/BucketService')
+const FileService = use('App/Services/FileService')
 
 const Kue = use('Kue')
 const PdfToHtmlJob = use('App/Jobs/PdfToHtml')
@@ -50,7 +50,7 @@ class FileController {
       Kue.dispatch(PdfToHtmlJob.key, { pathname, htmlpath }, { attempts: 3 })
       Kue.dispatch(PdfToTextJob.key, { pathname }, { attempts: 3 })
 
-      await BucketService.writeFile(pathname, filename)
+      await FileService.persist(pathname, filename)
     }
 
     return { ...file.toJSON(), avatar: undefined }
