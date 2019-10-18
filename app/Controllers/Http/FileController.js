@@ -14,6 +14,9 @@ const Env = use('Env')
 const PdfService = use('App/Services/PdfService')
 const BucketService = use('App/Services/BucketService')
 
+const Kue = use('Kue')
+const PdfToHtmlJob = use('App/Jobs/PdfToHtml')
+
 class FileController {
   async store ({ request }) {
     const upload = request.file('file', {
@@ -47,9 +50,12 @@ class FileController {
 
     console.log(pages[0])
 
-    await PdfService.pdfToHTML(pathname, htmlpath)
-
     if (Env.get('NODE_ENV') !== 'testing') {
+      Kue.dispatch(PdfToHtmlJob.key, {
+        pathname,
+        htmlpath
+      }, { attempts: 3 })
+
       await BucketService.writeFile(pathname, filename)
     }
 
