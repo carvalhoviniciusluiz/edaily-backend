@@ -11,11 +11,11 @@ const Helpers = use('Helpers')
 
 const Env = use('Env')
 
-const PdfService = use('App/Services/PdfService')
 const BucketService = use('App/Services/BucketService')
 
 const Kue = use('Kue')
 const PdfToHtmlJob = use('App/Jobs/PdfToHtml')
+const PdfToTextJob = use('App/Jobs/PdfToText')
 
 class FileController {
   async store ({ request }) {
@@ -46,15 +46,9 @@ class FileController {
       subtype: upload.subtype
     })
 
-    const pages = await PdfService.pdfToText(pathname)
-
-    console.log(pages[0])
-
     if (Env.get('NODE_ENV') !== 'testing') {
-      Kue.dispatch(PdfToHtmlJob.key, {
-        pathname,
-        htmlpath
-      }, { attempts: 3 })
+      Kue.dispatch(PdfToHtmlJob.key, { pathname, htmlpath }, { attempts: 3 })
+      Kue.dispatch(PdfToTextJob.key, { pathname }, { attempts: 3 })
 
       await BucketService.writeFile(pathname, filename)
     }
