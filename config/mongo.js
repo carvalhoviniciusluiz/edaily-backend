@@ -14,7 +14,11 @@ const mongoose = require('mongoose')
   |
   */
 
-mongoose.connect(Env.get('MONGODB_URI'), {
+const mongodbUri = Env.get('MONGODB_URI') + (
+  Env.get('NODE_ENV') === 'testing' ? '-test' : null
+)
+
+mongoose.connect(mongodbUri, {
   useNewUrlParser: true,
   useFindAndModify: true,
   useUnifiedTopology: true
