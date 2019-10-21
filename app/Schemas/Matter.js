@@ -9,14 +9,6 @@ const MatterSchema = new mongoose.Schema(
       url: String
     },
     pages: [String],
-    published: {
-      type: Boolean,
-      default: false
-    },
-    cancelated: {
-      type: Boolean,
-      default: false
-    },
     author: {
       uuid: String,
       firstname: String,
@@ -39,7 +31,9 @@ const MatterSchema = new mongoose.Schema(
       uuid: String,
       name: String,
       initials: String
-    }
+    },
+    published_at: Date,
+    canceled_at: Date
   },
   {
     timestamps: true

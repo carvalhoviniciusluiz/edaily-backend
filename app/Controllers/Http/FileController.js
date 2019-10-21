@@ -86,7 +86,7 @@ class FileController {
     const { uuid } = await File.findByOrFail('uuid', params.id)
     const matter = await Matter.findOne({ 'file.uuid': uuid })
 
-    matter.cancelated = true
+    matter.canceled_at = new Date()
 
     await matter.save()
   }
