@@ -43,6 +43,7 @@ Route
 Route.group(() => {
   Route.post('avatars', 'AvatarController.store').validator('avatar/Store')
   Route.post('files', 'FileController.store').validator('file/Store')
+  Route.delete('files/:id', 'FileController.destroy').validator('file/Show')
 
   Route.put('users', 'UserController.update').validator('user/Update')
 

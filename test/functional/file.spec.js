@@ -23,3 +23,23 @@ test('deve poder fazer upload de avatar', async ({ assert, client }) => {
   response.assertStatus(200)
   assert.exists(response.body.url)
 })
+
+test('deve poder cancelar um arquivo', async ({ assert, client }) => {
+  const { id } = await Factory.model('App/Models/Organization').create()
+  const user = await Factory.model('App/Models/User').create({
+    organization_id: id
+  })
+
+  const { body } = await client
+    .post('/files')
+    .loginVia(user, 'jwt')
+    .attach('file', Helpers.tmpPath('helloworld.pdf'))
+    .end()
+
+  const response = await client
+    .delete(`/files/${body.uuid}`)
+    .loginVia(user, 'jwt')
+    .end()
+
+  response.assertStatus(204)
+})

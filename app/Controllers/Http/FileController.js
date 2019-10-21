@@ -81,6 +81,15 @@ class FileController {
 
     return response.download(Helpers.tmpPath(`files/${file.file}`))
   }
+
+  async destroy ({ params }) {
+    const { uuid } = await File.findByOrFail('uuid', params.id)
+    const matter = await Matter.findOne({ 'file.uuid': uuid })
+
+    matter.cancelated = true
+
+    await matter.save()
+  }
 }
 
 module.exports = FileController
