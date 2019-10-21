@@ -16,8 +16,10 @@ const PdfToHtmlJob = use('App/Jobs/PdfToHtml')
 const PdfToTextJob = use('App/Jobs/PdfToText')
 const PersistFileJob = use('App/Jobs/PersistFile')
 
+const Matter = use('App/Schemas/Matter')
+
 class FileController {
-  async store ({ request }) {
+  async store ({ request, auth }) {
     const upload = request.file('file', {
       size: Env.get('FILE_SIZE', '10mb')
     })
@@ -45,9 +47,29 @@ class FileController {
       subtype: upload.subtype
     })
 
+    await auth.user.load('organization', organization => {
+      organization.setVisible(['uuid', 'name', 'initials'])
+    })
+
+    const {
+      uuid,
+      firstname,
+      lastname,
+      email,
+      organization
+    } = auth.user.toJSON()
+
+    const matter = await Matter.create({
+      file: file.toJSON(),
+      author: { uuid, firstname, lastname, email },
+      organization
+    })
+
     if (Env.get('NODE_ENV') !== 'testing') {
       Kue.dispatch(PdfToHtmlJob.key, { pathname, htmlpath }, { attempts: 3 })
-      Kue.dispatch(PdfToTextJob.key, { pathname }, { attempts: 3 })
+      Kue.dispatch(PdfToTextJob.key, { pathname, matterId: matter._id }, {
+        attempts: 3
+      })
       Kue.dispatch(PersistFileJob.key, { pathname, filename }, { attempts: 3 })
     }
 

@@ -9,7 +9,10 @@ trait('Test/ApiClient')
 trait('Auth/Client')
 
 test('deve poder fazer upload de avatar', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create()
+  const { id } = await Factory.model('App/Models/Organization').create()
+  const user = await Factory.model('App/Models/User').create({
+    organization_id: id
+  })
 
   const response = await client
     .post('/files')
