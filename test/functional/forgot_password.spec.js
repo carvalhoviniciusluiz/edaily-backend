@@ -1,9 +1,20 @@
-const { test, trait } = use('Test/Suite')('Forgot Password')
+const { test, trait, before, after } = use('Test/Suite')('Forgot Password')
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User')
+
 trait('Test/ApiClient')
+
+before(async () => {
+  await User.truncate()
+})
+
+after(async () => {
+  await User.truncate()
+})
 
 test('deve informar quando não redirecionar', async ({ client }) => {
   const response = await client

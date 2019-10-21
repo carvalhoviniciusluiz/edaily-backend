@@ -1,29 +1,29 @@
-const setup = require('../setup')
-
-const { test, trait, before } = use('Test/Suite')('Organization Users')
+const { test, trait, before, after } = use('Test/Suite')('Organization Users')
 
 trait('Test/ApiClient')
 trait('Auth/Client')
-trait(setup)
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User')
 const Organization = use('App/Models/Organization')
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
 
-let id
-let uuid
-
 before(async () => {
+  await User.truncate()
   await Organization.truncate()
-
-  const organization = await Factory.model('App/Models/Organization').create()
-  id = organization.id
-  uuid = organization.uuid
 })
 
-test('deve retornar uma lista vazia', async ({ user, client, assert }) => {
+after(async () => {
+  await User.truncate()
+  await Organization.truncate()
+})
+
+test('deve retornar uma lista vazia', async ({ client, assert }) => {
+  const { uuid } = await Factory.model('App/Models/Organization').create()
+  const user = await Factory.model('App/Models/User').create()
+
   const response = await client
     .get(`organizations/${uuid}/users`)
     .loginVia(user, 'jwt')
@@ -33,8 +33,11 @@ test('deve retornar uma lista vazia', async ({ user, client, assert }) => {
   assert.equal(response.body.total, '0')
 })
 
-test('deve retornar uma lista não vazia', async ({ user, client, assert }) => {
-  await Factory.model('App/Models/User').create({ organization_id: id })
+test('deve retornar uma lista não vazia', async ({ client, assert }) => {
+  const { id, uuid } = await Factory.model('App/Models/Organization').create()
+  const user = await Factory.model('App/Models/User').create({
+    organization_id: id
+  })
 
   const response = await client
     .get(`organizations/${uuid}/users`)
@@ -45,11 +48,14 @@ test('deve retornar uma lista não vazia', async ({ user, client, assert }) => {
   assert.equal(response.body.total, '1')
 })
 
-test('deve retornar uma lista paginada', async ({ user, client, assert }) => {
+test('deve retornar uma lista paginada', async ({ client, assert }) => {
+  const { id, uuid } = await Factory.model('App/Models/Organization').create()
   await Factory.model('App/Models/User').create({ organization_id: id })
   await Factory.model('App/Models/User').create({ organization_id: id })
   await Factory.model('App/Models/User').create({ organization_id: id })
   await Factory.model('App/Models/User').create({ organization_id: id })
+
+  const user = await Factory.model('App/Models/User').create()
 
   const response = await client
     .get(`organizations/${uuid}/users?limit=1`)
@@ -60,7 +66,9 @@ test('deve retornar uma lista paginada', async ({ user, client, assert }) => {
   assert.equal(response.body.data.length, 1)
 })
 
-test('deve cadastrar um usuário', async ({ user, client, assert }) => {
+test('deve cadastrar um usuário', async ({ client, assert }) => {
+  const { uuid } = await Factory.model('App/Models/Organization').create()
+  const user = await Factory.model('App/Models/User').create()
   const newUser = await Factory.model('App/Models/User').make()
 
   const response = await client
@@ -73,10 +81,13 @@ test('deve cadastrar um usuário', async ({ user, client, assert }) => {
   assert.exists(response.body.uuid)
 })
 
-test('deve retornar um usuário', async ({ user, client, assert }) => {
-  const { uuid: userId } = await Factory
-    .model('App/Models/User')
-    .create({ organization_id: id })
+test('deve retornar um usuário', async ({ client, assert }) => {
+  const { id, uuid } = await Factory.model('App/Models/Organization').create()
+  const { uuid: userId } = await Factory.model('App/Models/User').create({
+    organization_id: id
+  })
+
+  const user = await Factory.model('App/Models/User').create()
 
   const response = await client
     .get(`organizations/${uuid}/users/${userId}`)
@@ -87,10 +98,13 @@ test('deve retornar um usuário', async ({ user, client, assert }) => {
   assert.exists(response.body.uuid)
 })
 
-test('deve atualizar um usuário', async ({ user, client, assert }) => {
-  const { uuid: userId } = await Factory
-    .model('App/Models/User')
-    .create({ organization_id: id })
+test('deve atualizar um usuário', async ({ client, assert }) => {
+  const { id, uuid } = await Factory.model('App/Models/Organization').create()
+  const { uuid: userId } = await Factory.model('App/Models/User').create({
+    organization_id: id
+  })
+
+  const user = await Factory.model('App/Models/User').create()
 
   const response = await client
     .put(`organizations/${uuid}/users/${userId}`)
@@ -106,10 +120,13 @@ test('deve atualizar um usuário', async ({ user, client, assert }) => {
   assert.equal(response.body.lastname, 'carvalho')
 })
 
-test('deve deletar um usuário', async ({ user, client }) => {
-  const { uuid: userId } = await Factory
-    .model('App/Models/User')
-    .create({ organization_id: id })
+test('deve deletar um usuário', async ({ client }) => {
+  const { id, uuid } = await Factory.model('App/Models/Organization').create()
+  const { uuid: userId } = await Factory.model('App/Models/User').create({
+    organization_id: id
+  })
+
+  const user = await Factory.model('App/Models/User').create()
 
   const response = await client
     .delete(`organizations/${uuid}/users/${userId}`)

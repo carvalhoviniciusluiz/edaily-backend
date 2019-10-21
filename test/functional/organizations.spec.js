@@ -1,4 +1,4 @@
-const { test, trait, before } = use('Test/Suite')('Organizations')
+const { test, trait, before, after } = use('Test/Suite')('Organizations')
 
 trait('Test/ApiClient')
 trait('Auth/Client')
@@ -10,6 +10,9 @@ const Organization = use('App/Models/Organization')
 const Factory = use('Factory')
 
 before(async () => {
+  await Organization.truncate()
+})
+after(async () => {
   await Organization.truncate()
 })
 

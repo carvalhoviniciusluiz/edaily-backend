@@ -1,13 +1,21 @@
-const setup = require('../setup')
+const { test, trait, before, after } = use('Test/Suite')('Users')
 
-const { test, trait } = use('Test/Suite')('Users')
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const User = use('App/Models/User')
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
 
 trait('Test/ApiClient')
 trait('Auth/Client')
-trait(setup)
+
+before(async () => {
+  await User.truncate()
+})
+
+after(async () => {
+  await User.truncate()
+})
 
 test('deve criar um usuário', async ({ assert, client }) => {
   const user = await Factory.model('App/Models/User').make()
@@ -21,7 +29,9 @@ test('deve criar um usuário', async ({ assert, client }) => {
   assert.exists(response.body.uuid)
 })
 
-test('deve atualizar o perfil', async ({ user, assert, client }) => {
+test('deve atualizar o perfil', async ({ assert, client }) => {
+  const user = await Factory.model('App/Models/User').create()
+
   const response = await client
     .put('/users')
     .loginVia(user, 'jwt')
@@ -37,7 +47,9 @@ test('deve atualizar o perfil', async ({ user, assert, client }) => {
   assert.equal(response.body.lastname, 'carvalho')
 })
 
-test('deve informar o password', async ({ user, assert, client }) => {
+test('deve informar o password', async ({ assert, client }) => {
+  const user = await Factory.model('App/Models/User').create()
+
   const response = await client
     .put('/users')
     .loginVia(user, 'jwt')
@@ -55,7 +67,9 @@ test('deve informar o password', async ({ user, assert, client }) => {
   response.assertStatus(400)
 })
 
-test('deve informar o confirmed', async ({ user, assert, client }) => {
+test('deve informar o confirmed', async ({ assert, client }) => {
+  const user = await Factory.model('App/Models/User').create()
+
   const response = await client
     .put('/users')
     .loginVia(user, 'jwt')
@@ -74,7 +88,9 @@ test('deve informar o confirmed', async ({ user, assert, client }) => {
   response.assertStatus(400)
 })
 
-test('deve informar a confirmação certa', async ({ user, assert, client }) => {
+test('deve informar a confirmação certa', async ({ assert, client }) => {
+  const user = await Factory.model('App/Models/User').create()
+
   const response = await client
     .put('/users')
     .loginVia(user, 'jwt')
@@ -94,7 +110,9 @@ test('deve informar a confirmação certa', async ({ user, assert, client }) => 
   response.assertStatus(400)
 })
 
-test('deve informar o password certo', async ({ user, assert, client }) => {
+test('deve informar o password certo', async ({ assert, client }) => {
+  const user = await Factory.model('App/Models/User').create()
+
   const response = await client
     .put('/users')
     .loginVia(user, 'jwt')
@@ -110,7 +128,11 @@ test('deve informar o password certo', async ({ user, assert, client }) => {
   response.assertStatus(401)
 })
 
-test('deve atualizar a senha', async ({ user, assert, client }) => {
+test('deve atualizar a senha', async ({ assert, client }) => {
+  const user = await Factory.model('App/Models/User').create({
+    password: '123456'
+  })
+
   const response = await client
     .put('/users')
     .loginVia(user, 'jwt')
