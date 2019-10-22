@@ -6,23 +6,23 @@ class MatterController {
   async index ({ request }) {
     const matters = await Matter.paginate(request.all(), {}, '-__v -pages -createdAt')
 
-    return matters.map(matter => ({
-      ...matter,
-      data: {
-        id: matter.data._id,
+    return {
+      ...matters,
+      data: matters.data.map(matter => ({
+        id: matter._id,
         file: {
-          name: matter.data.file.name
+          name: matter.file.name
         },
         author: {
-          firstname: matter.data.author.firstname,
-          lastname: matter.data.author.lastname
+          firstname: matter.author.firstname,
+          lastname: matter.author.lastname
         },
         organization: {
-          initials: matter.data.organization.initials
+          initials: matter.organization.initials
         },
-        createdAt: matter.data.createdAt
-      }
-    }))
+        createdAt: matter.createdAt
+      }))
+    }
   }
 }
 
