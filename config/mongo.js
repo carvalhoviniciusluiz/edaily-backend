@@ -15,7 +15,7 @@ const mongoose = require('mongoose')
   */
 
 const mongodbUri = Env.get('MONGODB_URI') + (
-  Env.get('NODE_ENV') === 'testing' ? '-test' : null
+  Env.get('NODE_ENV') === 'testing' ? '-test' : ''
 )
 
 mongoose.connect(mongodbUri, {
