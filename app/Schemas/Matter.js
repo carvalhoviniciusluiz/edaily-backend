@@ -40,6 +40,30 @@ const MatterSchema = new mongoose.Schema(
   }
 )
 
+MatterSchema.statics.paginate = function (params, options = {}, projection) {
+  return new Promise((resolve, reject) => {
+    const limit = parseInt(params.limit) || 10
+    const offset = parseInt(params.page) || 1
+
+    const page = offset > 0 ? offset : 1
+    const skip = (page - 1) * limit
+
+    const iterable = [
+      this.countDocuments(options),
+      this.find(options, projection).skip(skip).limit(limit).lean(true)
+    ]
+
+    Promise.all(iterable)
+      .then((values) => {
+        const [total, collect] = values
+        const pages = Math.ceil(total / limit) || 1
+
+        resolve(collect.map(data => ({ total, limit, page, pages, data })))
+      })
+      .catch(error => reject(error))
+  })
+}
+
 module.exports = mongoose.model(
   'Matter',
   MatterSchema,

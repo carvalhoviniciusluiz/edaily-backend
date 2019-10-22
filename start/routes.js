@@ -47,6 +47,8 @@ Route.group(() => {
 
   Route.put('users', 'UserController.update').validator('user/Update')
 
+  Route.get('matters', 'MatterController.index')
+
   Route
     .resource('organizations', 'OrganizationController')
     .apiOnly()
