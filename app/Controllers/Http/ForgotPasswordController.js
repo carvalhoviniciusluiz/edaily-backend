@@ -10,7 +10,7 @@ const Kue = use('Kue')
 const Job = use('App/Jobs/SendForgotPasswordMail')
 
 class ForgotPasswordController {
-  async store ({ request, response }) {
+  async store ({ request }) {
     const email = request.input('email')
     const user = await User.findByOrFail('email', email)
 
