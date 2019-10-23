@@ -14,7 +14,8 @@ class MatterController {
         id: matter._id,
         file: {
           id: matter.file.uuid,
-          name: matter.file.name
+          name: matter.file.name,
+          url: matter.file.url
         },
         author: {
           firstname: matter.author.firstname,
