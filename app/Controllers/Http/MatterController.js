@@ -11,22 +11,31 @@ class MatterController {
 
     return {
       ...matters,
-      data: matters.data.map(matter => ({
-        id: matter._id,
-        file: {
-          id: matter.file.uuid,
-          name: matter.file.name,
-          url: matter.file.url
-        },
-        author: {
-          firstname: matter.author.firstname,
-          lastname: matter.author.lastname
-        },
-        organization: {
-          initials: matter.organization.initials
-        },
-        createdAt: matter.createdAt
-      }))
+      data: matters.data.map(matter => {
+        const data = {
+          id: matter._id,
+          file: {
+            id: matter.file.uuid,
+            name: matter.file.name,
+            url: matter.file.url
+          },
+          author: {
+            firstname: matter.author.firstname,
+            lastname: matter.author.lastname
+          },
+          createdAt: matter.createdAt
+        }
+
+        const organizationExists = !!matter.organization
+
+        if (organizationExists) {
+          data.organization = {
+            initials: matter.organization.initials
+          }
+        }
+
+        return data
+      })
     }
   }
 }
