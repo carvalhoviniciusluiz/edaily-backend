@@ -50,6 +50,8 @@ Route.group(() => {
   Route.get('documents', 'DocumentProcessController.index')
   Route.put('documents/:id/forward', 'DocumentProcessController.update')
 
+  Route.get('documents/following', 'DocumentFollowController.index')
+
   Route
     .resource('organizations', 'OrganizationController')
     .apiOnly()
