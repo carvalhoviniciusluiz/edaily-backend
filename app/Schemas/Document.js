@@ -32,9 +32,9 @@ const DocumentSchema = new mongoose.Schema(
       name: String,
       initials: String
     },
-    published_at: Date,
-    canceled_at: Date,
-    forwarded_at: Date
+    publishedAt: Date,
+    canceledAt: Date,
+    forwardedAt: Date
   },
   {
     timestamps: true

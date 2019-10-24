@@ -5,8 +5,8 @@ const Document = use('App/Schemas/Document')
 class DocumentProcessController {
   async index ({ request }) {
     const documents = await Document.paginate(request.all(), {
-      forwarded_at: { $exists: false },
-      canceled_at: { $exists: false }
+      forwardedAt: { $exists: false },
+      canceledAt: { $exists: false }
     }, '-__v -pages -updatedAt')
 
     return {
@@ -48,7 +48,7 @@ class DocumentProcessController {
       lastname,
       email
     }
-    document.forwarded_at = new Date()
+    document.forwardedAt = new Date()
     await document.save()
   }
 }

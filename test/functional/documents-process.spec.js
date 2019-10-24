@@ -110,5 +110,5 @@ test('deve encaminhar matéria', async ({ client, assert }) => {
   assert.equal(document.responsable.firstname, user.firstname)
   assert.equal(document.responsable.lastname, user.lastname)
   assert.equal(document.responsable.email, user.email)
-  assert.isNotNull(document.forwarded_at)
+  assert.exists(document.forwardedAt)
 })

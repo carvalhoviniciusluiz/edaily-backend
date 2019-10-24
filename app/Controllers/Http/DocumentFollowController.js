@@ -5,8 +5,8 @@ const Document = use('App/Schemas/Document')
 class DocumentFollowController {
   async index ({ request }) {
     const documents = await Document.paginate(request.all(), {
-      forwarded_at: { $exists: true },
-      canceled_at: { $exists: false }
+      forwardedAt: { $exists: true },
+      canceledAt: { $exists: false }
     }, '-__v -pages -updatedAt')
 
     return {
@@ -19,11 +19,11 @@ class DocumentFollowController {
             name: document.file.name,
             url: document.file.url
           },
-          author: {
-            firstname: document.author.firstname,
-            lastname: document.author.lastname
+          responsable: {
+            firstname: document.responsable.firstname,
+            lastname: document.responsable.lastname
           },
-          createdAt: document.createdAt
+          forwardedAt: document.forwardedAt
         }
 
         const organizationExists = !!document.organization
