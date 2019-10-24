@@ -5,6 +5,7 @@ const Matter = use('App/Schemas/Matter')
 class MatterController {
   async index ({ request }) {
     const matters = await Matter.paginate(request.all(), {
+      forwarded_at: { $exists: false },
       canceled_at: { $exists: false }
     }, '-__v -pages -updatedAt')
 

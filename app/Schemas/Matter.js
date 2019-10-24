@@ -33,7 +33,8 @@ const MatterSchema = new mongoose.Schema(
       initials: String
     },
     published_at: Date,
-    canceled_at: Date
+    canceled_at: Date,
+    forwarded_at: Date
   },
   {
     timestamps: true
