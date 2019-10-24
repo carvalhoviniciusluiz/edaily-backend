@@ -31,6 +31,7 @@ test('deve poder fazer upload de avatar', async ({ assert, client }) => {
 
   response.assertStatus(200)
   assert.exists(response.body.url)
+  assert.exists(response.body.matter_id)
 })
 
 test('deve poder cancelar um arquivo', async ({ assert, client }) => {

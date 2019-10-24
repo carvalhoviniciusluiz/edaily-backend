@@ -84,3 +84,31 @@ test('deve retornar uma lista paginada', async ({ client, assert }) => {
   response.assertStatus(200)
   assert.equal(response.body.data.length, 1)
 })
+
+test('deve encaminhar matéria', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+
+  const user = await Factory.model('App/Models/User').create({
+    organization_id: organization.id
+  })
+
+  const { body: { matter_id: id } } = await client
+    .post('files')
+    .loginVia(user, 'jwt')
+    .attach('file', Helpers.tmpPath('helloworld.pdf'))
+    .end()
+
+  const response = await client
+    .put(`matters/${id}/forward`)
+    .loginVia(user, 'jwt')
+    .end()
+
+  const matter = await Matter.findById(id)
+
+  response.assertStatus(204)
+  assert.equal(matter.responsable.uuid, user.uuid)
+  assert.equal(matter.responsable.firstname, user.firstname)
+  assert.equal(matter.responsable.lastname, user.lastname)
+  assert.equal(matter.responsable.email, user.email)
+  assert.isNotNull(matter.forwarded_at)
+})

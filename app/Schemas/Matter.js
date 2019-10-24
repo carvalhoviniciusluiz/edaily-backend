@@ -55,7 +55,7 @@ MatterSchema.statics.paginate = function (params, options = {}, projection) {
     ]
 
     Promise.all(iterable)
-      .then((values) => {
+      .then(values => {
         const [total, data] = values
         const pages = Math.ceil(total / limit) || 1
 

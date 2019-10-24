@@ -38,6 +38,19 @@ class MatterController {
       })
     }
   }
+
+  async update ({ params, auth }) {
+    const matter = await Matter.findById(params.id)
+    const { uuid, firstname, lastname, email } = auth.user
+    matter.responsable = {
+      uuid,
+      firstname,
+      lastname,
+      email
+    }
+    matter.forwarded_at = new Date()
+    await matter.save()
+  }
 }
 
 module.exports = MatterController
