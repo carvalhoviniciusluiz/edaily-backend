@@ -47,8 +47,8 @@ Route.group(() => {
 
   Route.put('users', 'UserController.update').validator('user/Update')
 
-  Route.get('matters', 'MatterController.index')
-  Route.put('matters/:id/forward', 'MatterController.update')
+  Route.get('documents', 'DocumentProcessController.index')
+  Route.put('documents/:id/forward', 'DocumentProcessController.update')
 
   Route
     .resource('organizations', 'OrganizationController')

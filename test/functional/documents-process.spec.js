@@ -1,4 +1,4 @@
-const { test, trait, before, after } = use('Test/Suite')('Matter')
+const { test, trait, before, after } = use('Test/Suite')('Document Process')
 
 trait('Test/ApiClient')
 trait('Auth/Client')
@@ -7,7 +7,7 @@ trait('Auth/Client')
 const User = use('App/Models/User')
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const Matter = use('App/Schemas/Matter')
+const Document = use('App/Schemas/Document')
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
@@ -16,18 +16,18 @@ const Helpers = use('Helpers')
 
 before(async () => {
   await User.truncate()
-  await Matter.deleteMany()
+  await Document.deleteMany()
 })
 after(async () => {
   await User.truncate()
-  await Matter.deleteMany()
+  await Document.deleteMany()
 })
 
 test('deve retornar uma lista vazia', async ({ client, assert }) => {
   const user = await Factory.model('App/Models/User').create()
 
   const response = await client
-    .get('matters')
+    .get('documents')
     .loginVia(user, 'jwt')
     .end()
 
@@ -45,7 +45,7 @@ test('deve retornar uma lista não vazia', async ({ client, assert }) => {
     .end()
 
   const response = await client
-    .get('matters')
+    .get('documents')
     .loginVia(user, 'jwt')
     .end()
 
@@ -77,7 +77,7 @@ test('deve retornar uma lista paginada', async ({ client, assert }) => {
     .end()
 
   const response = await client
-    .get('matters?limit=1')
+    .get('documents?limit=1')
     .loginVia(user, 'jwt')
     .end()
 
@@ -92,23 +92,23 @@ test('deve encaminhar matéria', async ({ client, assert }) => {
     organization_id: organization.id
   })
 
-  const { body: { matter_id: id } } = await client
+  const { body: { document_id: id } } = await client
     .post('files')
     .loginVia(user, 'jwt')
     .attach('file', Helpers.tmpPath('helloworld.pdf'))
     .end()
 
   const response = await client
-    .put(`matters/${id}/forward`)
+    .put(`documents/${id}/forward`)
     .loginVia(user, 'jwt')
     .end()
 
-  const matter = await Matter.findById(id)
+  const document = await Document.findById(id)
 
   response.assertStatus(204)
-  assert.equal(matter.responsable.uuid, user.uuid)
-  assert.equal(matter.responsable.firstname, user.firstname)
-  assert.equal(matter.responsable.lastname, user.lastname)
-  assert.equal(matter.responsable.email, user.email)
-  assert.isNotNull(matter.forwarded_at)
+  assert.equal(document.responsable.uuid, user.uuid)
+  assert.equal(document.responsable.firstname, user.firstname)
+  assert.equal(document.responsable.lastname, user.lastname)
+  assert.equal(document.responsable.email, user.email)
+  assert.isNotNull(document.forwarded_at)
 })

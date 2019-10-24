@@ -5,16 +5,16 @@ const Factory = use('Factory')
 
 const Helpers = use('Helpers')
 
-const Matter = use('App/Schemas/Matter')
+const Document = use('App/Schemas/Document')
 
 trait('Test/ApiClient')
 trait('Auth/Client')
 
 before(async () => {
-  await Matter.deleteMany()
+  await Document.deleteMany()
 })
 after(async () => {
-  await Matter.deleteMany()
+  await Document.deleteMany()
 })
 
 test('deve poder fazer upload de avatar', async ({ assert, client }) => {
@@ -31,7 +31,7 @@ test('deve poder fazer upload de avatar', async ({ assert, client }) => {
 
   response.assertStatus(200)
   assert.exists(response.body.url)
-  assert.exists(response.body.matter_id)
+  assert.exists(response.body.document_id)
 })
 
 test('deve poder cancelar um arquivo', async ({ assert, client }) => {

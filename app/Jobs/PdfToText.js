@@ -2,7 +2,7 @@
 
 const PdfService = use('App/Services/PdfService')
 
-const Matter = use('App/Schemas/Matter')
+const Document = use('App/Schemas/Document')
 
 class PdfToText {
   static get concurrency () {
@@ -13,13 +13,13 @@ class PdfToText {
     return 'PdfToText-job'
   }
 
-  async handle ({ pathname, matterId }) {
+  async handle ({ pathname, documentId }) {
     const pages = await PdfService.pdfToText(pathname)
 
-    const matter = await Matter.findById(matterId)
-    matter.pages = pages
+    const document = await Document.findById(documentId)
+    document.pages = pages
 
-    await matter.save()
+    await document.save()
   }
 }
 

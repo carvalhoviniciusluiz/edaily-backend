@@ -16,7 +16,7 @@ const PdfToHtmlJob = use('App/Jobs/PdfToHtml')
 const PdfToTextJob = use('App/Jobs/PdfToText')
 const PersistFileJob = use('App/Jobs/PersistFile')
 
-const Matter = use('App/Schemas/Matter')
+const Document = use('App/Schemas/Document')
 
 class FileController {
   async store ({ request, auth }) {
@@ -59,7 +59,7 @@ class FileController {
       organization
     } = auth.user.toJSON()
 
-    const matter = await Matter.create({
+    const document = await Document.create({
       file: file.toJSON(),
       author: { uuid, firstname, lastname, email },
       organization
@@ -67,13 +67,13 @@ class FileController {
 
     if (Env.get('NODE_ENV') !== 'testing') {
       Kue.dispatch(PdfToHtmlJob.key, { pathname, htmlpath }, { attempts: 3 })
-      Kue.dispatch(PdfToTextJob.key, { pathname, matterId: matter._id }, {
+      Kue.dispatch(PdfToTextJob.key, { pathname, documentId: document._id }, {
         attempts: 3
       })
       Kue.dispatch(PersistFileJob.key, { pathname, filename }, { attempts: 3 })
     }
 
-    return { ...file.toJSON(), avatar: undefined, matter_id: matter._id }
+    return { ...file.toJSON(), avatar: undefined, document_id: document._id }
   }
 
   async show ({ params, response }) {
@@ -84,11 +84,11 @@ class FileController {
 
   async destroy ({ params }) {
     const { uuid } = await File.findByOrFail('uuid', params.id)
-    const matter = await Matter.findOne({ 'file.uuid': uuid })
+    const document = await Document.findOne({ 'file.uuid': uuid })
 
-    matter.canceled_at = new Date()
+    document.canceled_at = new Date()
 
-    await matter.save()
+    await document.save()
   }
 }
 

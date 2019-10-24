@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const MatterSchema = new mongoose.Schema(
+const DocumentSchema = new mongoose.Schema(
   {
     file: {
       uuid: String,
@@ -41,7 +41,7 @@ const MatterSchema = new mongoose.Schema(
   }
 )
 
-MatterSchema.statics.paginate = function (params, options = {}, projection) {
+DocumentSchema.statics.paginate = function (params, options = {}, projection) {
   return new Promise((resolve, reject) => {
     const limit = parseInt(params.limit) || 10
     const offset = parseInt(params.page) || 1
@@ -66,7 +66,7 @@ MatterSchema.statics.paginate = function (params, options = {}, projection) {
 }
 
 module.exports = mongoose.model(
-  'Matter',
-  MatterSchema,
-  'Matters'
+  'Document',
+  DocumentSchema,
+  'Documents'
 )
