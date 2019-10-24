@@ -9,9 +9,14 @@ class Organization extends Model {
   static boot () {
     super.boot()
 
-    this.addHook('beforeSave', async file => {
-      if (!file.uuid) {
-        file.uuid = uuid.v4()
+    this.addHook('beforeSave', async organization => {
+      if (!organization.uuid) {
+        organization.uuid = uuid.v4()
+      }
+      if (!organization.fingerprint) {
+        organization.fingerprint = (Math.random() * (1 - 9) / 2)
+          .toString()
+          .substr(8, 4)
       }
     })
   }

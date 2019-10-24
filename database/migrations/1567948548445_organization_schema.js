@@ -7,7 +7,8 @@ class OrganizationSchema extends Schema {
   up () {
     this.create('organizations', (table) => {
       table.increments()
-      table.string('uuid').notNullable()
+      table.string('uuid').notNullable().unique()
+      table.string('fingerprint').notNullable().unique()
       table.string('definition').notNullable()
       table.string('name').notNullable()
       table.string('initials').notNullable()
