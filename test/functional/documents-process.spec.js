@@ -35,8 +35,32 @@ test('deve retornar uma lista vazia', async ({ client, assert }) => {
   assert.equal(response.body.total, '0')
 })
 
-test('deve retornar uma lista não vazia', async ({ client, assert }) => {
+test('deve retornar usuário sem vinculo', async ({ client, assert }) => {
   const user = await Factory.model('App/Models/User').create()
+
+  await client
+    .post('files')
+    .loginVia(user, 'jwt')
+    .attach('file', Helpers.tmpPath('helloworld.pdf'))
+    .end()
+
+  const response = await client
+    .get('documents')
+    .loginVia(user, 'jwt')
+    .end()
+
+  assert.deepEqual(response.body, { erro: { message: 'Usuário sem vinculo' } })
+  response.assertStatus(400)
+})
+
+test('deve retornar uma lista não vazia', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+
+  const user = await Factory.model('App/Models/User').create({
+    organization_id: organization.id
+  })
+
+  await Document.deleteMany()
 
   await client
     .post('files')
@@ -54,9 +78,11 @@ test('deve retornar uma lista não vazia', async ({ client, assert }) => {
 })
 
 test('deve retornar uma lista paginada', async ({ client, assert }) => {
-  const user = await Factory
-    .model('App/Models/User')
-    .create()
+  const organization = await Factory.model('App/Models/Organization').create()
+
+  const user = await Factory.model('App/Models/User').create({
+    organization_id: organization.id
+  })
 
   await client
     .post('files')

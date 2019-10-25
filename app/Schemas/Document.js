@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 const DocumentSchema = new mongoose.Schema(
   {
+    protocolNumber: String,
     file: {
       uuid: String,
       file: String,

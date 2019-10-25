@@ -46,7 +46,7 @@ Factory.blueprint('App/Models/Organization', async (faker, i, data = {}) => {
     definition: faker.string(),
     name: faker.company(),
     initials: faker.string(),
-    fingerprint: faker.word(),
+    fingerprint: (Math.random() * (1 - 9) / 2).toString().substr(8, 4),
     cnpj: cnpj.generate(),
     billing_email: faker.email(),
     phone1: faker.phone(),
