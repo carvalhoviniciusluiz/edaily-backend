@@ -23,26 +23,8 @@ after(async () => {
   await Document.deleteMany()
 })
 
-test('deve retornar uma lista vazia', async ({ client, assert }) => {
-  const user = await Factory.model('App/Models/User').create()
-
-  const response = await client
-    .get('documents')
-    .loginVia(user, 'jwt')
-    .end()
-
-  response.assertStatus(200)
-  assert.equal(response.body.total, '0')
-})
-
 test('deve retornar usuário sem vinculo', async ({ client, assert }) => {
   const user = await Factory.model('App/Models/User').create()
-
-  await client
-    .post('files')
-    .loginVia(user, 'jwt')
-    .attach('file', Helpers.tmpPath('helloworld.pdf'))
-    .end()
 
   const response = await client
     .get('documents')
@@ -51,6 +33,22 @@ test('deve retornar usuário sem vinculo', async ({ client, assert }) => {
 
   assert.deepEqual(response.body, { erro: { message: 'Usuário sem vinculo' } })
   response.assertStatus(400)
+})
+
+test('deve retornar uma lista vazia', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+
+  const user = await Factory.model('App/Models/User').create({
+    organization_id: organization.id
+  })
+
+  const response = await client
+    .get('documents')
+    .loginVia(user, 'jwt')
+    .end()
+
+  response.assertStatus(200)
+  assert.equal(response.body.total, '0')
 })
 
 test('deve retornar uma lista não vazia', async ({ client, assert }) => {

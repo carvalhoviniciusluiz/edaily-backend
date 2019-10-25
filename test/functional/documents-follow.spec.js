@@ -23,8 +23,24 @@ after(async () => {
   await Document.deleteMany()
 })
 
-test('deve retornar uma lista vazia', async ({ client, assert }) => {
+test('deve retornar usuário sem vinculo', async ({ client, assert }) => {
   const user = await Factory.model('App/Models/User').create()
+
+  const response = await client
+    .get('documents/following')
+    .loginVia(user, 'jwt')
+    .end()
+
+  assert.deepEqual(response.body, { erro: { message: 'Usuário sem vinculo' } })
+  response.assertStatus(400)
+})
+
+test('deve retornar uma lista vazia', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+
+  const user = await Factory.model('App/Models/User').create({
+    organization_id: organization.id
+  })
 
   const response = await client
     .get('documents/following')

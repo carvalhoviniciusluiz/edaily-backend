@@ -3,39 +3,41 @@
 const Document = use('App/Schemas/Document')
 
 class DocumentFollowController {
-  async index ({ request }) {
+  async index ({ request, response, auth }) {
+    await auth.user.load('organization')
+
+    const organizationExists = !!auth.user.toJSON().organization
+    if (!organizationExists) {
+      return response
+        .status(400)
+        .send({ erro: { message: 'Usuário sem vinculo' } })
+    }
+
     const documents = await Document.paginate(request.all(), {
       forwardedAt: { $exists: true },
-      canceledAt: { $exists: false }
+      canceledAt: { $exists: false },
+      'organization.uuid': auth.user.toJSON().organization.uuid
     }, '-__v -pages -updatedAt')
 
     return {
       ...documents,
-      data: documents.data.map(document => {
-        const data = {
-          id: document._id,
-          file: {
-            id: document.file.uuid,
-            name: document.file.name,
-            url: document.file.url
-          },
-          responsable: {
-            firstname: document.responsable.firstname,
-            lastname: document.responsable.lastname
-          },
-          forwardedAt: document.forwardedAt
-        }
-
-        const organizationExists = !!document.organization
-
-        if (organizationExists) {
-          data.organization = {
-            initials: document.organization.initials
-          }
-        }
-
-        return data
-      })
+      data: documents.data.map(document => ({
+        id: document._id,
+        protocolNumber: document.protocolNumber,
+        file: {
+          id: document.file.uuid,
+          name: document.file.name,
+          url: document.file.url
+        },
+        responsable: {
+          firstname: document.responsable.firstname,
+          lastname: document.responsable.lastname
+        },
+        organization: {
+          initials: document.organization.initials
+        },
+        forwardedAt: document.forwardedAt
+      }))
     }
   }
 }

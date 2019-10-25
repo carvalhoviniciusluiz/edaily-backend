@@ -6,36 +6,40 @@ const Organization = use('App/Models/Organization')
 const Document = use('App/Schemas/Document')
 
 class DocumentProcessController {
-  async index ({ request, response }) {
-    try {
-      const documents = await Document.paginate(request.all(), {
-        forwardedAt: { $exists: false },
-        canceledAt: { $exists: false }
-      }, '-__v -pages -updatedAt')
+  async index ({ request, response, auth }) {
+    await auth.user.load('organization')
 
-      return {
-        ...documents,
-        data: documents.data.map(document => ({
-          id: document._id,
-          file: {
-            id: document.file.uuid,
-            name: document.file.name,
-            url: document.file.url
-          },
-          author: {
-            firstname: document.author.firstname,
-            lastname: document.author.lastname
-          },
-          organization: {
-            initials: document.organization.initials
-          },
-          createdAt: document.createdAt
-        }))
-      }
-    } catch (error) {
+    const organizationExists = !!auth.user.toJSON().organization
+    if (!organizationExists) {
       return response
         .status(400)
         .send({ erro: { message: 'Usuário sem vinculo' } })
+    }
+
+    const documents = await Document.paginate(request.all(), {
+      forwardedAt: { $exists: false },
+      canceledAt: { $exists: false },
+      'organization.uuid': auth.user.toJSON().organization.uuid
+    }, '-__v -pages -updatedAt')
+
+    return {
+      ...documents,
+      data: documents.data.map(document => ({
+        id: document._id,
+        file: {
+          id: document.file.uuid,
+          name: document.file.name,
+          url: document.file.url
+        },
+        author: {
+          firstname: document.author.firstname,
+          lastname: document.author.lastname
+        },
+        organization: {
+          initials: document.organization.initials
+        },
+        createdAt: document.createdAt
+      }))
     }
   }
 
