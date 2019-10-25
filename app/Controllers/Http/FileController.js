@@ -59,7 +59,7 @@ class FileController {
         lastname: auth.user.lastname,
         email: auth.user.email
       },
-      organization: auth.user.organization
+      organization: auth.user.toJSON().organization
     })
 
     if (Env.get('NODE_ENV') !== 'testing') {
