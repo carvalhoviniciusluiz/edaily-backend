@@ -62,7 +62,7 @@ class DocumentProcessController {
     })
 
     const firstSequence = String(organization.fingerprint).padStart(7, '0')
-    const secondSequence = String(numberDocuments).padStart(8, '0')
+    const secondSequence = String(numberDocuments + 1).padStart(8, '0')
     const thirdSequence = currentYear
 
     const baseNumber = parseInt(
