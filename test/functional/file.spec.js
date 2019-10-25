@@ -51,5 +51,8 @@ test('deve poder cancelar um arquivo', async ({ assert, client }) => {
     .loginVia(user, 'jwt')
     .end()
 
+  const document = await Document.findById(body.document_id)
+
   response.assertStatus(204)
+  assert.exists(document.canceledAt)
 })

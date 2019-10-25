@@ -86,7 +86,7 @@ class FileController {
     const { uuid } = await File.findByOrFail('uuid', params.id)
     const document = await Document.findOne({ 'file.uuid': uuid })
 
-    document.canceled_at = new Date()
+    document.canceledAt = new Date()
 
     await document.save()
   }
