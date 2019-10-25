@@ -19,7 +19,7 @@ const PersistFileJob = use('App/Jobs/PersistFile')
 const Document = use('App/Schemas/Document')
 
 class FileController {
-  async store ({ request, auth }) {
+  async store ({ request, response, auth }) {
     const upload = request.file('file', {
       size: Env.get('FILE_SIZE', '10mb')
     })
@@ -51,18 +51,15 @@ class FileController {
       organization.setVisible(['uuid', 'name', 'initials'])
     })
 
-    const {
-      uuid,
-      firstname,
-      lastname,
-      email,
-      organization
-    } = auth.user.toJSON()
-
     const document = await Document.create({
       file: file.toJSON(),
-      author: { uuid, firstname, lastname, email },
-      organization
+      author: {
+        uuid: auth.user.uuid,
+        firstname: auth.user.firstname,
+        lastname: auth.user.lastname,
+        email: auth.user.email
+      },
+      organization: auth.user.organization
     })
 
     if (Env.get('NODE_ENV') !== 'testing') {
