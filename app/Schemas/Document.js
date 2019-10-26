@@ -53,7 +53,8 @@ DocumentSchema.statics.paginate = function (params, options = {}, projection) {
     const iterable = [
       this.countDocuments(options),
       this.find(options, projection).skip(skip).limit(limit).lean(true).sort({
-        protocolNumber: 1
+        protocolNumber: 1,
+        createdAt: 1
       })
     ]
 
