@@ -21,7 +21,12 @@ class UserController {
       const organization = await Organization
         .findByOrFail('uuid', params.organizations_id)
 
-      const users = await organization.users().paginate(page, limit)
+      const users = await organization
+        .users()
+        .with('avatar', avatar => {
+          avatar.setVisible(['avatar'])
+        })
+        .paginate(page, limit)
 
       return users
     } catch (error) {
