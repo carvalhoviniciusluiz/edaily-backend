@@ -22,6 +22,7 @@ class UserSchema extends Schema {
       table.string('city').notNullable()
       table.string('state').notNullable()
       table.boolean('is_responsible').default(false)
+      table.boolean('is_active').default(false)
       table.string('recovery_token')
       table.timestamp('recovery_token_created_at')
       table.string('confirmation_token')
