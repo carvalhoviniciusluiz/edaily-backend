@@ -29,6 +29,12 @@ class SessionController {
         .send({ error: { message: 'As credenciais de acesso são inválidas.' } })
     }
 
+    if (!user.is_active) {
+      return response
+        .status(401)
+        .send({ error: { message: 'Conta de acesso inativa.' } })
+    }
+
     try {
       const { token } = await auth.attempt(user.cpf, password)
 
