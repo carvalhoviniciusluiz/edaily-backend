@@ -84,12 +84,15 @@ class UserController {
     return user
   }
 
-  async show ({ params, response }) {
+  async show ({ request, response, params }) {
     try {
       const user = await User.findByOrFail('uuid', params.id)
-
-      await user.load('organization')
       await user.load('avatar')
+
+      const { organization: hasOrganization } = request.get('organization')
+      if (hasOrganization === 'true') {
+        await user.load('organization')
+      }
 
       return user
     } catch (error) {

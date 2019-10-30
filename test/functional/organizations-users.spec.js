@@ -98,6 +98,23 @@ test('deve retornar um usuário', async ({ client, assert }) => {
   assert.exists(response.body.uuid)
 })
 
+test('deve retornar usuário sem organização', async ({ client, assert }) => {
+  const { id, uuid } = await Factory.model('App/Models/Organization').create()
+  const { uuid: userId } = await Factory.model('App/Models/User').create({
+    organization_id: id
+  })
+
+  const user = await Factory.model('App/Models/User').create()
+
+  const response = await client
+    .get(`organizations/${uuid}/users/${userId}?organization=false`)
+    .loginVia(user, 'jwt')
+    .end()
+
+  response.assertStatus(200)
+  assert.notExists(response.body.organization)
+})
+
 test('deve atualizar um usuário', async ({ client, assert }) => {
   const { id, uuid } = await Factory.model('App/Models/Organization').create()
   const { uuid: userId } = await Factory.model('App/Models/User').create({
