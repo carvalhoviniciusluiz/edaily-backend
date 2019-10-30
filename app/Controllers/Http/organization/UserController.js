@@ -87,7 +87,9 @@ class UserController {
   async show ({ request, response, params }) {
     try {
       const user = await User.findByOrFail('uuid', params.id)
-      await user.load('avatar')
+      await user.load('avatar', avatar => {
+        avatar.setVisible(['avatar'])
+      })
 
       const { organization: hasOrganization } = request.get('organization')
       if (hasOrganization === 'true') {
