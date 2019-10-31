@@ -16,14 +16,32 @@ after(async () => {
   await User.truncate()
 })
 
-test('deve retornar status 401', async ({ client }) => {
-  const user = await Factory.model('App/Models/User').create()
+// test('deve retornar status 401', async ({ client }) => {
+//   const user = await Factory.model('App/Models/User').create()
+
+//   const response = await client
+//     .post('/sessions')
+//     .send({
+//       credential: user.cpf,
+//       password: '123123'
+//     })
+//     .end()
+
+//   response.assertStatus(401)
+// })
+
+test('deve descredenciar usuário inativo', async ({ assert, client }) => {
+  const sessionPayload = {
+    password: '123456'
+  }
+
+  const user = await Factory.model('App/Models/User').create(sessionPayload)
 
   const response = await client
     .post('/sessions')
     .send({
       credential: user.cpf,
-      password: '123123'
+      password: sessionPayload.password
     })
     .end()
 
@@ -32,7 +50,8 @@ test('deve retornar status 401', async ({ client }) => {
 
 test('deve logar o cpf e retornar um token', async ({ assert, client }) => {
   const sessionPayload = {
-    password: '123456'
+    password: '123456',
+    is_active: true
   }
 
   const user = await Factory.model('App/Models/User').create(sessionPayload)
@@ -58,7 +77,8 @@ test('deve logar o cpf e retornar um token', async ({ assert, client }) => {
 
 test('deve logar o email e retornar um token', async ({ assert, client }) => {
   const sessionPayload = {
-    password: '123456'
+    password: '123456',
+    is_active: true
   }
 
   const user = await Factory.model('App/Models/User').create(sessionPayload)
@@ -77,7 +97,8 @@ test('deve logar o email e retornar um token', async ({ assert, client }) => {
 
 test('deve retornar o usuário e a organização', async ({ assert, client }) => {
   const sessionPayload = {
-    password: '123456'
+    password: '123456',
+    is_active: true
   }
 
   const { id } = await Factory.model('App/Models/Organization').create()
