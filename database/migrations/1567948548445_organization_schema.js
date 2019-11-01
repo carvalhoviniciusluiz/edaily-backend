@@ -22,8 +22,6 @@ class OrganizationSchema extends Schema {
       table.string('neighborhood').notNullable()
       table.string('city').notNullable()
       table.string('state').notNullable()
-      table.boolean('sending_authorized_email').default(false)
-      table.boolean('billing_authorized_email').default(false)
       table.boolean('authorized_and_accepted_policy_terms').default(false)
       table
         .integer('file_id')

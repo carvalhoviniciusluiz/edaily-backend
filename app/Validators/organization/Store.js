@@ -35,8 +35,6 @@ class Store extends ValidatorBase {
       'responsible.state': 'required',
 
       // terms data
-      sending_authorized_email: 'required',
-      billing_authorized_email: 'required',
       authorized_and_accepted_policy_terms: 'required'
     }
 

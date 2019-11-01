@@ -28,8 +28,6 @@ class OrganizationController {
       company,
       responsible,
       substitute,
-      sending_authorized_email: shippingAllowed,
-      billing_authorized_email: chargeAllowed,
       authorized_and_accepted_policy_terms: termsAccepted
     } = request.all()
 
@@ -40,8 +38,6 @@ class OrganizationController {
 
     const organization = await Organization.create({
       ...company,
-      sending_authorized_email: !!shippingAllowed,
-      billing_authorized_email: !!chargeAllowed,
       authorized_and_accepted_policy_terms: !!termsAccepted,
       author_id: userResponsible.id,
       revisor_id: userResponsible.id
