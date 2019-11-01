@@ -1,4 +1,4 @@
-const { test, trait, before, after } = use('Test/Suite')('Document Process')
+const { test, trait, before, after } = use('Test/Suite')('Document Review')
 
 trait('Test/ApiClient')
 trait('Auth/Client')

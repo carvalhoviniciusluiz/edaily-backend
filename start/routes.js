@@ -47,8 +47,8 @@ Route.group(() => {
 
   Route.put('users', 'UserController.update').validator('user/Update')
 
-  Route.get('documents', 'DocumentProcessController.index')
-  Route.put('documents/:id/forward', 'DocumentProcessController.update')
+  Route.get('documents', 'DocumentReviewController.index')
+  Route.put('documents/:id/forward', 'DocumentReviewController.update')
 
   Route.get('documents/following', 'DocumentFollowController.index')
 
