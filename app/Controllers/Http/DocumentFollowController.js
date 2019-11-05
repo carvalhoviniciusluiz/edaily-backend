@@ -40,6 +40,12 @@ class DocumentFollowController {
       }))
     }
   }
+
+  async show ({ params }) {
+    const document = await Document.findById(params.id, '-__v -createdAt -pages')
+
+    return document
+  }
 }
 
 module.exports = DocumentFollowController

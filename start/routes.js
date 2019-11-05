@@ -51,6 +51,7 @@ Route.group(() => {
   Route.put('documents/:id/forward', 'DocumentReviewController.update')
 
   Route.get('documents/following', 'DocumentFollowController.index')
+  Route.get('documents/:id', 'DocumentFollowController.show')
 
   Route
     .resource('organizations', 'OrganizationController')
