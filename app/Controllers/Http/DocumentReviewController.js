@@ -1,6 +1,6 @@
 'use strict'
 
-const { getYear } = require('date-fns')
+const getYear = require('date-fns/getYear')
 
 const Organization = use('App/Models/Organization')
 const Document = use('App/Schemas/Document')

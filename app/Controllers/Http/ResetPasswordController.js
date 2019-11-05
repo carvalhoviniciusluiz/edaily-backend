@@ -1,6 +1,8 @@
 'use strict'
 
-const { parseISO, isBefore, subHours } = require('date-fns')
+const parseISO = require('date-fns/parseISO')
+const isBefore = require('date-fns/isBefore')
+const subHours = require('date-fns/subHours')
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User')
