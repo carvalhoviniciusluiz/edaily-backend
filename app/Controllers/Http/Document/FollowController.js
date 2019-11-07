@@ -2,7 +2,7 @@
 
 const Document = use('App/Schemas/Document')
 
-class DocumentFollowController {
+class FollowController {
   async index ({ request, response, auth }) {
     await auth.user.load('organization')
 
@@ -40,12 +40,6 @@ class DocumentFollowController {
       }))
     }
   }
-
-  async show ({ params }) {
-    const document = await Document.findById(params.id, '-__v -createdAt -pages')
-
-    return document
-  }
 }
 
-module.exports = DocumentFollowController
+module.exports = FollowController

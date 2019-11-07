@@ -47,11 +47,16 @@ Route.group(() => {
 
   Route.put('users', 'UserController.update').validator('user/Update')
 
-  Route.get('documents', 'DocumentReviewController.index')
-  Route.put('documents/:id/forward', 'DocumentReviewController.update')
+  Route.get('documents', 'Document/ReviewController.index')
+  Route.put('documents/:id/forward', 'Document/ReviewController.update')
 
-  Route.get('documents/following', 'DocumentFollowController.index')
-  Route.get('documents/:id', 'DocumentFollowController.show')
+  Route.get('documents/following', 'Document/FollowController.index')
+
+  Route.get('documents/:id', 'Document/DocumentController.show')
+  Route.get(
+    'organizations/:organizations_id/users/:users_id/documents',
+    'Document/DocumentController.index'
+  )
 
   Route
     .resource('organizations', 'OrganizationController')
@@ -65,7 +70,7 @@ Route.group(() => {
     ))
 
   Route
-    .resource('organizations.users', 'organization/UserController')
+    .resource('organizations.users', 'Organization/UserController')
     .apiOnly()
     .validator(new Map(
       [

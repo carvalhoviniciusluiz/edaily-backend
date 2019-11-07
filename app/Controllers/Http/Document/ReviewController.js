@@ -5,7 +5,7 @@ const getYear = require('date-fns/getYear')
 const Organization = use('App/Models/Organization')
 const Document = use('App/Schemas/Document')
 
-class DocumentReviewController {
+class ReviewController {
   async index ({ request, response, auth }) {
     await auth.user.load('organization')
 
@@ -87,4 +87,4 @@ class DocumentReviewController {
   }
 }
 
-module.exports = DocumentReviewController
+module.exports = ReviewController
