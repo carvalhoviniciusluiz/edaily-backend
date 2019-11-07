@@ -17,36 +17,12 @@
   "private": true,
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "lint-staged": {
-    "app/**/*.js": [
-      "eslint --fix",
-      "prettier --write",
-      "git add"
-    ],
-    "config/**/*.js": [
-      "eslint --fix",
-      "prettier --write",
-      "git add"
-    ],
-    "database/**/*.js": [
-      "eslint --fix",
-      "prettier --write",
-      "git add"
-    ],
-    "providers/**/*.js": [
-      "eslint --fix",
-      "prettier --write",
-      "git add"
-    ],
-    "start/**/*.js": [
-      "eslint --fix",
-      "prettier --write",
-      "git add"
-    ],
-    "test/**/*.js": [
+    "*/**/*.js": [
       "eslint --fix",
       "prettier --write",
       "git add"
@@ -77,6 +53,8 @@
     "pg": "^7.12.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-conventional": "^8.2.0",
     "eslint": "^6.3.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
