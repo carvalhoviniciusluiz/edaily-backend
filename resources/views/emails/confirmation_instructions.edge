@@ -2,11 +2,13 @@
 
 <p>Para confirmar o seu e-mail você deve clicar no link abaixo:</p>
 
-<p><a href="{{ link }}" target="_blank">Confirmar minha conta</a></p>
+<p><a href="{{ link }}" target="_blank">Confirmar meu e-mail</a></p>
 
+@if(password)
 <p>Não esqueça da sua senha: <strong>{{ password }}</strong></p>
 
 <p>Lembrando, você deve alterar a senha logo que entrar no sistema.</p>
+@endif
 
 <p>
   <strong>Equipe {{ team }}</strong>

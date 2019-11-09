@@ -31,6 +31,10 @@ Route
   .post('reset_password', 'ResetPasswordController.store')
   .validator('ResetPassword')
 
+Route
+  .post('send_confirmation', 'SendConfirmationController.store')
+  .validator('SendConfirmation')
+
 /*
   |--------------------------------------------------------------------------
   | authenticated route configuration
