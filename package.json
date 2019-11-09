@@ -5,8 +5,9 @@
   "description": "Adonisjs boilerplate for API server with pre-configured JWT",
   "main": "index.js",
   "scripts": {
-    "dev": "npm-run-all -p start queue",
-    "queue": "adonis kue:listen",
+    "dev": "npm-run-all -p dev:*",
+    "dev:start": "adonis serve --dev",
+    "dev:queue": "adonis kue:listen",
     "start": "node server.js",
     "test": "node ace test"
   },
@@ -19,14 +20,14 @@
   "private": true,
   "husky": {
     "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+      "pre-push": "adonis test"
     }
   },
   "lint-staged": {
     "*/**/*.js": [
       "eslint --fix",
-      "prettier --write",
       "git add"
     ]
   },
