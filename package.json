@@ -5,6 +5,8 @@
   "description": "Adonisjs boilerplate for API server with pre-configured JWT",
   "main": "index.js",
   "scripts": {
+    "dev": "npm-run-all -p start queue",
+    "queue": "adonis kue:listen",
     "start": "node server.js",
     "test": "node ace test"
   },
@@ -63,6 +65,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "husky": "^3.0.9",
     "lint-staged": "^9.4.2",
+    "npm-run-all": "^4.1.5",
     "sqlite3": "^4.1.0"
   },
   "autoload": {
