@@ -51,6 +51,7 @@
     "adonis-kue": "^5.0.1",
     "cpf-cnpj-validator": "^0.1.0",
     "date-fns": "^2.7.0",
+    "fs-extra": "^8.1.0",
     "mongoose": "^5.7.9",
     "pdf-text-extract": "^1.5.0",
     "pg": "^7.12.1"

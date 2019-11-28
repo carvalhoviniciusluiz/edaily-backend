@@ -44,8 +44,9 @@ class FileService {
     return new Promise((resolve, reject) => {
       try {
         const readStream = FileService.bucket.createReadStream(spec)
-        readStream.pipe(fs.createWriteStream(pathname))
-        resolve()
+        const writeStream = fs.createWriteStream(pathname)
+        readStream.pipe(writeStream)
+        resolve(writeStream)
       } catch (error) {
         reject(error)
       }

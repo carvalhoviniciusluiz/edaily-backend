@@ -1,5 +1,7 @@
 'use strict'
 
+const { pathExistsSync, ensureDirSync } = require('fs-extra')
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 
@@ -16,10 +18,12 @@ const PdfToHtmlJob = use('App/Jobs/PdfToHtml')
 const PdfToTextJob = use('App/Jobs/PdfToText')
 const PersistFileJob = use('App/Jobs/PersistFile')
 
+const FileService = use('App/Services/FileService')
+
 const Document = use('App/Schemas/Document')
 
 class FileController {
-  async store ({ request, response, auth }) {
+  async store ({ request, auth }) {
     const upload = request.file('file', {
       size: Env.get('FILE_SIZE', '10mb')
     })
@@ -76,6 +80,19 @@ class FileController {
   async show ({ params, response }) {
     const file = await File.findByOrFail('uuid', params.id)
 
+    const tmpPath = Helpers.tmpPath('files')
+    const pathname = `${tmpPath}/${file.file}`
+
+    const isExist = pathExistsSync(pathname)
+
+    if (!isExist) {
+      ensureDirSync(tmpPath, { mode: 0o2775 })
+      await FileService.create({ id: file.id }, pathname)
+
+      return response
+        .status(200)
+        .send({ reload: true })
+    }
     return response.download(Helpers.tmpPath(`files/${file.file}`))
   }
 
