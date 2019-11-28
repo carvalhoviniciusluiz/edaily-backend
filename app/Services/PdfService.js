@@ -34,6 +34,18 @@ class PdfService {
       })
     })
   }
+
+  static pdfToPng (filePath, targetDir) {
+    return new Promise((resolve, reject) => {
+      execFile('pdftopng', [filePath, targetDir], (err, stdout, stderr) => {
+        if (err) {
+          const error = new Error('pdftopng command failed: ' + stderr)
+          return reject(error)
+        }
+        resolve(stdout)
+      })
+    })
+  }
 }
 
 module.exports = PdfService
