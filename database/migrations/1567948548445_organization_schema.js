@@ -22,7 +22,7 @@ class OrganizationSchema extends Schema {
       table.string('neighborhood').notNullable()
       table.string('city').notNullable()
       table.string('state').notNullable()
-      table.boolean('authorized_and_accepted_policy_terms').default(false)
+      table.boolean('terms_accepted').default(false)
       table
         .integer('file_id')
         .unsigned()

@@ -98,7 +98,7 @@ test('(PUBLICA ROUTE) deve cadastrar uma oganização', async ({ client, assert 
     .send({
       company,
       responsible,
-      authorized_and_accepted_policy_terms: true
+      terms_accepted: true
     })
     .end()
 
@@ -124,7 +124,7 @@ test('(PUBLICA ROUTE) deve cadastrar uma suplente', async ({ client, assert }) =
       company,
       responsible,
       substitute,
-      authorized_and_accepted_policy_terms: true
+      terms_accepted: true
     })
     .end()
 

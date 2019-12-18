@@ -35,7 +35,7 @@ class Store extends ValidatorBase {
       'responsible.state': 'required',
 
       // terms data
-      authorized_and_accepted_policy_terms: 'required'
+      terms_accepted: 'required'
     }
 
     const { substitute } = this.ctx.request.all()

@@ -28,7 +28,7 @@ class OrganizationController {
       company,
       responsible,
       substitute,
-      authorized_and_accepted_policy_terms: termsAccepted
+      terms_accepted: termsAccepted
     } = request.all()
 
     const userResponsible = await UserHelper.register({
@@ -38,7 +38,7 @@ class OrganizationController {
 
     const organization = await Organization.create({
       ...company,
-      authorized_and_accepted_policy_terms: !!termsAccepted,
+      terms_accepted: !!termsAccepted,
       author_id: userResponsible.id,
       revisor_id: userResponsible.id
     })
