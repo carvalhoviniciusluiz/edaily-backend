@@ -13,6 +13,7 @@ class ConfirmationController {
 
     user.confirmation_token = null
     user.confirmed_at = new Date()
+    user.is_active = true
 
     await user.save()
 

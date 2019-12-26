@@ -32,7 +32,7 @@ class SessionController {
     if (!user.is_active) {
       return response
         .status(401)
-        .send({ error: { message: 'Conta de acesso inativa.' } })
+        .send({ error: { message: 'Conta de acesso não confirmada.' } })
     }
 
     try {
