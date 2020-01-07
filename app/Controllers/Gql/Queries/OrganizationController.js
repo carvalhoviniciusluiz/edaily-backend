@@ -10,6 +10,9 @@ class OrganizationController {
     const organizations = await Organization
       .query()
       .where(conditions)
+      .with('users')
+      .with('author')
+      .with('revisor')
       .paginate(page, limit)
 
     return organizations.toJSON()

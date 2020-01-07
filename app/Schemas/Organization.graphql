@@ -15,6 +15,9 @@ type Organization {
   city: String
   state: String
   terms_accepted: String
+  users: [User]
+  author: User
+  revisor: User
 }
 
 type OrganizationPaginated {

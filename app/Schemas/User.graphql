@@ -1,0 +1,62 @@
+type User {
+  uuid: ID
+  firstname: String
+  lastname: String
+  email: String
+  cpf: String
+  rg: String
+  phone: String
+  zipcode: String
+  street: String
+  street_number: String
+  neighborhood: String
+  city: String
+  state: String
+  is_responsible: String
+  is_active: String
+  recovery_token: String
+  recovery_token_created_at: String
+  confirmation_token: String
+  confirmed_at: String
+  sign_in_count: String
+  last_sign_in_at: String
+  current_sign_in_at: String
+  last_sign_in_ip_address: String
+  current_sign_in_ip_address: String
+}
+
+type UserPaginated {
+  total: Int
+  perPage: Int
+  page: Int
+  lastPage: Int
+  data: [User]
+}
+
+type Query {
+  users(uuid: ID, page: Int, limit: Int): UserPaginated
+}
+
+input UserInput {
+  firstname: String
+  lastname: String
+  email: String
+  cpf: String
+  rg: String
+  phone: String
+  zipcode: String
+  street: String
+  street_number: String
+  neighborhood: String
+  city: String
+  state: String
+  is_responsible: String
+  is_active: String
+  confirmed_at: String
+}
+
+type Mutation {
+  addUser(User: UserInput!): User
+  updateUser(uuid: ID!, User: UserInput!): User
+  removeUser(uuid: ID!): Boolean
+}
