@@ -6,7 +6,7 @@ const User = use('App/Models/User')
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Organization = use('App/Models/Organization')
 
-const Document = use('App/Schemas/Document')
+const Document = use('App/Models/Schemas/Document')
 
 class DocumentController {
   async index ({ request, params }) {

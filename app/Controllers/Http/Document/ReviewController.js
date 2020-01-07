@@ -3,7 +3,7 @@
 const getYear = require('date-fns/getYear')
 
 const Organization = use('App/Models/Organization')
-const Document = use('App/Schemas/Document')
+const Document = use('App/Models/Schemas/Document')
 
 class ReviewController {
   async index ({ request, response, auth }) {

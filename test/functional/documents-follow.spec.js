@@ -7,7 +7,7 @@ trait('Auth/Client')
 const User = use('App/Models/User')
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const Document = use('App/Schemas/Document')
+const Document = use('App/Models/Schemas/Document')
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')

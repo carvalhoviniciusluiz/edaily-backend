@@ -5,7 +5,7 @@ const Factory = use('Factory')
 
 const Helpers = use('Helpers')
 
-const Document = use('App/Schemas/Document')
+const Document = use('App/Models/Schemas/Document')
 
 trait('Test/ApiClient')
 trait('Auth/Client')

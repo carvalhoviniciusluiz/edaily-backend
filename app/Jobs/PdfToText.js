@@ -2,7 +2,7 @@
 
 const PdfService = use('App/Services/PdfService')
 
-const Document = use('App/Schemas/Document')
+const Document = use('App/Models/Schemas/Document')
 
 class PdfToText {
   static get concurrency () {

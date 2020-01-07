@@ -1,6 +1,6 @@
 'use strict'
 
-const Document = use('App/Schemas/Document')
+const Document = use('App/Models/Schemas/Document')
 
 class FollowController {
   async index ({ request, response, auth }) {

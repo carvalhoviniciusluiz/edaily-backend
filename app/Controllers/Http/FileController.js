@@ -20,7 +20,7 @@ const PersistFileJob = use('App/Jobs/PersistFile')
 
 const FileService = use('App/Services/FileService')
 
-const Document = use('App/Schemas/Document')
+const Document = use('App/Models/Schemas/Document')
 
 class FileController {
   async store ({ request, auth }) {
