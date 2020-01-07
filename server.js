@@ -21,5 +21,10 @@ const { Ignitor } = require('@adonisjs/ignitor')
 
 new Ignitor(require('@adonisjs/fold'))
   .appRoot(__dirname)
+
+  // Register preLoads to GQLProvider
+  .preLoad('start/graphql.js')
+  .preLoad('start/gqlKernel.js')
+
   .fireHttpServer()
   .catch(console.error)

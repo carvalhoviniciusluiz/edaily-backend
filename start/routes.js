@@ -3,6 +3,19 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
+const Gql = use('Gql')
+
+/*
+  |--------------------------------------------------------------------------
+  | graphql routes config
+  |--------------------------------------------------------------------------
+  */
+
+Route.post('/', ctx => Gql.handle(ctx))
+
+// If you want a playground
+Route.get('/graphiql', ctx => Gql.handleUi(ctx))
+
 /*
   |--------------------------------------------------------------------------
   | public routes config

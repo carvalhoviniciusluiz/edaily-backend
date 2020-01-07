@@ -1,0 +1,46 @@
+type Organization {
+  uuid: ID
+  fingerprint: String
+  definition: String
+  name: String
+  initials: String
+  cnpj: String
+  billing_email: String
+  phone1: String
+  phone2: String
+  zipcode: String
+  street: String
+  street_number: String
+  neighborhood: String
+  city: String
+  state: String
+  terms_accepted: String
+}
+
+type Query {
+  organizations(uuid: ID, page: Int, limit: Int): [Organization]
+}
+
+input OrganizationInput {
+  fingerprint: String
+  definition: String
+  name: String
+  initials: String
+  cnpj: String
+  billing_email: String
+  phone1: String
+  phone2: String
+  zipcode: String
+  street: String
+  street_number: String
+  neighborhood: String
+  city: String
+  state: String
+  terms_accepted: String
+}
+
+type Mutation {
+  addOrganization(organization: OrganizationInput!): Organization
+  updateOrganization(uuid: ID!, organization: OrganizationInput!): Organization
+  removeOrganization(uuid: ID!): Boolean
+}
