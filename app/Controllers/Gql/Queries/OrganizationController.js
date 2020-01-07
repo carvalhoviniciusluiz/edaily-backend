@@ -1,14 +1,18 @@
 'use strict'
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Organization = use('App/Models/Organization')
 
 class OrganizationController {
   async organizations (parent, arg, ctx) {
-    const { page = 1, limit = 10 } = arg
+    const { page = 1, limit = 10, ...conditions } = arg
 
-    return Organization
+    const organizations = await Organization
       .query()
+      .where(conditions)
       .paginate(page, limit)
+
+    return organizations.toJSON()
   }
 }
 

@@ -17,8 +17,16 @@ type Organization {
   terms_accepted: String
 }
 
+type OrganizationPaginated {
+  total: Int
+  perPage: Int
+  page: Int
+  lastPage: Int
+  data: [Organization]
+}
+
 type Query {
-  organizations(uuid: ID, page: Int, limit: Int): [Organization]
+  organizations(uuid: ID, page: Int, limit: Int): OrganizationPaginated
 }
 
 input OrganizationInput {
