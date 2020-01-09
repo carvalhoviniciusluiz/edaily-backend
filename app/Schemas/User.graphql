@@ -1,3 +1,5 @@
+## Query
+#
 type User {
   uuid: ID
   firstname: String
@@ -22,7 +24,11 @@ type User {
   current_sign_in_ip_address: String
 }
 
-type UserPaginated {
+input UserFieldsInput {
+  uuid: ID
+}
+
+type UserResultSuccess {
   total: Int
   perPage: Int
   page: Int
@@ -31,9 +37,16 @@ type UserPaginated {
 }
 
 type Query {
-  users(uuid: ID, page: Int, limit: Int): UserPaginated
+  users(
+    organization: OrganizationFieldsInput,
+    user: UserFieldsInput,
+    page: Int,
+    perPage: Int
+  ): UserResultSuccess
 }
 
+## Mutation
+#
 input UserInput {
   firstname: String
   lastname: String
@@ -52,7 +65,7 @@ input UserInput {
 }
 
 type Mutation {
-  addUser(User: UserInput!): User
-  updateUser(uuid: ID!, User: UserInput!): User
+  addUser(user: UserInput!): User
+  updateUser(uuid: ID!, user: UserInput!): User
   removeUser(uuid: ID!): Boolean
 }
