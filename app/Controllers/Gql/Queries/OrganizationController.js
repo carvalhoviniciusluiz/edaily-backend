@@ -5,11 +5,11 @@ const Organization = use('App/Models/Organization')
 
 class OrganizationController {
   async organizations (parent, arg, ctx) {
-    const { page = 1, limit = 10, ...conditions } = arg
+    const { organization = {}, page = 1, limit = 10 } = arg
 
     const organizations = await Organization
       .query()
-      .where(conditions)
+      .where(organization)
       .with('users')
       .with('author')
       .with('revisor')

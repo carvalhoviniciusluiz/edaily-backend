@@ -22,7 +22,11 @@ type Organization {
   revisor: User
 }
 
-type OrganizationPaginated {
+input OrganizationFieldsInput {
+  uuid: ID
+}
+
+type OrganizationResultSuccess {
   total: Int
   perPage: Int
   page: Int
@@ -31,7 +35,11 @@ type OrganizationPaginated {
 }
 
 type Query {
-  organizations(uuid: ID, page: Int, limit: Int): OrganizationPaginated
+  organizations(
+    organization: OrganizationFieldsInput,
+    page: Int,
+    limit: Int
+  ): OrganizationResultSuccess
 }
 
 ## Mutation
@@ -69,5 +77,8 @@ type Mutation {
     responsible: UserInput!,
     substitute: UserInput
   ): Organization
-  updateOrganization(uuid: ID!, organization: OrganizationUpdateInput!): Organization
+
+  updateOrganization(
+    uuid: ID!, organization: OrganizationUpdateInput!
+  ): Organization
 }
