@@ -37,12 +37,34 @@ class OrganizationController {
     return org.toJSON()
   }
 
+  async updateOrganization (parent, arg, ctx) {
+    const { uuid, organization: data } = arg
+
+    const organization = await Organization.findByOrFail('uuid', uuid)
+
+    organization.merge({
+      ...data
+      // revisor_id: auth.user.id
+    })
+
+    await organization.save()
+
+    await organization.load('author')
+    await organization.load('revisor')
+    await organization.load('users')
+
+    return organization.toJSON()
+  }
+
   static middlewares () {
     return {
       addOrganizationWithResponsibleAndSubstitute: [
         'organizationValidator',
         'responsibleValidator',
         'substituteValidator'
+      ],
+      updateOrganization: [
+        'organizationValidator'
       ]
     }
   }
