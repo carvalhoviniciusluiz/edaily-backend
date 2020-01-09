@@ -50,9 +50,8 @@ input UserInput {
   neighborhood: String
   city: String
   state: String
-  is_responsible: String
-  is_active: String
-  confirmed_at: String
+  is_responsible: Boolean
+  is_active: Boolean
 }
 
 type Mutation {

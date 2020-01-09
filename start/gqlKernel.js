@@ -25,7 +25,11 @@ const globalMiddleware = []
 |   auth: 'Adonis/Middleware/Auth'
 | }
 */
-const namedMiddleware = {}
+const namedMiddleware = {
+  organizationValidator: 'App/Middleware/Validators/Organization',
+  responsibleValidator: 'App/Middleware/Validators/Responsible',
+  substituteValidator: 'App/Middleware/Validators/Substitute'
+}
 
 Gql.registerGlobal(globalMiddleware)
   .registerNamed(namedMiddleware)
