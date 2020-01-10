@@ -22,7 +22,7 @@ class Organization extends Model {
   }
 
   static get hidden () {
-    return ['id', 'author_id', 'revisor_id', 'file_id', 'created_at']
+    return ['id', 'author_id', 'revisor_id', 'created_at']
   }
 
   author () {
@@ -35,10 +35,6 @@ class Organization extends Model {
 
   users () {
     return this.hasMany('App/Models/User')
-  }
-
-  file () {
-    return this.belongsTo('App/Models/File')
   }
 }
 

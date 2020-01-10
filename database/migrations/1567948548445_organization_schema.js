@@ -24,16 +24,8 @@ class OrganizationSchema extends Schema {
       table.string('state').notNullable()
       table.boolean('terms_accepted').default(false)
       table
-        .integer('file_id')
-        .unsigned()
-        .references('id')
-        .inTable('files')
-        .onUpdate('CASCADE')
-        .onDelete('SET NULL')
-      table
         .integer('author_id')
         .unsigned()
-        .notNullable()
         .references('id')
         .inTable('users')
         .onUpdate('CASCADE')
@@ -41,7 +33,6 @@ class OrganizationSchema extends Schema {
       table
         .integer('revisor_id')
         .unsigned()
-        .notNullable()
         .references('id')
         .inTable('users')
         .onUpdate('CASCADE')

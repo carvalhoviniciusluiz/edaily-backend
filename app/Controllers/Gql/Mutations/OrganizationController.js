@@ -1,6 +1,5 @@
 'use strict'
 
-/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const UserHelper = require('../../Helpers/UserHelper')
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
@@ -9,51 +8,47 @@ const Organization = use('App/Models/Organization')
 class OrganizationController {
   async addOrganizationWithResponsibleAndSubstitute (parent, arg, ctx) {
     const { organization, responsible, substitute } = arg
+    const o = await Organization.create(organization)
 
-    const userResponsible = await UserHelper.register({
+    const u = await UserHelper.register({
       ...responsible,
-      is_responsible: true
+      is_responsible: true,
+      organization_id: o.id
     })
 
-    const org = await Organization.create({
-      ...organization,
-      author_id: userResponsible.id,
-      revisor_id: userResponsible.id
-    })
+    o.author_id = u.id
+    o.revisor_id = u.id
 
-    userResponsible.organization_id = org.id
-    await userResponsible.save()
+    await o.save()
 
     if (substitute) {
-      const userSubstitute = await UserHelper.register({
+      await UserHelper.register({
         ...substitute,
-        is_responsible: true
+        is_responsible: true,
+        organization_id: o.id
       })
-
-      userSubstitute.organization_id = org.id
-      await userSubstitute.save()
     }
 
-    return org.toJSON()
+    return o.toJSON()
   }
 
-  async updateOrganization (parent, arg, ctx) {
-    const { uuid, organization: data } = arg
+  async updateOrganization (parent, arg, { auth }) {
+    const { uuid, organization } = arg
+    const o = await Organization.findByOrFail('uuid', uuid)
 
-    const organization = await Organization.findByOrFail('uuid', uuid)
+    if (o) {
+      o.merge({
+        ...organization,
+        revisor_id: auth.user.id
+      })
 
-    organization.merge({
-      ...data
-      // revisor_id: auth.user.id
-    })
+      await o.save()
+      await o.load('author')
+      await o.load('revisor')
+      await o.load('users')
 
-    await organization.save()
-
-    await organization.load('author')
-    await organization.load('revisor')
-    await organization.load('users')
-
-    return organization.toJSON()
+      return o.toJSON()
+    }
   }
 
   static middlewares () {
