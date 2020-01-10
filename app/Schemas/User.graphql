@@ -22,6 +22,7 @@ type User {
   current_sign_in_at: String
   last_sign_in_ip_address: String
   current_sign_in_ip_address: String
+  organization: Organization
 }
 
 input UserFieldsInput {
@@ -48,24 +49,32 @@ type Query {
 ## Mutation
 #
 input UserInput {
-  firstname: String
-  lastname: String
-  email: String
-  cpf: String
-  rg: String
-  phone: String
-  zipcode: String
-  street: String
-  street_number: String
-  neighborhood: String
-  city: String
-  state: String
+  firstname: String!
+  lastname: String!
+  email: String!
+  cpf: String!
+  rg: String!
+  phone: String!
+  zipcode: String!
+  street: String!
+  street_number: String!
+  neighborhood: String!
+  city: String!
+  state: String!
   is_responsible: Boolean
   is_active: Boolean
+  avatar_id: String
 }
 
 type Mutation {
-  addUser(user: UserInput!): User
-  updateUser(uuid: ID!, user: UserInput!): User
-  removeUser(uuid: ID!): Boolean
+  addUser(
+    organization: OrganizationFieldsInput!,
+    user: UserInput!
+  ): User
+
+  updateUser(
+    organization: OrganizationFieldsInput!,
+    user: UserFieldsInput!,
+    data: UserInput!
+  ): User
 }

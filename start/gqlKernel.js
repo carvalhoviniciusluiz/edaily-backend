@@ -27,6 +27,8 @@ const globalMiddleware = []
 */
 const namedMiddleware = {
   auth: 'App/Middleware/Auth',
+  userCreateValidator: 'App/Middleware/Validators/User/Create',
+  userUpdateValidator: 'App/Middleware/Validators/User/Update',
   organizationValidator: 'App/Middleware/Validators/Organization',
   responsibleValidator: 'App/Middleware/Validators/Responsible',
   substituteValidator: 'App/Middleware/Validators/Substitute'
