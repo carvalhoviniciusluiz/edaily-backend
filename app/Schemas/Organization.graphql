@@ -38,7 +38,7 @@ type Query {
   organizations(
     organization: OrganizationFieldsInput,
     page: Int,
-    limit: Int
+    perPage: Int
   ): OrganizationResultSuccess
 }
 
@@ -63,11 +63,11 @@ input OrganizationInput {
 }
 
 input OrganizationUpdateInput {
-  name: String!
-  initials: String!
-  cnpj: String!
-  billing_email: String!
-  phone1: String!
+  name: String
+  initials: String
+  cnpj: String
+  billing_email: String
+  phone1: String
   phone2: String
 }
 
@@ -79,6 +79,7 @@ type Mutation {
   ): Organization
 
   updateOrganization(
-    uuid: ID!, organization: OrganizationUpdateInput!
+    organization: OrganizationFieldsInput!,
+    data: OrganizationUpdateInput!
   ): Organization
 }

@@ -1,3 +1,6 @@
+require('../../start/graphql')
+require('../../start/gqlKernel')
+
 const { test, trait, before, after } = use('Test/Suite')('Organizations')
 
 trait('Test/ApiClient')
@@ -22,12 +25,25 @@ test('deve retornar uma lista vazia', async ({ client, assert }) => {
     .create()
 
   const response = await client
-    .get('organizations')
+    .post('/')
     .loginVia(user, 'jwt')
-    .end()
+    .send({
+      query: `
+        {
+          organizations {
+            data {
+              uuid
+              name
+              initials
+            }
+          }
+        }
+      `
+    }).end()
 
   response.assertStatus(200)
-  assert.equal(response.body.total, '0')
+  assert.exists(response.body.data.organizations)
+  assert.equal(response.body.data.organizations.data.length, 0)
 })
 
 test('deve retornar uma lista não vazia', async ({ client, assert }) => {
@@ -38,12 +54,25 @@ test('deve retornar uma lista não vazia', async ({ client, assert }) => {
   await Factory.model('App/Models/Organization').create()
 
   const response = await client
-    .get('organizations')
+    .post('/')
     .loginVia(user, 'jwt')
-    .end()
+    .send({
+      query: `
+        {
+          organizations {
+            data {
+              uuid
+              name
+              initials
+            }
+          }
+        }
+      `
+    }).end()
 
   response.assertStatus(200)
-  assert.equal(response.body.total, '1')
+  assert.exists(response.body.data.organizations)
+  assert.equal(response.body.data.organizations.data.length, 1)
 })
 
 test('deve retornar uma lista paginada', async ({ client, assert }) => {
@@ -56,97 +85,243 @@ test('deve retornar uma lista paginada', async ({ client, assert }) => {
   await Factory.model('App/Models/Organization').create()
 
   const response = await client
-    .get('organizations?limit=1')
+    .post('/')
     .loginVia(user, 'jwt')
-    .end()
+    .send({
+      query: `
+        {
+          organizations(perPage:1) {
+            data {
+              uuid
+              name
+              initials
+            }
+          }
+        }
+      `
+    }).end()
 
   response.assertStatus(200)
-  assert.equal(response.body.data.length, 1)
+  assert.exists(response.body.data.organizations)
+  assert.equal(response.body.data.organizations.data.length, 1)
 })
 
 test('(PUBLICA ROUTE) deve aceitar os termos', async ({ client, assert }) => {
-  const responsible = (
-    await Factory.model('App/Models/User').make()
-  ).toJSON()
-
-  const company = (
-    await Factory.model('App/Models/Organization').make()
-  ).toJSON()
+  const organization = await Factory.model('App/Models/Organization').make()
+  const responsible = await Factory.model('App/Models/User').make()
 
   const response = await client
-    .post('organizations')
+    .post('/')
     .send({
-      company,
-      responsible
-    })
-    .end()
+      query: `
+        mutation {
+          organization:addOrganizationWithResponsibleAndSubstitute(
+            organization:{
+              definition:"${organization.definition}",
+              name:"${organization.name}",
+              initials:"${organization.initials}",
+              cnpj:"${organization.cnpj}",
+              billing_email:"${organization.billing_email}",
+              phone1:"${organization.phone1}",
+              phone2:"${organization.phone2}",
+              zipcode:"${organization.zipcode}",
+              street:"${organization.street}",
+              street_number:"${organization.street_number}",
+              neighborhood:"${organization.neighborhood}",
+              city:"${organization.city}",
+              state:"${organization.state}",
+              terms_accepted:false
+            },
+            responsible:{
+              firstname:"${responsible.firstname}",
+              lastname:"${responsible.lastname}",
+              email:"${responsible.email}",
+              cpf:"${responsible.cpf}",
+              rg:"${responsible.rg}",
+              phone:"${responsible.phone2}",
+              zipcode:"${responsible.zipcode}",
+              street:"${responsible.street}",
+              street_number:"${responsible.street_number}",
+              neighborhood:"${responsible.neighborhood}",
+              city:"${responsible.city}",
+              state:"${responsible.state}",
+              is_responsible:true,
+              is_active:true
+            }
+          ) {
+            uuid
+            name
+            initials
+          }
+        }
+      `
+    }).end()
 
-  response.assertStatus(400)
+  response.assertStatus(200)
 })
 
-test('(PUBLICA ROUTE) deve cadastrar uma oganização', async ({ client, assert }) => {
-  const responsible = (
-    await Factory.model('App/Models/User').make()
-  ).toJSON()
+test('(PUBLICA ROUTE) deve cadastrar a organização com o representante',
+  async ({ client, assert }) => {
+    const organization = await Factory.model('App/Models/Organization').make()
+    const responsible = await Factory.model('App/Models/User').make()
 
-  const company = (
-    await Factory.model('App/Models/Organization').make()
-  ).toJSON()
+    const response = await client
+      .post('/')
+      .send({
+        query: `
+        mutation {
+          organization:addOrganizationWithResponsibleAndSubstitute(
+            organization:{
+              definition:"${organization.definition}",
+              name:"${organization.name}",
+              initials:"${organization.initials}",
+              cnpj:"${organization.cnpj}",
+              billing_email:"${organization.billing_email}",
+              phone1:"${organization.phone1}",
+              phone2:"${organization.phone2}",
+              zipcode:"${organization.zipcode}",
+              street:"${organization.street}",
+              street_number:"${organization.street_number}",
+              neighborhood:"${organization.neighborhood}",
+              city:"${organization.city}",
+              state:"${organization.state}",
+              terms_accepted:true
+            },
+            responsible:{
+              firstname:"${responsible.firstname}",
+              lastname:"${responsible.lastname}",
+              email:"${responsible.email}",
+              cpf:"${responsible.cpf}",
+              rg:"${responsible.rg}",
+              phone:"${responsible.phone2}",
+              zipcode:"${responsible.zipcode}",
+              street:"${responsible.street}",
+              street_number:"${responsible.street_number}",
+              neighborhood:"${responsible.neighborhood}",
+              city:"${responsible.city}",
+              state:"${responsible.state}",
+              is_responsible:true,
+              is_active:true
+            }
+          ) {
+            uuid
+            name
+            initials
+          }
+        }
+      `
+      }).end()
 
-  const response = await client
-    .post('organizations')
-    .send({
-      company,
-      responsible,
-      terms_accepted: true
-    })
-    .end()
+    response.assertStatus(200)
+    assert.exists(response.body.data.organization)
+    assert.equal(response.body.data.organization.name, organization.name)
+    assert.equal(response.body.data.organization.initials, organization.initials)
+  })
 
-  response.assertStatus(204)
-})
+test('(PUBLICA ROUTE) deve cadastrar com suplente',
+  async ({ client, assert }) => {
+    const organization = await Factory.model('App/Models/Organization').make()
+    const responsible = await Factory.model('App/Models/User').make()
+    const substitute = await Factory.model('App/Models/User').make()
 
-test('(PUBLICA ROUTE) deve cadastrar uma suplente', async ({ client, assert }) => {
-  const responsible = (
-    await Factory.model('App/Models/User').make()
-  ).toJSON()
+    const response = await client
+      .post('/')
+      .send({
+        query: `
+        mutation {
+          organization:addOrganizationWithResponsibleAndSubstitute(
+            organization:{
+              definition:"${organization.definition}",
+              name:"${organization.name}",
+              initials:"${organization.initials}",
+              cnpj:"${organization.cnpj}",
+              billing_email:"${organization.billing_email}",
+              phone1:"${organization.phone1}",
+              phone2:"${organization.phone2}",
+              zipcode:"${organization.zipcode}",
+              street:"${organization.street}",
+              street_number:"${organization.street_number}",
+              neighborhood:"${organization.neighborhood}",
+              city:"${organization.city}",
+              state:"${organization.state}",
+              terms_accepted:true
+            },
+            responsible:{
+              firstname:"${responsible.firstname}",
+              lastname:"${responsible.lastname}",
+              email:"${responsible.email}",
+              cpf:"${responsible.cpf}",
+              rg:"${responsible.rg}",
+              phone:"${responsible.phone2}",
+              zipcode:"${responsible.zipcode}",
+              street:"${responsible.street}",
+              street_number:"${responsible.street_number}",
+              neighborhood:"${responsible.neighborhood}",
+              city:"${responsible.city}",
+              state:"${responsible.state}",
+              is_responsible:true,
+              is_active:true
+            },
+            substitute:{
+              firstname:"${substitute.firstname}",
+              lastname:"${substitute.lastname}",
+              email:"${substitute.email}",
+              cpf:"${substitute.cpf}",
+              rg:"${substitute.rg}",
+              phone:"${substitute.phone2}",
+              zipcode:"${substitute.zipcode}",
+              street:"${substitute.street}",
+              street_number:"${substitute.street_number}",
+              neighborhood:"${substitute.neighborhood}",
+              city:"${substitute.city}",
+              state:"${substitute.state}",
+              is_responsible:true,
+              is_active:true
+            }
+          ) {
+            uuid
+            name
+            initials
+          }
+        }
+      `
+      }).end()
 
-  const substitute = (
-    await Factory.model('App/Models/User').make()
-  ).toJSON()
-
-  const company = (
-    await Factory.model('App/Models/Organization').make()
-  ).toJSON()
-
-  const response = await client
-    .post('organizations')
-    .send({
-      company,
-      responsible,
-      substitute,
-      terms_accepted: true
-    })
-    .end()
-
-  response.assertStatus(204)
-})
+    response.assertStatus(200)
+    assert.exists(response.body.data.organization)
+    assert.equal(response.body.data.organization.name, organization.name)
+    assert.equal(response.body.data.organization.initials, organization.initials)
+  })
 
 test('deve retornar uma oganização', async ({ client, assert }) => {
   const user = await Factory
     .model('App/Models/User')
     .create()
 
-  const { uuid } = await Factory
+  const organization = await Factory
     .model('App/Models/Organization')
     .create()
 
   const response = await client
-    .get(`organizations/${uuid}`)
+    .post('/')
     .loginVia(user, 'jwt')
-    .end()
+    .send({
+      query: `
+        {
+          organizations(organization:{uuid:"${organization.uuid}"}) {
+            data {
+              uuid
+              name
+              initials
+            }
+          }
+        }
+      `
+    }).end()
 
   response.assertStatus(200)
-  assert.exists(response.body.uuid)
+  assert.exists(response.body.data.organizations)
+  assert.equal(response.body.data.organizations.data[0].uuid, organization.uuid)
 })
 
 test('deve atualizar uma oganização', async ({ client, assert }) => {
@@ -154,35 +329,35 @@ test('deve atualizar uma oganização', async ({ client, assert }) => {
     .model('App/Models/User')
     .create()
 
-  const { uuid } = await Factory
+  const organization = await Factory
     .model('App/Models/Organization')
     .create()
 
   const response = await client
-    .put(`organizations/${uuid}`)
+    .post('/')
     .loginVia(user, 'jwt')
     .send({
-      name: 'xpto'
-    })
-    .end()
+      query: `
+        mutation {
+          organization:updateOrganization(
+            organization:{
+              uuid:"${organization.uuid}"
+            },
+            data:{
+              name:"Inex Ltda.",
+              initials:"Inex"
+            }) {
+            uuid
+            name
+            initials
+          }
+        }
+      `
+    }).end()
 
   response.assertStatus(200)
-  assert.equal(response.body.name, 'xpto')
-})
-
-test('deve deletar uma oganização', async ({ client }) => {
-  const user = await Factory
-    .model('App/Models/User')
-    .create()
-
-  const { uuid } = await Factory
-    .model('App/Models/Organization')
-    .create()
-
-  const response = await client
-    .delete(`organizations/${uuid}`)
-    .loginVia(user, 'jwt')
-    .end()
-
-  response.assertStatus(204)
+  assert.exists(response.body.data.organization)
+  assert.equal(response.body.data.organization.uuid, organization.uuid)
+  assert.equal(response.body.data.organization.name, 'Inex Ltda.')
+  assert.equal(response.body.data.organization.initials, 'Inex')
 })

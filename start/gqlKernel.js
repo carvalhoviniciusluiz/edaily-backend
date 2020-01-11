@@ -29,7 +29,8 @@ const namedMiddleware = {
   auth: 'App/Middleware/Auth',
   userCreateValidator: 'App/Middleware/Validators/User/Create',
   userUpdateValidator: 'App/Middleware/Validators/User/Update',
-  organizationValidator: 'App/Middleware/Validators/Organization',
+  organizationCreateValidator: 'App/Middleware/Validators/Organization/Create',
+  organizationUpdateValidator: 'App/Middleware/Validators/Organization/Update',
   responsibleValidator: 'App/Middleware/Validators/Responsible',
   substituteValidator: 'App/Middleware/Validators/Substitute'
 }
