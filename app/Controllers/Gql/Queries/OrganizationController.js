@@ -5,7 +5,11 @@ const Organization = use('App/Models/Organization')
 
 class OrganizationController {
   async organizations (parent, arg, ctx) {
-    const { organization = {}, page = 1, limit = 10 } = arg
+    const {
+      organization = {},
+      page = 1,
+      perPage = 10
+    } = arg
 
     const organizations = await Organization
       .query()
@@ -13,9 +17,17 @@ class OrganizationController {
       .with('users')
       .with('author')
       .with('revisor')
-      .paginate(page, limit)
+      .paginate(page, perPage)
 
     return organizations.toJSON()
+  }
+
+  static middlewares () {
+    return {
+      organizations: [
+        'auth'
+      ]
+    }
   }
 }
 
