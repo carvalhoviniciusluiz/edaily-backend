@@ -61,7 +61,7 @@ class OrganizationController {
         'substituteValidator'
       ],
       updateOrganization: [
-        'auth',
+        'authValidator',
         'organizationUpdateValidator'
       ]
     }

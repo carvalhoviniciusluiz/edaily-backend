@@ -5,7 +5,7 @@ const Gql = use('Gql')
 Gql.schema('User', () => {
   Gql.query('Queries/UserController')
   Gql.mutation('Mutations/UserController')
-}).middleware(['auth'])
+}).middleware(['authValidator'])
 
 Gql.schema('Organization', () => {
   Gql.query('Queries/OrganizationController')
