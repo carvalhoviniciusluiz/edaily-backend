@@ -19,8 +19,7 @@ class Profile {
     )
 
     if (validation.fails()) {
-      const message = JSON.stringify(validation.messages()[0])
-      throw new Error(message)
+      return ctx.response.status(400).send(false)
     }
 
     const result = await resolve(root, args, ctx, info)

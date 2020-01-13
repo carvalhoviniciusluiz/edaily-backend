@@ -25,8 +25,7 @@ class Substitute {
       }, messages)
 
       if (validation.fails()) {
-        const message = JSON.stringify(validation.messages()[0])
-        throw new Error(message)
+        return ctx.response.status(400).send(false)
       }
     }
 

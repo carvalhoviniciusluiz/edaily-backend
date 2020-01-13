@@ -157,7 +157,7 @@ test('(PUBLICA ROUTE) deve aceitar os termos', async ({ client, assert }) => {
       `
     }).end()
 
-  response.assertStatus(200)
+  response.assertStatus(400)
 })
 
 test('(PUBLICA ROUTE) deve cadastrar a organização com o representante',
