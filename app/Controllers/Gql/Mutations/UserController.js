@@ -59,12 +59,11 @@ class UserController {
     return u.toJSON()
   }
 
-  async updateAvatar (parent, arg, { auth, response }) {
+  async updateAvatar (parent, arg, { auth }) {
     const { avatar } = arg
 
     const u = await auth
       .getUser()
-
     const f = await File
       .findBy('uuid', avatar.uuid)
 
@@ -72,12 +71,8 @@ class UserController {
       avatar_id: f.id
     })
 
-    await u.save()
-
-    await u.load('organization')
-    await u.load('avatar')
-
-    return u.toJSON()
+    const response = await u.save()
+    return response
   }
 
   async updatePassword (parent, arg, { auth, response }) {
@@ -130,6 +125,9 @@ class UserController {
       ],
       updatePassword: [
         'passwordValidator'
+      ],
+      updateAvatar: [
+        'avatarValidator'
       ]
     }
   }
