@@ -3,22 +3,18 @@
 const { validate } = use('Validator')
 const { list } = use('Antl')
 
-class UpdateUser {
+class Profile {
   async gqlHandle (resolve, root, args, ctx, info) {
-    const { organization, user, data } = args
+    const { profile } = args
     const messages = list('validation')
 
+    const rules = {
+      firstname: 'required',
+      lastname: 'required'
+    }
     const validation = await validate(
-      {
-        organization_uuid: organization.uuid,
-        user_uuid: user.uuid,
-        ...data
-      }, {
-        organization_uuid: 'required|exists:organizations,uuid',
-        user_uuid: 'required|exists:users,uuid',
-        email: 'required|email',
-        cpf: 'required|cpf'
-      },
+      { ...profile },
+      rules,
       messages
     )
 
@@ -32,4 +28,4 @@ class UpdateUser {
   }
 }
 
-module.exports = UpdateUser
+module.exports = Profile

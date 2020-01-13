@@ -1,3 +1,6 @@
+require('../../start/graphql')
+require('../../start/gqlKernel')
+
 const { test, trait, before, after } = use('Test/Suite')('Users')
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
@@ -17,131 +20,319 @@ after(async () => {
   await User.truncate()
 })
 
-test('deve criar um usuário', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').make()
+test('deve retornar uma lista vazia', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+  const user = await Factory.model('App/Models/User').create()
 
   const response = await client
-    .post('/users')
-    .send(user.toJSON())
-    .end()
+    .post('/')
+    .loginVia(user, 'jwt')
+    .send({
+      query: `
+        {
+          users(
+            organization:{
+              uuid:"${organization.uuid}"
+            },
+            user:{
+              uuid:"${user.uuid}"
+            }
+          ) {
+            data {uuid}
+          }
+        }
+      `
+    }).end()
 
   response.assertStatus(200)
-  assert.exists(response.body.uuid)
+  assert.exists(response.body.data.users)
+  assert.equal(response.body.data.users.data.length, 0)
 })
 
-test('deve atualizar o perfil', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create()
+test('deve retornar uma lista não vazia', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+  const user = await Factory.model('App/Models/User').create({
+    organization_id: organization.id
+  })
 
   const response = await client
-    .put('/users')
+    .post('/')
     .loginVia(user, 'jwt')
     .send({
-      firstname: 'vinicius',
-      lastname: 'carvalho',
-      email: user.email
-    })
-    .end()
+      query: `
+        {
+          users(
+            organization:{
+              uuid:"${organization.uuid}"
+            },
+            user:{
+              uuid:"${user.uuid}"
+            }
+          ) {
+            data {uuid}
+          }
+        }
+      `
+    }).end()
 
   response.assertStatus(200)
-  assert.equal(response.body.firstname, 'vinicius')
-  assert.equal(response.body.lastname, 'carvalho')
+  assert.exists(response.body.data.users)
+  assert.equal(response.body.data.users.data.length, 1)
 })
 
-test('deve informar o password', async ({ assert, client }) => {
+test('deve retornar uma lista paginada', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+  await Factory.model('App/Models/User').create({ organization_id: organization.id })
+  await Factory.model('App/Models/User').create({ organization_id: organization.id })
+  await Factory.model('App/Models/User').create({ organization_id: organization.id })
+  await Factory.model('App/Models/User').create({ organization_id: organization.id })
+
   const user = await Factory.model('App/Models/User').create()
 
   const response = await client
-    .put('/users')
+    .post('/')
     .loginVia(user, 'jwt')
     .send({
-      old_password: '123123'
-    })
-    .end()
+      query: `
+        {
+          users(
+            organization:{
+              uuid:"${organization.uuid}"
+            },
+            perPage: 1
+          ) {
+            data {uuid}
+          }
+        }
+      `
+    }).end()
 
-  assert.include(response.body[0], {
-    message: 'O password é necessário quando o old_password existe.',
-    field: 'password',
-    validation: 'requiredIf'
+  response.assertStatus(200)
+  assert.exists(response.body.data.users)
+  assert.equal(response.body.data.users.data.length, 1)
+})
+
+test('deve retornar um usuário', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+  const user = await Factory.model('App/Models/User').create()
+
+  const { uuid } = await Factory.model('App/Models/User').create({
+    organization_id: organization.id
   })
+
+  const response = await client
+    .post('/')
+    .loginVia(user, 'jwt')
+    .send({
+      query: `
+        {
+          users(
+            user:{
+              uuid:"${uuid}"
+            }
+          ) {
+            data {uuid}
+          }
+        }
+      `
+    }).end()
+
+  response.assertStatus(200)
+  assert.exists(response.body.data.users)
+  assert.equal(response.body.data.users.data.length, 1)
+})
+
+test('deve cadastrar um usuário', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+  const user = await Factory.model('App/Models/User').create()
+  const newUser = await Factory.model('App/Models/User').make()
+
+  const response = await client
+    .post('/')
+    .loginVia(user, 'jwt')
+    .send({
+      query: `
+        mutation {
+          user:addUser(
+            organization:{
+              uuid:"${organization.uuid}"
+            },
+            user:{
+              firstname:"${newUser.firstname}",
+              lastname:"${newUser.lastname}",
+              email:"${newUser.email}",
+              cpf:"${newUser.cpf}",
+              rg:"${newUser.rg}",
+              phone:"${newUser.phone}",
+              zipcode:"${newUser.zipcode}",
+              street:"${newUser.street}",
+              street_number:"${newUser.street_number}",
+              neighborhood:"${newUser.neighborhood}",
+              city:"${newUser.city}",
+              state:"${newUser.state}",
+              is_responsible:true,
+              is_active:true,
+            }
+          ) {
+          uuid
+        }
+      }
+      `
+    }).end()
+
+  response.assertStatus(200)
+  assert.exists(response.body.data.user.uuid)
+})
+
+test('deve atualizar um usuário', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+  const user = await Factory.model('App/Models/User').create()
+  const newUser = await Factory.model('App/Models/User').make()
+
+  const { uuid } = await Factory.model('App/Models/User').create({
+    organization_id: organization.id
+  })
+
+  const response = await client
+    .post('/')
+    .loginVia(user, 'jwt')
+    .send({
+      query: `
+        mutation {
+          user:updateUser(
+            organization:{
+              uuid:"${organization.uuid}"
+            },
+            user:{
+              uuid:"${uuid}"
+            },
+            data:{
+              firstname:"${newUser.firstname}",
+              lastname:"${newUser.lastname}",
+              email:"${newUser.email}",
+              cpf:"${newUser.cpf}",
+              rg:"${newUser.rg}",
+              phone:"${newUser.phone}",
+              zipcode:"${newUser.zipcode}",
+              street:"${newUser.street}",
+              street_number:"${newUser.street_number}",
+              neighborhood:"${newUser.neighborhood}",
+              city:"${newUser.city}",
+              state:"${newUser.state}",
+              is_responsible:true,
+              is_active:true,
+            }
+          ) {
+          uuid
+        }
+      }
+      `
+    }).end()
+
+  response.assertStatus(200)
+  assert.exists(response.body.data.user.uuid)
+})
+
+test('deve atualizar o perfil', async ({ client, assert }) => {
+  const user = await Factory.model('App/Models/User').create()
+  const newUser = await Factory.model('App/Models/User').make()
+
+  const response = await client
+    .post('/')
+    .loginVia(user, 'jwt')
+    .send({
+      query: `
+        mutation {
+          user:updateProfile(
+            profile:{
+              firstname:"${newUser.firstname}",
+              lastname:"${newUser.lastname}",
+              phone:"${newUser.phone}"
+            }
+          ) {
+            firstname
+            lastname
+            phone
+          }
+        }
+      `
+    }).end()
+
+  response.assertStatus(200)
+  assert.exists(response.body.data.user.firstname, newUser.firstname)
+  assert.exists(response.body.data.user.lastname, newUser.lastname)
+  assert.exists(response.body.data.user.phone, newUser.phone)
+})
+
+test('deve validar a confirmação de senha', async ({ client, assert }) => {
+  const user = await Factory.model('App/Models/User').create()
+
+  const response = await client
+    .post('/')
+    .loginVia(user, 'jwt')
+    .send({
+      query: `
+        mutation {
+          isUpdated:updatePassword(
+            password:{
+              old:"888888",
+              new:"123123",
+              confirmation:"432432"
+            }
+          )
+        }
+      `
+    }).end()
 
   response.assertStatus(400)
 })
 
-test('deve informar o confirmed', async ({ assert, client }) => {
+test('deve verificar acesso não autorizado', async ({ client, assert }) => {
   const user = await Factory.model('App/Models/User').create()
 
   const response = await client
-    .put('/users')
+    .post('/')
     .loginVia(user, 'jwt')
     .send({
-      old_password: '123123',
-      password: '123123'
-    })
-    .end()
-
-  assert.include(response.body[0], {
-    message: 'A confirmação do password não corresponde.',
-    field: 'password',
-    validation: 'confirmed'
-  })
-
-  response.assertStatus(400)
-})
-
-test('deve informar a confirmação certa', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create()
-
-  const response = await client
-    .put('/users')
-    .loginVia(user, 'jwt')
-    .send({
-      old_password: '123123',
-      password: '123123',
-      password_confirmation: '321321'
-    })
-    .end()
-
-  assert.include(response.body[0], {
-    message: 'A confirmação do password não corresponde.',
-    field: 'password',
-    validation: 'confirmed'
-  })
-
-  response.assertStatus(400)
-})
-
-test('deve informar o password certo', async ({ assert, client }) => {
-  const user = await Factory.model('App/Models/User').create()
-
-  const response = await client
-    .put('/users')
-    .loginVia(user, 'jwt')
-    .send({
-      old_password: '999999',
-      password: '123123',
-      password_confirmation: '123123'
-    })
-    .end()
-
-  assert.deepEqual(response.body, { erro: { message: 'Dados inválidos.' } })
+      query: `
+        mutation {
+          isUpdated:updatePassword(
+            password:{
+              old:"888888",
+              new:"123123",
+              confirmation:"123123"
+            }
+          )
+        }
+      `
+    }).end()
 
   response.assertStatus(401)
 })
 
-test('deve atualizar a senha', async ({ assert, client }) => {
+test('deve validar a senha do usuário', async ({ client, assert }) => {
   const user = await Factory.model('App/Models/User').create({
     password: '123456'
   })
 
   const response = await client
-    .put('/users')
+    .post('/')
     .loginVia(user, 'jwt')
     .send({
-      old_password: '123456',
-      password: '123123',
-      password_confirmation: '123123'
-    })
-    .end()
+      query: `
+        mutation {
+          isUpdated:updatePassword(
+            password:{
+              old:"123456",
+              new:"123123",
+              confirmation:"123123"
+            }
+          )
+        }
+      `
+    }).end()
 
   response.assertStatus(200)
+  assert.exists(response.body.data)
+  assert.equal(response.body.data.isUpdated, true)
 })

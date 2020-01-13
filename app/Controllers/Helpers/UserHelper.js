@@ -7,7 +7,6 @@ const User = use('App/Models/User')
 
 const Env = use('Env')
 const Kue = use('Kue')
-
 const Job = use('App/Jobs/SendAccountConfirmationEmail')
 
 const UserHelper = exports = module.exports = {}

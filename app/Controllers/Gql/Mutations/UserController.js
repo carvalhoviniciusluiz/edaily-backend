@@ -8,6 +8,9 @@ const User = use('App/Models/User')
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Organization = use('App/Models/Organization')
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const File = use('App/Models/File')
+
 class UserController {
   async addUser (parent, arg, { auth }) {
     const { organization = {}, user } = arg
@@ -16,19 +19,21 @@ class UserController {
       const o = await Organization
         .findByOrFail('uuid', organization.uuid)
 
-      if (o) {
-        const u = await UserHelper.register({
-          ...user,
-          organization_id: o.id
-          // author_id: auth.user.id,
-          // revisor_id: auth.user.id
-        })
-
-        await u.load('organization')
-        await u.load('avatar')
-
-        return u.toJSON()
+      if (!o) {
+        return
       }
+
+      const u = await UserHelper.register({
+        ...user,
+        organization_id: o.id
+        // author_id: auth.user.id,
+        // revisor_id: auth.user.id
+      })
+
+      await u.load('organization')
+      await u.load('avatar')
+
+      return u.toJSON()
     }
   }
 
@@ -38,16 +43,78 @@ class UserController {
     const u = await User
       .findByOrFail('uuid', user.uuid)
 
-    if (u) {
+    if (!u) {
+      return
+    }
+
+    u.merge({
+      ...data
+      // revisor_id: auth.user.id
+    })
+    await u.save()
+
+    await u.load('organization')
+    await u.load('avatar')
+
+    return u.toJSON()
+  }
+
+  async updateAvatar (parent, arg, { auth, response }) {
+    const { avatar } = arg
+
+    const u = await auth
+      .getUser()
+
+    const f = await File
+      .findBy('uuid', avatar.uuid)
+
+    u.merge({
+      avatar_id: f.id
+    })
+
+    await u.save()
+
+    await u.load('organization')
+    await u.load('avatar')
+
+    return u.toJSON()
+  }
+
+  async updatePassword (parent, arg, { auth, response }) {
+    const { password } = arg
+    try {
+      const u = await auth
+        .getUser()
+
+      if (password.old) {
+        await auth.attempt(u.cpf, password.old)
+      }
+
       u.merge({
-        ...data
-        // revisor_id: auth.user.id
+        password: password.new
       })
 
-      await u.save()
-
-      return u.toJSON()
+      return await u.save()
+    } catch (error) {
+      return response
+        .status(401)
+        .send(false)
     }
+  }
+
+  async updateProfile (parent, arg, { auth }) {
+    const { profile } = arg
+
+    const u = await auth
+      .getUser()
+    u.merge(profile)
+
+    await u.save()
+
+    await u.load('organization')
+    await u.load('avatar')
+
+    return u.toJSON()
   }
 
   static middlewares () {
@@ -57,6 +124,12 @@ class UserController {
       ],
       updateUser: [
         'userUpdateValidator'
+      ],
+      updateProfile: [
+        'profileValidator'
+      ],
+      updatePassword: [
+        'passwordValidator'
       ]
     }
   }

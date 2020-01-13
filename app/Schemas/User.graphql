@@ -23,6 +23,16 @@ type User {
   last_sign_in_ip_address: String
   current_sign_in_ip_address: String
   organization: Organization
+  avatar: File
+}
+
+type File {
+  uuid: ID
+  file: String
+  name: String
+  type: String
+  subtype: String
+  url: String
 }
 
 input UserFieldsInput {
@@ -66,6 +76,22 @@ input UserInput {
   avatar_id: String
 }
 
+input PasswordInput {
+  old: String!
+  new: String!
+  confirmation: String!
+}
+
+input AvatarInput {
+  uuid: ID
+}
+
+input ProfileInput {
+  firstname: String!
+  lastname: String!
+  phone: String
+}
+
 type Mutation {
   addUser(
     organization: OrganizationFieldsInput!,
@@ -76,5 +102,17 @@ type Mutation {
     organization: OrganizationFieldsInput!,
     user: UserFieldsInput!,
     data: UserInput!
+  ): User
+
+  updateAvatar(
+    avatar: AvatarInput!
+  ): Boolean
+
+  updatePassword(
+    password: PasswordInput!
+  ): Boolean
+
+  updateProfile(
+    profile: ProfileInput!
   ): User
 }
