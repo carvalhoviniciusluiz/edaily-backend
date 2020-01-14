@@ -1,5 +1,7 @@
 'use strict'
 
+const Env = use('Env')
+
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
@@ -10,11 +12,11 @@ const Gql = use('Gql')
   | graphql routes config
   |--------------------------------------------------------------------------
   */
-
 Route.post('/', ctx => Gql.handle(ctx))
 
-// If you want a playground
-Route.get('/graphiql', ctx => Gql.handleUi(ctx))
+if (Env.get('NODE_ENV') === 'development') {
+  Route.get('/graphiql', ctx => Gql.handleUi(ctx))
+}
 
 /*
   |--------------------------------------------------------------------------
@@ -24,13 +26,8 @@ Route.get('/graphiql', ctx => Gql.handleUi(ctx))
   | Routes with authentication not required.
   |
   */
-Route.post('organizations', 'OrganizationController.store')
-  .validator('organization/Store')
-
 Route.get('avatars/:id', 'AvatarController.show').validator('file/Show')
 Route.get('files/:id', 'FileController.show').validator('file/Show')
-
-Route.post('users', 'UserController.store').validator('user/Store')
 
 Route.post('sessions', 'SessionController.store').validator('Session')
 
@@ -56,13 +53,10 @@ Route
   | Routes requiring token validation.
   |
   */
-
 Route.group(() => {
   Route.post('avatars', 'AvatarController.store').validator('avatar/Store')
   Route.post('files', 'FileController.store').validator('file/Store')
   Route.delete('files/:id', 'FileController.destroy').validator('file/Show')
-
-  Route.put('users', 'UserController.update').validator('user/Update')
 
   Route.get('documents', 'Document/ReviewController.index')
   Route.put('documents/:id/forward', 'Document/ReviewController.update')
@@ -74,25 +68,4 @@ Route.group(() => {
     'organizations/:organizations_id/users/:users_id/documents',
     'Document/DocumentController.index'
   )
-
-  Route
-    .resource('organizations', 'OrganizationController')
-    .apiOnly()
-    .except(['store'])
-    .validator(new Map(
-      [
-        [['organizations.update'], ['organization/Update']],
-        [['organizations.show'], ['organization/Show']]
-      ]
-    ))
-
-  Route
-    .resource('organizations.users', 'Organization/UserController')
-    .apiOnly()
-    .validator(new Map(
-      [
-        [['organizations.users.store'], ['organization/user/Store']],
-        [['organizations.users.update'], ['organization/user/Update']]
-      ]
-    ))
 }).middleware(['auth'])
