@@ -27,7 +27,7 @@ const providers = [
   'adonis-kue/providers/KueProvider',
   '@conceptho/adonis-validators',
   'adonis-gql/providers/GQLProvider',
-  path.join(__dirname, '..', 'providers', 'CustomValidationProvider')
+  path.join(__dirname, '..', 'providers', 'ValidationProvider')
 ]
 
 /*

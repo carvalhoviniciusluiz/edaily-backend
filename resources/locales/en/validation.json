@@ -19,6 +19,7 @@
   "email": "The {{field}} should be a valid email address.",
   "ends_with": "The {{field}} should end with given letters ({{argument}}).",
   "exists": "The {{field}} does not exist.",
+  "existsInMongo": "The {{field}} does not exist.",
   "equals": "The {{field}} should should equal {{argument.0}}.",
   "in": "The {{field}} should fall within defined values of ({{argument}}).",
   "includes": "The {{field}} should include define letters ({{argument}}).",
