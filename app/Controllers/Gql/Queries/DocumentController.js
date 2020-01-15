@@ -42,6 +42,38 @@ class DocumentController {
     return documents
   }
 
+  async proofreaders (parent, arg, { response, auth }) {
+    const { page = 1, perPage = 10 } = arg
+
+    const organization = await auth
+      .user
+      .organization()
+      .fetch()
+
+    if (!organization) {
+      return response
+        .status(400)
+        .send(false)
+    }
+
+    const documents = await Document.paginate(
+      {
+        page,
+        perPage
+      }, {
+        forwardedAt: {
+          $exists: false
+        },
+        canceledAt: {
+          $exists: false
+        },
+        'organization.uuid': organization.uuid
+      }
+    )
+
+    return documents
+  }
+
   static middlewares () {
     return {
       documents: [

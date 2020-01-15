@@ -34,6 +34,11 @@ type Query {
     page: Int
     perPage: Int
   ): DocumentResultSuccess
+
+  proofreaders(
+    page: Int
+    perPage: Int
+  ): DocumentResultSuccess
 }
 
 ## Mutation
