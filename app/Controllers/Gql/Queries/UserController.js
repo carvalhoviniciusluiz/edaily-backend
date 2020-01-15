@@ -46,7 +46,9 @@ class UserController {
         page,
         lastPage: 1,
         total: 1,
-        data: [u.toJSON()]
+        data: [
+          u.toJSON()
+        ]
       }
     }
   }

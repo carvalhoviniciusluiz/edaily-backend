@@ -44,27 +44,31 @@ const DocumentSchema = new mongoose.Schema(
 
 DocumentSchema.statics.paginate = function (params, options = {}, projection) {
   return new Promise((resolve, reject) => {
-    const limit = parseInt(params.limit) || 10
+    const perPage = parseInt(params.perPage) || 10
     const offset = parseInt(params.page) || 1
 
     const page = offset > 0 ? offset : 1
-    const skip = (page - 1) * limit
+    const skip = (page - 1) * perPage
 
     const iterable = [
       this.countDocuments(options),
-      this.find(options, projection).skip(skip).limit(limit).lean(true).sort({
-        forwardedAt: -1,
-        protocolNumber: 1,
-        createdAt: 1
-      })
+      this.find(options, projection)
+        .skip(skip)
+        .limit(perPage)
+        .lean(true)
+        .sort({
+          forwardedAt: -1,
+          protocolNumber: 1,
+          createdAt: 1
+        })
     ]
 
     Promise.all(iterable)
       .then(values => {
         const [total, data] = values
-        const pages = Math.ceil(total / limit) || 1
+        const lastPage = Math.ceil(total / perPage) || 1
 
-        resolve({ total, limit, page, pages, data })
+        resolve({ perPage, page, lastPage, total, data })
       })
       .catch(error => reject(error))
   })
