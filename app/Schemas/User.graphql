@@ -92,6 +92,13 @@ input ProfileInput {
   phone: String
 }
 
+input FileInput {
+  file: String
+  name: String
+  type: String
+  subtype: String
+}
+
 type Mutation {
   addUser(
     organization: OrganizationFieldsInput!,
