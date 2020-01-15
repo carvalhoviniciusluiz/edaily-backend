@@ -11,6 +11,9 @@ const Gql = use('Gql')
   |--------------------------------------------------------------------------
   | graphql routes config
   |--------------------------------------------------------------------------
+  |
+  | Route /graphiql only released in development mode.
+  |
   */
 Route.post('/', ctx => Gql.handle(ctx))
 
