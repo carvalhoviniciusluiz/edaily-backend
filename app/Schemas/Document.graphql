@@ -1,0 +1,63 @@
+type Document {
+  uuid: ID
+  protocolNumber: String
+  file: File
+  pages: [String]
+  author: User
+  reviser: User
+  responsable: User
+  organization: Organization
+  canceledAt: String
+  forwardedAt: String
+  publishedAt: String
+  updatedAt: String
+  createdAt: String
+}
+
+input DocumentFieldsInput {
+  uuid: ID
+}
+
+type DocumentResultSuccess {
+  total: Int
+  perPage: Int
+  page: Int
+  lastPage: Int
+  data: [Document]
+}
+
+type Query {
+  documents(
+    organization: OrganizationFieldsInput,
+    document: DocumentFieldsInput,
+    page: Int,
+    perPage: Int
+  ): DocumentResultSuccess
+}
+
+## Mutation
+#
+input DocumentInput {
+  protocolNumber: String
+  file: FileInput
+  pages: [String]
+  author: UserInput
+  reviser: UserInput
+  responsable: UserInput
+  organization: OrganizationInput
+  publishedAt: String
+  canceledAt: String
+  forwardedAt: String
+}
+
+input DocumentUpdateInput {
+  reviser: UserInput
+  publishedAt: String
+  canceledAt: String
+  forwardedAt: String
+}
+
+type Mutation {
+  addDocument(document: DocumentInput!): Document
+  updateDocument(document: DocumentUpdateInput!): Document
+}

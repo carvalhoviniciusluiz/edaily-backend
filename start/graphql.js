@@ -2,6 +2,11 @@
 
 const Gql = use('Gql')
 
+Gql.schema('Document', () => {
+  Gql.query('Queries/DocumentController')
+  Gql.mutation('Mutations/DocumentController')
+}).middleware(['authValidator'])
+
 Gql.schema('User', () => {
   Gql.query('Queries/UserController')
   Gql.mutation('Mutations/UserController')
