@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npm-run-all -p dev:*",
-    "dev:start": "nodemon --watch app server.js",
+    "dev:start": "nodemon --watch app --watch config --watch database --watch providers --watch start server.js",
     "dev:queue": "adonis kue:listen",
     "start": "node server.js",
     "test": "node ace test"
