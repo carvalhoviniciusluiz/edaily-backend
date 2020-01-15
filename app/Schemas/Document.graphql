@@ -28,9 +28,10 @@ type DocumentResultSuccess {
 
 type Query {
   documents(
-    organization: OrganizationFieldsInput,
-    document: DocumentFieldsInput,
-    page: Int,
+    organization: OrganizationFieldsInput
+    document: DocumentFieldsInput
+    user: UserFieldsInput
+    page: Int
     perPage: Int
   ): DocumentResultSuccess
 }

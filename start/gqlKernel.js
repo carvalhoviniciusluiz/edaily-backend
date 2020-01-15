@@ -26,16 +26,17 @@ const globalMiddleware = []
 | }
 */
 const namedMiddleware = {
-  authValidator: 'App/Middleware/Auth',
   avatarValidator: 'App/Middleware/Validators/Avatar',
-  profileValidator: 'App/Middleware/Validators/Profile',
-  passwordValidator: 'App/Middleware/Validators/Password',
-  userCreateValidator: 'App/Middleware/Validators/User/Create',
-  userUpdateValidator: 'App/Middleware/Validators/User/Update',
+  authValidator: 'App/Middleware/Auth',
+  documentValidator: 'App/Middleware/Validators/Document',
   organizationCreateValidator: 'App/Middleware/Validators/Organization/Create',
   organizationUpdateValidator: 'App/Middleware/Validators/Organization/Update',
+  passwordValidator: 'App/Middleware/Validators/Password',
+  profileValidator: 'App/Middleware/Validators/Profile',
+  substituteValidator: 'App/Middleware/Validators/Substitute',
   responsibleValidator: 'App/Middleware/Validators/Responsible',
-  substituteValidator: 'App/Middleware/Validators/Substitute'
+  userCreateValidator: 'App/Middleware/Validators/User/Create',
+  userUpdateValidator: 'App/Middleware/Validators/User/Update'
 }
 
 Gql.registerGlobal(globalMiddleware)
