@@ -34,7 +34,7 @@ class AvatarController {
       subtype: upload.subtype
     })
 
-    return { ...file.toJSON(), url: undefined }
+    return { ...file.toJSON(), url: undefined, id: undefined }
   }
 
   async show ({ params, response }) {
