@@ -60,15 +60,4 @@ Route.group(() => {
   Route.post('avatars', 'AvatarController.store').validator('avatar/Store')
   Route.post('files', 'FileController.store').validator('file/Store')
   Route.delete('files/:id', 'FileController.destroy').validator('file/Show')
-
-  Route.get('documents', 'Document/ReviewController.index')
-  Route.put('documents/:id/forward', 'Document/ReviewController.update')
-
-  Route.get('documents/following', 'Document/FollowController.index')
-
-  Route.get('documents/:id', 'Document/DocumentController.show')
-  Route.get(
-    'organizations/:organizations_id/users/:users_id/documents',
-    'Document/DocumentController.index'
-  )
 }).middleware(['auth'])
