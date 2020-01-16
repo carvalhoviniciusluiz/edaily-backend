@@ -1,3 +1,6 @@
+require('../../start/graphql')
+require('../../start/gqlKernel')
+
 const { test, trait, before, after } = use('Test/Suite')('Document')
 
 trait('Test/ApiClient')
@@ -31,12 +34,28 @@ test('deve retornar uma lista vazia', async ({ client, assert }) => {
   })
 
   const response = await client
-    .get(`organizations/${organization.uuid}/users/${user.uuid}/documents`)
+    .post('/')
     .loginVia(user, 'jwt')
-    .end()
+    .send({
+      query: `
+      {
+        documents(
+          organization:{
+            uuid:"${organization.uuid}",
+          },
+          user:{
+            uuid:"${user.uuid}",
+          }
+        ) {
+          data { uuid }
+        }
+      }
+      `
+    }).end()
 
   response.assertStatus(200)
-  assert.equal(response.body.total, '0')
+  assert.exists(response.body.data.documents)
+  assert.equal(response.body.data.documents.data.length, 0)
 })
 
 test('deve retornar uma lista não vazia', async ({ client, assert }) => {
@@ -46,22 +65,157 @@ test('deve retornar uma lista não vazia', async ({ client, assert }) => {
     organization_id: organization.id
   })
 
-  const { body: { document_id: id } } = await client
+  await client
+    .post('files')
+    .loginVia(user, 'jwt')
+    .attach('file', Helpers.tmpPath('helloworld.pdf'))
+    .end()
+
+  const response = await client
+    .post('/')
+    .loginVia(user, 'jwt')
+    .send({
+      query: `
+      {
+        documents(
+          organization:{
+            uuid:"${organization.uuid}",
+          },
+          user:{
+            uuid:"${user.uuid}",
+          }
+        ) {
+          data { uuid }
+        }
+      }
+      `
+    }).end()
+
+  response.assertStatus(200)
+  assert.exists(response.body.data.documents)
+  assert.equal(response.body.data.documents.data.length, 1)
+})
+
+test('deve retornar os documentos da análise', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+
+  const user = await Factory.model('App/Models/User').create({
+    organization_id: organization.id
+  })
+
+  const res = await client
+    .post('files')
+    .loginVia(user, 'jwt')
+    .attach('file', Helpers.tmpPath('helloworld.pdf'))
+    .end()
+
+  const response = await client
+    .post('/')
+    .loginVia(user, 'jwt')
+    .send({
+      query: `
+      {
+        documents:documentsForAnalysis {
+          data {
+            uuid
+            protocol
+          }
+        }
+      }
+      `
+    }).end()
+
+  response.assertStatus(200)
+  assert.exists(response.body.data.documents)
+  assert.equal(response.body.data.documents.data[0].protocol, null)
+  assert.equal(response.body.data.documents.data[0].uuid, res.body.document_uuid)
+})
+
+test('deve encaminhar matéria', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+
+  const user = await Factory.model('App/Models/User').create({
+    organization_id: organization.id
+  })
+
+  const res = await client
+    .post('files')
+    .loginVia(user, 'jwt')
+    .attach('file', Helpers.tmpPath('helloworld.pdf'))
+    .end()
+
+  const response = await client
+    .post('/')
+    .loginVia(user, 'jwt')
+    .send({
+      query: `
+      mutation {
+        document:sendDocument(
+          document:{
+            uuid:"${res.body.document_uuid}"
+          }
+        ) {
+          uuid
+          protocol
+        }
+      }
+      `
+    }).end()
+
+  response.assertStatus(200)
+  assert.exists(response.body.data.document.uuid)
+  assert.exists(response.body.data.document.protocol)
+  assert.equal(response.body.data.document.uuid, res.body.document_uuid)
+})
+
+test('deve retornar as matérias enviadas', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+
+  const user = await Factory.model('App/Models/User').create({
+    organization_id: organization.id
+  })
+
+  const resp = await client
     .post('files')
     .loginVia(user, 'jwt')
     .attach('file', Helpers.tmpPath('helloworld.pdf'))
     .end()
 
   await client
-    .put(`documents/${id}/forward`)
+    .post('/')
     .loginVia(user, 'jwt')
-    .end()
+    .send({
+      query: `
+      mutation {
+        document:sendDocument(
+          document:{
+            uuid:"${resp.body.document_uuid}"
+          }
+        ) {
+          uuid
+          protocol
+        }
+      }
+      `
+    }).end()
 
   const response = await client
-    .get(`organizations/${organization.uuid}/users/${user.uuid}/documents`)
+    .post('/')
     .loginVia(user, 'jwt')
-    .end()
+    .send({
+      query: `
+      {
+        documents:sentDocuments {
+          data {
+            uuid
+            protocol
+          }
+        }
+      }
+      `
+    }).end()
 
   response.assertStatus(200)
-  assert.equal(response.body.total, '1')
+  assert.exists(response.body.data.documents)
+  assert.equal(response.body.data.documents.data.length, 1)
 })

@@ -48,6 +48,7 @@ class DocumentController {
 
     d.forwardedAt = new Date()
 
+    // @TODO:
     // should save "reviewer" data
 
     d.responsable = {
