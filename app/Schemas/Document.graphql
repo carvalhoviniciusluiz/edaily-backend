@@ -48,19 +48,6 @@ type Query {
 
 ## Mutation
 #
-input DocumentInput {
-  protocol: String
-  file: FileInput
-  pages: [String]
-  author: UserInput
-  reviser: UserInput
-  responsable: UserInput
-  organization: OrganizationInput
-  publishedAt: String
-  canceledAt: String
-  forwardedAt: String
-}
-
 input DocumentUpdateInput {
   reviser: UserInput
   publishedAt: String
@@ -69,6 +56,5 @@ input DocumentUpdateInput {
 }
 
 type Mutation {
-  addDocument(document: DocumentInput!): Document
-  updateDocument(document: DocumentUpdateInput!): Document
+  sendDocument(document: DocumentFieldsInput!): Document
 }
