@@ -17,7 +17,7 @@ after(async () => {
   await Document.deleteMany()
 })
 
-test('deve poder fazer upload de avatar', async ({ assert, client }) => {
+test('deve poder fazer upload de arquivo', async ({ assert, client }) => {
   const { id } = await Factory.model('App/Models/Organization').create()
   const user = await Factory.model('App/Models/User').create({
     organization_id: id
