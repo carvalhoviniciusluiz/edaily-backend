@@ -42,7 +42,7 @@ class DocumentController {
     return documents
   }
 
-  async proofreaders (parent, arg, { response, auth }) {
+  async documentsForAnalysis (parent, arg, { response, auth }) {
     const { page = 1, perPage = 10 } = arg
 
     const organization = await auth
@@ -63,6 +63,38 @@ class DocumentController {
       }, {
         forwardedAt: {
           $exists: false
+        },
+        canceledAt: {
+          $exists: false
+        },
+        'organization.uuid': organization.uuid
+      }
+    )
+
+    return documents
+  }
+
+  async sentDocuments (parent, arg, { response, auth }) {
+    const { page = 1, perPage = 10 } = arg
+
+    const organization = await auth
+      .user
+      .organization()
+      .fetch()
+
+    if (!organization) {
+      return response
+        .status(400)
+        .send(false)
+    }
+
+    const documents = await Document.paginate(
+      {
+        page,
+        perPage
+      }, {
+        forwardedAt: {
+          $exists: true
         },
         canceledAt: {
           $exists: false

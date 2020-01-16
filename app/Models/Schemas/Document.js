@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const DocumentSchema = new mongoose.Schema(
   {
     uuid: String,
-    protocolNumber: String,
+    protocol: String,
     file: {
       uuid: String,
       file: String,
@@ -59,7 +59,7 @@ DocumentSchema.statics.paginate = function (params, options = {}, projection) {
         .lean(true)
         .sort({
           forwardedAt: -1,
-          protocolNumber: 1,
+          protocol: 1,
           createdAt: 1
         })
     ]

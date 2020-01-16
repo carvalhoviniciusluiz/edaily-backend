@@ -1,6 +1,6 @@
 type Document {
   uuid: ID
-  protocolNumber: String
+  protocol: String
   file: File
   pages: [String]
   author: User
@@ -35,7 +35,12 @@ type Query {
     perPage: Int
   ): DocumentResultSuccess
 
-  proofreaders(
+  documentsForAnalysis(
+    page: Int
+    perPage: Int
+  ): DocumentResultSuccess
+
+  sentDocuments(
     page: Int
     perPage: Int
   ): DocumentResultSuccess
@@ -44,7 +49,7 @@ type Query {
 ## Mutation
 #
 input DocumentInput {
-  protocolNumber: String
+  protocol: String
   file: FileInput
   pages: [String]
   author: UserInput
