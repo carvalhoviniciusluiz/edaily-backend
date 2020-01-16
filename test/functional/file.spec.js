@@ -31,7 +31,7 @@ test('deve poder fazer upload de avatar', async ({ assert, client }) => {
 
   response.assertStatus(200)
   assert.exists(response.body.url)
-  assert.exists(response.body.document_id)
+  assert.exists(response.body.document_uuid)
 })
 
 test('deve poder cancelar um arquivo', async ({ assert, client }) => {
@@ -51,7 +51,7 @@ test('deve poder cancelar um arquivo', async ({ assert, client }) => {
     .loginVia(user, 'jwt')
     .end()
 
-  const document = await Document.findById(body.document_id)
+  const document = await Document.findOne({ uuid: body.document_uuid })
 
   response.assertStatus(204)
   assert.exists(document.canceledAt)

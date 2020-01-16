@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const uuid = require('uuid')
 
 const DocumentSchema = new mongoose.Schema(
   {
@@ -42,6 +43,14 @@ const DocumentSchema = new mongoose.Schema(
     timestamps: true
   }
 )
+
+DocumentSchema.pre('save', function (next) {
+  const self = this
+  if (!self.uuid) {
+    self.uuid = uuid.v4()
+  }
+  next()
+})
 
 DocumentSchema.statics.paginate = function (params, options = {}, projection) {
   return new Promise((resolve, reject) => {

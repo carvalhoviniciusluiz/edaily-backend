@@ -74,7 +74,7 @@ class FileController {
       Kue.dispatch(PersistFileJob.key, { pathname, filename }, { attempts: 3 })
     }
 
-    return { ...file.toJSON(), avatar: undefined, document_id: document._id }
+    return { ...file.toJSON(), avatar: undefined, document_uuid: document.uuid }
   }
 
   async show ({ params, response }) {
