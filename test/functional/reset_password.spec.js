@@ -1,6 +1,6 @@
 const { test, trait, before, after } = use('Test/Suite')('Reset Password')
 
-const { subHours, format } = require('date-fns')
+const { subHours, subMinutes, format } = require('date-fns')
 
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const Factory = use('Factory')
@@ -91,7 +91,9 @@ test('deve expirar o token após 2h', async ({ client }) => {
     recovery_token: Factory.genToken()
   }
 
-  const dateWithSub = format(subHours(new Date(), 2), 'yyyy-MM-dd HH:ii:ss')
+  const dateWithSub = format(
+    subHours(subMinutes(new Date(), 5), 2), 'yyyy-MM-dd HH:ii:ss'
+  )
 
   await Factory
     .model('App/Models/User')
