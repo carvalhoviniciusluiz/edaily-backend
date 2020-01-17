@@ -170,7 +170,7 @@ test('(PUBLICA ROUTE) deve cadastrar a organização com o representante',
       .send({
         query: `
         mutation {
-          organization:addOrganizationWithResponsibleAndSubstitute(
+          hasOrganization:addOrganizationWithResponsibleAndSubstitute(
             organization:{
               definition:"${organization.definition}",
               name:"${organization.name}",
@@ -203,19 +203,13 @@ test('(PUBLICA ROUTE) deve cadastrar a organização com o representante',
               is_responsible:true,
               is_active:true
             }
-          ) {
-            uuid
-            name
-            initials
-          }
+          )
         }
       `
       }).end()
 
     response.assertStatus(200)
-    assert.exists(response.body.data.organization)
-    assert.equal(response.body.data.organization.name, organization.name)
-    assert.equal(response.body.data.organization.initials, organization.initials)
+    assert.equal(response.body.data.hasOrganization, true)
   })
 
 test('(PUBLICA ROUTE) deve cadastrar com suplente',
@@ -229,7 +223,7 @@ test('(PUBLICA ROUTE) deve cadastrar com suplente',
       .send({
         query: `
         mutation {
-          organization:addOrganizationWithResponsibleAndSubstitute(
+          hasOrganization:addOrganizationWithResponsibleAndSubstitute(
             organization:{
               definition:"${organization.definition}",
               name:"${organization.name}",
@@ -278,19 +272,13 @@ test('(PUBLICA ROUTE) deve cadastrar com suplente',
               is_responsible:true,
               is_active:true
             }
-          ) {
-            uuid
-            name
-            initials
-          }
+          )
         }
       `
       }).end()
 
     response.assertStatus(200)
-    assert.exists(response.body.data.organization)
-    assert.equal(response.body.data.organization.name, organization.name)
-    assert.equal(response.body.data.organization.initials, organization.initials)
+    assert.equal(response.body.data.hasOrganization, true)
   })
 
 test('deve retornar uma oganização', async ({ client, assert }) => {

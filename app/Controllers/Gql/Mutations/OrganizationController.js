@@ -16,11 +16,6 @@ class OrganizationController {
       organization_id: o.id
     })
 
-    o.author_id = u.id
-    o.revisor_id = u.id
-
-    await o.save()
-
     if (substitute) {
       await UserHelper.register({
         ...substitute,
@@ -29,7 +24,11 @@ class OrganizationController {
       })
     }
 
-    return o.toJSON()
+    o.author_id = u.id
+    o.revisor_id = u.id
+
+    const result = await o.save()
+    return result
   }
 
   async updateOrganization (parent, arg, { auth }) {

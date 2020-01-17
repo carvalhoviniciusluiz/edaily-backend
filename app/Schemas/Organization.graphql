@@ -76,7 +76,7 @@ type Mutation {
     organization: OrganizationInput!,
     responsible: UserInput!,
     substitute: UserInput
-  ): Organization
+  ): Boolean
 
   updateOrganization(
     organization: OrganizationFieldsInput!,
