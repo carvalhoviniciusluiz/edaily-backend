@@ -21,7 +21,7 @@ class DocumentController {
         .send(false)
     }
 
-    const organization = await Organization
+    const o = await Organization
       .findByOrFail('uuid', d.organization.uuid)
 
     const currentYear = getYear(new Date())
@@ -33,7 +33,7 @@ class DocumentController {
       'organization.uuid': d.organization.uuid
     })
 
-    const firstSequence = String(organization.fingerprint).padStart(7, '0')
+    const firstSequence = String(o.fingerprint).padStart(7, '0')
     const secondSequence = String(numberDocuments + 1).padStart(8, '0')
     const thirdSequence = currentYear
 
