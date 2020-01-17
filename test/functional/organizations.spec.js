@@ -107,105 +107,80 @@ test('deve retornar uma lista paginada', async ({ client, assert }) => {
 })
 
 test('(PUBLICA ROUTE) deve aceitar os termos', async ({ client, assert }) => {
-  const organization = await Factory.model('App/Models/Organization').make()
-  const responsible = await Factory.model('App/Models/User').make()
+  const organization = await Factory.model('App/Models/Organization').make({
+    author_id: undefined,
+    revisor_id: undefined
+  })
+  const responsible = await Factory.model('App/Models/User').make({
+    password: undefined
+  })
 
   const response = await client
     .post('/')
     .send({
       query: `
-        mutation {
-          organization:addOrganizationWithResponsibleAndSubstitute(
-            organization:{
-              definition:"${organization.definition}",
-              name:"${organization.name}",
-              initials:"${organization.initials}",
-              cnpj:"${organization.cnpj}",
-              billing_email:"${organization.billing_email}",
-              phone1:"${organization.phone1}",
-              phone2:"${organization.phone2}",
-              zipcode:"${organization.zipcode}",
-              street:"${organization.street}",
-              street_number:"${organization.street_number}",
-              neighborhood:"${organization.neighborhood}",
-              city:"${organization.city}",
-              state:"${organization.state}",
-              terms_accepted:false
-            },
-            responsible:{
-              firstname:"${responsible.firstname}",
-              lastname:"${responsible.lastname}",
-              email:"${responsible.email}",
-              cpf:"${responsible.cpf}",
-              rg:"${responsible.rg}",
-              phone:"${responsible.phone2}",
-              zipcode:"${responsible.zipcode}",
-              street:"${responsible.street}",
-              street_number:"${responsible.street_number}",
-              neighborhood:"${responsible.neighborhood}",
-              city:"${responsible.city}",
-              state:"${responsible.state}",
-              is_responsible:true,
-              is_active:true
-            }
-          ) {
-            uuid
-            name
-            initials
-          }
-        }
-      `
+      mutation (
+        $organization: OrganizationInput!,
+        $responsible: UserInput!,
+        $substitute: UserInput
+      ) {
+        hasOrganization: addOrganizationWithResponsibleAndSubstitute (
+          organization: $organization,
+          responsible: $responsible,
+          substitute: $substitute
+        )
+      }
+      `,
+      variables: {
+        organization: {
+          ...{
+            ...organization.toJSON()
+          },
+          terms_accepted: false
+        },
+        responsible: { ...responsible.toJSON() }
+      }
     }).end()
 
   response.assertStatus(400)
+  assert.equal(response.body.data.hasOrganization, null)
 })
 
 test('(PUBLICA ROUTE) deve cadastrar a organização com o representante',
   async ({ client, assert }) => {
-    const organization = await Factory.model('App/Models/Organization').make()
-    const responsible = await Factory.model('App/Models/User').make()
+    const organization = await Factory.model('App/Models/Organization').make({
+      author_id: undefined,
+      revisor_id: undefined
+    })
+    const responsible = await Factory.model('App/Models/User').make({
+      password: undefined
+    })
 
     const response = await client
       .post('/')
       .send({
         query: `
-        mutation {
-          hasOrganization:addOrganizationWithResponsibleAndSubstitute(
-            organization:{
-              definition:"${organization.definition}",
-              name:"${organization.name}",
-              initials:"${organization.initials}",
-              cnpj:"${organization.cnpj}",
-              billing_email:"${organization.billing_email}",
-              phone1:"${organization.phone1}",
-              phone2:"${organization.phone2}",
-              zipcode:"${organization.zipcode}",
-              street:"${organization.street}",
-              street_number:"${organization.street_number}",
-              neighborhood:"${organization.neighborhood}",
-              city:"${organization.city}",
-              state:"${organization.state}",
-              terms_accepted:true
-            },
-            responsible:{
-              firstname:"${responsible.firstname}",
-              lastname:"${responsible.lastname}",
-              email:"${responsible.email}",
-              cpf:"${responsible.cpf}",
-              rg:"${responsible.rg}",
-              phone:"${responsible.phone2}",
-              zipcode:"${responsible.zipcode}",
-              street:"${responsible.street}",
-              street_number:"${responsible.street_number}",
-              neighborhood:"${responsible.neighborhood}",
-              city:"${responsible.city}",
-              state:"${responsible.state}",
-              is_responsible:true,
-              is_active:true
-            }
+        mutation (
+          $organization: OrganizationInput!,
+          $responsible: UserInput!,
+          $substitute: UserInput
+        ) {
+          hasOrganization: addOrganizationWithResponsibleAndSubstitute (
+            organization: $organization,
+            responsible: $responsible,
+            substitute: $substitute
           )
         }
-      `
+        `,
+        variables: {
+          organization: {
+            ...{
+              ...organization.toJSON()
+            },
+            terms_accepted: true
+          },
+          responsible: { ...responsible.toJSON() }
+        }
       }).end()
 
     response.assertStatus(200)
@@ -214,67 +189,43 @@ test('(PUBLICA ROUTE) deve cadastrar a organização com o representante',
 
 test('(PUBLICA ROUTE) deve cadastrar com suplente',
   async ({ client, assert }) => {
-    const organization = await Factory.model('App/Models/Organization').make()
-    const responsible = await Factory.model('App/Models/User').make()
-    const substitute = await Factory.model('App/Models/User').make()
+    const organization = await Factory.model('App/Models/Organization').make({
+      author_id: undefined,
+      revisor_id: undefined
+    })
+    const responsible = await Factory.model('App/Models/User').make({
+      password: undefined
+    })
+    const substitute = await Factory.model('App/Models/User').make({
+      password: undefined
+    })
 
     const response = await client
       .post('/')
       .send({
         query: `
-        mutation {
-          hasOrganization:addOrganizationWithResponsibleAndSubstitute(
-            organization:{
-              definition:"${organization.definition}",
-              name:"${organization.name}",
-              initials:"${organization.initials}",
-              cnpj:"${organization.cnpj}",
-              billing_email:"${organization.billing_email}",
-              phone1:"${organization.phone1}",
-              phone2:"${organization.phone2}",
-              zipcode:"${organization.zipcode}",
-              street:"${organization.street}",
-              street_number:"${organization.street_number}",
-              neighborhood:"${organization.neighborhood}",
-              city:"${organization.city}",
-              state:"${organization.state}",
-              terms_accepted:true
-            },
-            responsible:{
-              firstname:"${responsible.firstname}",
-              lastname:"${responsible.lastname}",
-              email:"${responsible.email}",
-              cpf:"${responsible.cpf}",
-              rg:"${responsible.rg}",
-              phone:"${responsible.phone2}",
-              zipcode:"${responsible.zipcode}",
-              street:"${responsible.street}",
-              street_number:"${responsible.street_number}",
-              neighborhood:"${responsible.neighborhood}",
-              city:"${responsible.city}",
-              state:"${responsible.state}",
-              is_responsible:true,
-              is_active:true
-            },
-            substitute:{
-              firstname:"${substitute.firstname}",
-              lastname:"${substitute.lastname}",
-              email:"${substitute.email}",
-              cpf:"${substitute.cpf}",
-              rg:"${substitute.rg}",
-              phone:"${substitute.phone2}",
-              zipcode:"${substitute.zipcode}",
-              street:"${substitute.street}",
-              street_number:"${substitute.street_number}",
-              neighborhood:"${substitute.neighborhood}",
-              city:"${substitute.city}",
-              state:"${substitute.state}",
-              is_responsible:true,
-              is_active:true
-            }
+        mutation (
+          $organization: OrganizationInput!,
+          $responsible: UserInput!,
+          $substitute: UserInput
+        ) {
+          hasOrganization: addOrganizationWithResponsibleAndSubstitute (
+            organization: $organization,
+            responsible: $responsible,
+            substitute: $substitute
           )
         }
-      `
+        `,
+        variables: {
+          organization: {
+            ...{
+              ...organization.toJSON()
+            },
+            terms_accepted: true
+          },
+          responsible: { ...responsible.toJSON() },
+          substitute: { ...substitute.toJSON() }
+        }
       }).end()
 
     response.assertStatus(200)
