@@ -68,6 +68,7 @@ test('deve logar o cpf e retornar um token', async ({ assert, client }) => {
   assert.isNotNull(u.current_sign_in_at)
   assert.isNotNull(u.current_sign_in_ip_address)
   assert.isNotNull(response.body.token)
+  assert.isUndefined(response.body.user.password)
   response.assertStatus(200)
 })
 
@@ -93,6 +94,7 @@ test('deve logar o email e retornar um token', async ({ assert, client }) => {
     .end()
 
   assert.isNotNull(response.body.token)
+  assert.isUndefined(response.body.user.password)
   response.assertStatus(200)
 })
 
@@ -123,5 +125,6 @@ test('deve retornar o usuário e a organização', async ({ assert, client }) =>
   assert.isNotNull(response.body.user.uuid)
   assert.isNotNull(response.body.user.organization)
   assert.isNotNull(response.body.user.organization.uuid)
+  assert.isUndefined(response.body.user.password)
   response.assertStatus(200)
 })
