@@ -20,7 +20,9 @@ class OrganizationController {
       await UserHelper.register({
         ...substitute,
         is_responsible: true,
-        organization_id: o.id
+        organization_id: o.id,
+        author_id: u.id,
+        revisor_id: u.id
       })
     }
 

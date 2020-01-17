@@ -160,17 +160,17 @@ test('(PUBLICA ROUTE) deve cadastrar a organização com o representante',
       .post('/')
       .send({
         query: `
-        mutation (
-          $organization: OrganizationInput!,
-          $responsible: UserInput!,
-          $substitute: UserInput
-        ) {
-          hasOrganization: addOrganizationWithResponsibleAndSubstitute (
-            organization: $organization,
-            responsible: $responsible,
-            substitute: $substitute
-          )
-        }
+          mutation (
+            $organization: OrganizationInput!,
+            $responsible: UserInput!,
+            $substitute: UserInput
+          ) {
+            hasOrganization: addOrganizationWithResponsibleAndSubstitute (
+              organization: $organization,
+              responsible: $responsible,
+              substitute: $substitute
+            )
+          }
         `,
         variables: {
           organization: {
@@ -204,17 +204,17 @@ test('(PUBLICA ROUTE) deve cadastrar com suplente',
       .post('/')
       .send({
         query: `
-        mutation (
-          $organization: OrganizationInput!,
-          $responsible: UserInput!,
-          $substitute: UserInput
-        ) {
-          hasOrganization: addOrganizationWithResponsibleAndSubstitute (
-            organization: $organization,
-            responsible: $responsible,
-            substitute: $substitute
-          )
-        }
+          mutation (
+            $organization: OrganizationInput!,
+            $responsible: UserInput!,
+            $substitute: UserInput
+          ) {
+            hasOrganization: addOrganizationWithResponsibleAndSubstitute (
+              organization: $organization,
+              responsible: $responsible,
+              substitute: $substitute
+            )
+          }
         `,
         variables: {
           organization: {
