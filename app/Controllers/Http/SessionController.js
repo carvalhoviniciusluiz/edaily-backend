@@ -58,7 +58,6 @@ class SessionController {
             firstname: user.firstname,
             lastname: user.lastname,
             email: user.email,
-            password: user.password,
             cpf: user.cpf,
             rg: user.rg,
             phone: user.phone,
