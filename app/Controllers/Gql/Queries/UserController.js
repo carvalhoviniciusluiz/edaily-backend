@@ -7,49 +7,51 @@ const Organization = use('App/Models/Organization')
 const User = use('App/Models/User')
 
 class UserController {
-  async users (parent, arg, ctx) {
-    const {
-      organization = {},
-      user = {},
-      page = 1,
-      perPage = 10
-    } = arg
+  async getAllUsers (parent, args, ctx) {
+    const { organization, page = 1, perPage = 10 } = args
 
-    if (organization.uuid) {
-      const o = await Organization
-        .findByOrFail('uuid', organization.uuid)
+    const o = await Organization
+      .query()
+      .where('uuid', organization.uuid)
+      .first()
 
-      if (!o) {
-        return
-      }
-
-      const users = await o
-        .users()
-        .with('avatar', avatar => {
-          avatar.setVisible(['avatar'])
-        })
-        .paginate(page, perPage)
-
-      return users.toJSON()
-    }
-
-    if (user.uuid) {
-      const u = await User
-        .findByOrFail('uuid', user.uuid)
-
-      await u.load('avatar', avatar => {
+    const users = await o
+      .users()
+      .with('avatar', avatar => {
         avatar.setVisible(['avatar'])
       })
+      .paginate(page, perPage)
 
-      return {
-        perPage,
-        page,
-        lastPage: 1,
-        total: 1,
-        data: [
-          u.toJSON()
-        ]
-      }
+    return users.toJSON()
+  }
+
+  async getUser (parent, args, ctx) {
+    const { organization, user } = args
+
+    const o = await Organization
+      .query()
+      .where('uuid', organization.uuid)
+      .first()
+
+    const u = await User
+      .query()
+      .with('avatar')
+      .where('organization_id', o.id)
+      .where('uuid', user.uuid)
+      .first()
+
+    return u.toJSON()
+  }
+
+  static middlewares () {
+    return {
+      getAllUsers: [
+        'organizationExists'
+      ],
+      getUser: [
+        'organizationExists',
+        'userExists'
+      ]
     }
   }
 }

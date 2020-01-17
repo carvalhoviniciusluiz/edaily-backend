@@ -48,12 +48,16 @@ type UserResultSuccess {
 }
 
 type Query {
-  users(
+  getAllUsers(
     organization: OrganizationFieldsInput,
-    user: UserFieldsInput,
     page: Int,
     perPage: Int
   ): UserResultSuccess
+
+  getUser(
+    organization: OrganizationFieldsInput,
+    user: UserFieldsInput
+  ): User
 }
 
 ## Mutation

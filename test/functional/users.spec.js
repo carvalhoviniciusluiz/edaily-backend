@@ -32,12 +32,9 @@ test('deve retornar uma lista vazia', async ({ client, assert }) => {
     .send({
       query: `
         {
-          users(
+          users:getAllUsers(
             organization:{
               uuid:"${organization.uuid}"
-            },
-            user:{
-              uuid:"${user.uuid}"
             }
           ) {
             data {uuid}
@@ -63,12 +60,9 @@ test('deve retornar uma lista não vazia', async ({ client, assert }) => {
     .send({
       query: `
         {
-          users(
+          users:getAllUsers(
             organization:{
               uuid:"${organization.uuid}"
-            },
-            user:{
-              uuid:"${user.uuid}"
             }
           ) {
             data {uuid}
@@ -97,7 +91,7 @@ test('deve retornar uma lista paginada', async ({ client, assert }) => {
     .send({
       query: `
         {
-          users(
+          users:getAllUsers(
             organization:{
               uuid:"${organization.uuid}"
             },
@@ -128,58 +122,54 @@ test('deve retornar um usuário', async ({ client, assert }) => {
     .send({
       query: `
         {
-          users(
+          user:getUser(
+            organization:{
+              uuid:"${organization.uuid}"
+            },
             user:{
               uuid:"${uuid}"
             }
           ) {
-            data {uuid}
+            uuid
           }
         }
       `
     }).end()
 
   response.assertStatus(200)
-  assert.exists(response.body.data.users)
-  assert.equal(response.body.data.users.data.length, 1)
+  assert.exists(response.body.data.user)
 })
 
 test('deve cadastrar um usuário', async ({ client, assert }) => {
   const organization = await Factory.model('App/Models/Organization').create()
   const user = await Factory.model('App/Models/User').create()
-  const newUser = await Factory.model('App/Models/User').make()
+  const newUser = await Factory.model('App/Models/User').make({
+    password: undefined
+  })
 
   const response = await client
     .post('/')
     .loginVia(user, 'jwt')
     .send({
       query: `
-        mutation {
-          user:addUser(
-            organization:{
-              uuid:"${organization.uuid}"
-            },
-            user:{
-              firstname:"${newUser.firstname}",
-              lastname:"${newUser.lastname}",
-              email:"${newUser.email}",
-              cpf:"${newUser.cpf}",
-              rg:"${newUser.rg}",
-              phone:"${newUser.phone}",
-              zipcode:"${newUser.zipcode}",
-              street:"${newUser.street}",
-              street_number:"${newUser.street_number}",
-              neighborhood:"${newUser.neighborhood}",
-              city:"${newUser.city}",
-              state:"${newUser.state}",
-              is_responsible:true,
-              is_active:true,
-            }
+        mutation (
+          $organization: OrganizationFieldsInput!,
+          $user: UserInput!
+        ) {
+          user: addUser (
+            organization: $organization,
+            user: $user
           ) {
-          uuid
+            uuid
+          }
         }
+      `,
+      variables: {
+        organization: {
+          uuid: organization.uuid
+        },
+        user: { ...newUser.toJSON() }
       }
-      `
     }).end()
 
   response.assertStatus(200)
@@ -188,11 +178,11 @@ test('deve cadastrar um usuário', async ({ client, assert }) => {
 
 test('deve atualizar um usuário', async ({ client, assert }) => {
   const organization = await Factory.model('App/Models/Organization').create()
-  const user = await Factory.model('App/Models/User').create()
-  const newUser = await Factory.model('App/Models/User').make()
-
-  const { uuid } = await Factory.model('App/Models/User').create({
+  const user = await Factory.model('App/Models/User').create({
     organization_id: organization.id
+  })
+  const newUser = await Factory.model('App/Models/User').make({
+    password: undefined
   })
 
   const response = await client
@@ -200,35 +190,29 @@ test('deve atualizar um usuário', async ({ client, assert }) => {
     .loginVia(user, 'jwt')
     .send({
       query: `
-        mutation {
-          user:updateUser(
-            organization:{
-              uuid:"${organization.uuid}"
-            },
-            user:{
-              uuid:"${uuid}"
-            },
-            data:{
-              firstname:"${newUser.firstname}",
-              lastname:"${newUser.lastname}",
-              email:"${newUser.email}",
-              cpf:"${newUser.cpf}",
-              rg:"${newUser.rg}",
-              phone:"${newUser.phone}",
-              zipcode:"${newUser.zipcode}",
-              street:"${newUser.street}",
-              street_number:"${newUser.street_number}",
-              neighborhood:"${newUser.neighborhood}",
-              city:"${newUser.city}",
-              state:"${newUser.state}",
-              is_responsible:true,
-              is_active:true,
-            }
+        mutation (
+          $organization: OrganizationFieldsInput!,
+          $user: UserFieldsInput!,
+          $data: UserInput!
+        ) {
+          user: updateUser (
+            organization: $organization,
+            user: $user,
+            data: $data
           ) {
-          uuid
+            uuid
+          }
         }
+      `,
+      variables: {
+        organization: {
+          uuid: organization.uuid
+        },
+        user: {
+          uuid: user.uuid
+        },
+        data: { ...newUser.toJSON() }
       }
-      `
     }).end()
 
   response.assertStatus(200)

@@ -25,9 +25,9 @@ class UserController {
 
       const u = await UserHelper.register({
         ...user,
-        organization_id: o.id
-        // author_id: auth.user.id,
-        // revisor_id: auth.user.id
+        organization_id: o.id,
+        author_id: auth.user.id,
+        revisor_id: auth.user.id
       })
 
       await u.load('organization')
@@ -48,8 +48,8 @@ class UserController {
     }
 
     u.merge({
-      ...data
-      // revisor_id: auth.user.id
+      ...data,
+      revisor_id: auth.user.id
     })
     await u.save()
 
