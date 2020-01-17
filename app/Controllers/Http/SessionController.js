@@ -21,39 +21,61 @@ class SessionController {
     query.with('organization')
     query.with('avatar')
 
-    const user = await query.first()
+    const u = await query.first()
 
-    if (!user) {
+    if (!u) {
       return response
         .status(400)
         .send({ error: { message: 'As credenciais de acesso são inválidas.' } })
     }
 
-    if (!user.is_active) {
+    if (!u.is_active) {
       return response
         .status(401)
         .send({ error: { message: 'Conta de acesso não confirmada.' } })
     }
 
     try {
-      const { token } = await auth.attempt(user.cpf, password)
+      const { token } = await auth.attempt(u.cpf, password)
 
-      user.sign_in_count = user.sign_in_count + 1
-      user.last_sign_in_at = user.current_sign_in_at
-      user.last_sign_in_ip_address = user.current_sign_in_ip_address
+      u.sign_in_count = u.sign_in_count + 1
+      u.last_sign_in_at = u.current_sign_in_at
+      u.last_sign_in_ip_address = u.current_sign_in_ip_address
 
-      user.current_sign_in_at = new Date()
+      u.current_sign_in_at = new Date()
 
       // @TODO https://www.npmjs.com/package/request-ip
-      user.current_sign_in_ip_address = '//** ip address **//'
+      u.current_sign_in_ip_address = '//** ip address **//'
 
-      await user.save()
+      await u.save()
 
+      const user = u.toJSON()
       return {
         token,
         user: {
-          ...user.toJSON(),
-          avatar: { ...user.toJSON().avatar, url: undefined }
+          ...{
+            uuid: user.uuid,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            email: user.email,
+            password: user.password,
+            cpf: user.cpf,
+            rg: user.rg,
+            phone: user.phone,
+            zipcode: user.zipcode,
+            street: user.street,
+            street_number: user.street_number,
+            neighborhood: user.neighborhood,
+            city: user.city,
+            state: user.state,
+            confirmed_at: user.confirmed_at,
+            sign_in_count: user.sign_in_count,
+            last_sign_in_at: user.last_sign_in_at
+          },
+          avatar: {
+            ...user.avatar,
+            url: undefined
+          }
         }
       }
     } catch (error) {
