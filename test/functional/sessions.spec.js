@@ -16,26 +16,17 @@ after(async () => {
   await User.truncate()
 })
 
-// test('deve retornar status 401', async ({ client }) => {
-//   const user = await Factory.model('App/Models/User').create()
-
-//   const response = await client
-//     .post('/sessions')
-//     .send({
-//       credential: user.cpf,
-//       password: '123123'
-//     })
-//     .end()
-
-//   response.assertStatus(401)
-// })
-
 test('deve descredenciar usuário inativo', async ({ assert, client }) => {
   const sessionPayload = {
     password: '123456'
   }
 
-  const user = await Factory.model('App/Models/User').create(sessionPayload)
+  const organization = await Factory.model('App/Models/Organization').create()
+
+  const user = await Factory.model('App/Models/User').create({
+    ...sessionPayload,
+    organization_id: organization.id
+  })
 
   const response = await client
     .post('/sessions')
@@ -54,7 +45,12 @@ test('deve logar o cpf e retornar um token', async ({ assert, client }) => {
     is_active: true
   }
 
-  const user = await Factory.model('App/Models/User').create(sessionPayload)
+  const organization = await Factory.model('App/Models/Organization').create()
+
+  const user = await Factory.model('App/Models/User').create({
+    ...sessionPayload,
+    organization_id: organization.id
+  })
 
   const response = await client
     .post('/sessions')
@@ -81,7 +77,12 @@ test('deve logar o email e retornar um token', async ({ assert, client }) => {
     is_active: true
   }
 
-  const user = await Factory.model('App/Models/User').create(sessionPayload)
+  const organization = await Factory.model('App/Models/Organization').create()
+
+  const user = await Factory.model('App/Models/User').create({
+    ...sessionPayload,
+    organization_id: organization.id
+  })
 
   const response = await client
     .post('/sessions')
@@ -101,13 +102,13 @@ test('deve retornar o usuário e a organização', async ({ assert, client }) =>
     is_active: true
   }
 
-  const { id } = await Factory.model('App/Models/Organization').create()
+  const organization = await Factory.model('App/Models/Organization').create()
 
   const user = await Factory
     .model('App/Models/User')
     .create({
       ...sessionPayload,
-      organization_id: id
+      organization_id: organization.id
     })
 
   const response = await client

@@ -70,7 +70,12 @@ class SessionController {
             state: user.state,
             confirmed_at: user.confirmed_at,
             sign_in_count: user.sign_in_count,
-            last_sign_in_at: user.last_sign_in_at
+            last_sign_in_at: user.last_sign_in_at,
+            organization: {
+              uuid: user.organization.uuid,
+              name: user.organization.name,
+              initials: user.organization.initials
+            }
           },
           avatar: {
             ...user.avatar,
