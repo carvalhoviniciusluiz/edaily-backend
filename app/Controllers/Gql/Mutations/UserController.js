@@ -79,7 +79,8 @@ class UserController {
         password: password.new
       })
 
-      return await u.save()
+      const response = await u.save()
+      return response
     } catch (error) {
       return response
         .status(401)
@@ -96,7 +97,6 @@ class UserController {
     u.merge(profile)
 
     await u.save()
-    await u.load('organization')
     await u.load('avatar')
 
     return u.toJSON()
@@ -120,7 +120,7 @@ class UserController {
         'passwordValidator'
       ],
       updateAvatar: [
-        'avatarValidator'
+        'avatarExists'
       ]
     }
   }

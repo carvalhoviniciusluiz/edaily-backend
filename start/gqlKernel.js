@@ -26,9 +26,26 @@ const globalMiddleware = []
 | }
 */
 const namedMiddleware = {
+  /*
+  |--------------------------------------------------------------------------
+  | Exists middleware
+  |--------------------------------------------------------------------------
+  |
+  | Middleware that checks if the value is in the database.
+  |
+  */
+  avatarExists: 'App/Middleware/Exists/Avatar',
   organizationExists: 'App/Middleware/Exists/Organization',
   userExists: 'App/Middleware/Exists/User',
-  avatarValidator: 'App/Middleware/Validators/Avatar',
+
+  /*
+  |--------------------------------------------------------------------------
+  | Validator middleware
+  |--------------------------------------------------------------------------
+  |
+  | Middleware that validates data before persisting
+  |
+  */
   authValidator: 'App/Middleware/Validators/Auth',
   documentValidator: 'App/Middleware/Validators/Document',
   organizationCreateValidator: 'App/Middleware/Validators/Organization/Create',
