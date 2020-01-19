@@ -13,46 +13,36 @@ const File = use('App/Models/File')
 
 class UserController {
   async addUser (parent, arg, { auth }) {
-    const { organization = {}, user } = arg
+    const { organization, user } = arg
 
-    if (organization.uuid) {
-      const o = await Organization
-        .findByOrFail('uuid', organization.uuid)
+    const o = await Organization
+      .findByOrFail('uuid', organization.uuid)
 
-      if (!o) {
-        return
-      }
+    const u = await UserHelper.register({
+      ...user,
+      organization_id: o.id,
+      author_id: auth.user.id,
+      revisor_id: auth.user.id
+    })
 
-      const u = await UserHelper.register({
-        ...user,
-        organization_id: o.id,
-        author_id: auth.user.id,
-        revisor_id: auth.user.id
-      })
+    await u.load('organization')
+    await u.load('avatar')
 
-      await u.load('organization')
-      await u.load('avatar')
-
-      return u.toJSON()
-    }
+    return u.toJSON()
   }
 
   async updateUser (parent, arg, { auth }) {
-    const { user = {}, data } = arg
+    const { user, data } = arg
 
     const u = await User
       .findByOrFail('uuid', user.uuid)
-
-    if (!u) {
-      return
-    }
 
     u.merge({
       ...data,
       revisor_id: auth.user.id
     })
-    await u.save()
 
+    await u.save()
     await u.load('organization')
     await u.load('avatar')
 
@@ -102,10 +92,10 @@ class UserController {
 
     const u = await auth
       .getUser()
+
     u.merge(profile)
 
     await u.save()
-
     await u.load('organization')
     await u.load('avatar')
 
@@ -115,9 +105,12 @@ class UserController {
   static middlewares () {
     return {
       addUser: [
+        'organizationExists',
         'userCreateValidator'
       ],
       updateUser: [
+        'organizationExists',
+        'userExists',
         'userUpdateValidator'
       ],
       updateProfile: [
