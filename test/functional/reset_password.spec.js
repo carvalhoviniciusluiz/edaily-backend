@@ -92,7 +92,7 @@ test('deve expirar o token após 2h', async ({ client }) => {
   }
 
   const dateWithSub = format(
-    subHours(subMinutes(new Date(), 5), 2), 'yyyy-MM-dd HH:ii:ss'
+    subHours(subMinutes(new Date(), 10), 2), 'yyyy-MM-dd HH:ii:ss'
   )
 
   await Factory
