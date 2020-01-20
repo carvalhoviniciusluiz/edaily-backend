@@ -49,6 +49,23 @@ class UserController {
     return u.toJSON()
   }
 
+  async updateProfile (parent, arg, { auth }) {
+    const { profile } = arg
+
+    const u = await auth
+      .getUser()
+
+    u.merge({
+      ...profile,
+      revisor_id: auth.user.id
+    })
+
+    await u.save()
+    await u.load('avatar')
+
+    return u.toJSON()
+  }
+
   async updateAvatar (parent, arg, { auth }) {
     const { avatar } = arg
 
@@ -58,7 +75,8 @@ class UserController {
       .findBy('uuid', avatar.uuid)
 
     u.merge({
-      avatar_id: f.id
+      avatar_id: f.id,
+      revisor_id: auth.user.id
     })
 
     const response = await u.save()
@@ -88,20 +106,6 @@ class UserController {
     }
   }
 
-  async updateProfile (parent, arg, { auth }) {
-    const { profile } = arg
-
-    const u = await auth
-      .getUser()
-
-    u.merge(profile)
-
-    await u.save()
-    await u.load('avatar')
-
-    return u.toJSON()
-  }
-
   static middlewares () {
     return {
       addUser: [
@@ -116,11 +120,11 @@ class UserController {
       updateProfile: [
         'profileValidator'
       ],
-      updatePassword: [
-        'passwordValidator'
-      ],
       updateAvatar: [
         'avatarExists'
+      ],
+      updatePassword: [
+        'passwordValidator'
       ]
     }
   }
