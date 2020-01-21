@@ -35,6 +35,7 @@ const namedMiddleware = {
   |
   */
   avatarExists: 'App/Middleware/Exists/Avatar',
+  documentExists: 'App/Middleware/Exists/Document',
   organizationExists: 'App/Middleware/Exists/Organization',
   userExists: 'App/Middleware/Exists/User',
 
@@ -47,7 +48,6 @@ const namedMiddleware = {
   |
   */
   authValidator: 'App/Middleware/Validators/Auth',
-  documentValidator: 'App/Middleware/Validators/Document',
   organizationCreateValidator: 'App/Middleware/Validators/Organization/Create',
   organizationUpdateValidator: 'App/Middleware/Validators/Organization/Update',
   passwordValidator: 'App/Middleware/Validators/Password',

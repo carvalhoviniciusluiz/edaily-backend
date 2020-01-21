@@ -27,13 +27,17 @@ type DocumentResultSuccess {
 }
 
 type Query {
-  documents(
+  getAllDocuments(
     organization: OrganizationFieldsInput
-    document: DocumentFieldsInput
     user: UserFieldsInput
     page: Int
     perPage: Int
   ): DocumentResultSuccess
+
+  getDocument(
+    organization: OrganizationFieldsInput
+    document: DocumentFieldsInput
+  ): Document
 
   documentsForAnalysis(
     page: Int

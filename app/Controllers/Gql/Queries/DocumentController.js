@@ -9,14 +9,8 @@ const Organization = use('App/Models/Organization')
 const Document = use('App/Models/Schemas/Document')
 
 class DocumentController {
-  async documents (parent, arg, ctx) {
-    const {
-      organization = {},
-      document = {},
-      user = {},
-      page = 1,
-      perPage = 10
-    } = arg
+  async getAllDocuments (parent, args, ctx) {
+    const { organization, user, page = 1, perPage = 10 } = args
 
     const o = await Organization
       .findByOrFail('uuid', organization.uuid)
@@ -24,26 +18,32 @@ class DocumentController {
     const u = await User
       .findByOrFail('uuid', user.uuid)
 
-    const conditions = document.uuid
-      ? { uuid: document.uuid }
-      : {
-        $or: [
-          {
-            'author.uuid': u.uuid
-          }, {
-            'reviser.uuid': u.uuid
-          }
-        ],
-        'organization.uuid': o.uuid
-      }
+    const conditions = {
+      $or: [
+        {
+          'author.uuid': u.uuid
+        }, {
+          'reviser.uuid': u.uuid
+        }
+      ],
+      'organization.uuid': o.uuid
+    }
 
     const documents = await Document.paginate({ page, perPage }, conditions)
 
     return documents
   }
 
-  async documentsForAnalysis (parent, arg, { response, auth }) {
-    const { page = 1, perPage = 10 } = arg
+  async getDocument (parent, args, ctx) {
+    const { document } = args
+
+    const d = await Document.findOne(document).lean(true)
+
+    return d
+  }
+
+  async documentsForAnalysis (parent, args, { response, auth }) {
+    const { page = 1, perPage = 10 } = args
 
     const organization = await auth
       .user
@@ -74,8 +74,8 @@ class DocumentController {
     return documents
   }
 
-  async sentDocuments (parent, arg, { response, auth }) {
-    const { page = 1, perPage = 10 } = arg
+  async sentDocuments (parent, args, { response, auth }) {
+    const { page = 1, perPage = 10 } = args
 
     const organization = await auth
       .user
@@ -108,8 +108,13 @@ class DocumentController {
 
   static middlewares () {
     return {
-      documents: [
-        'documentValidator'
+      getAllDocuments: [
+        'organizationExists',
+        'userExists'
+      ],
+      getDocument: [
+        'organizationExists',
+        'documentExists'
       ]
     }
   }

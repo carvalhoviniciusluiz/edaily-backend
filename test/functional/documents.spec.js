@@ -39,7 +39,7 @@ test('deve retornar uma lista vazia', async ({ client, assert }) => {
     .send({
       query: `
       {
-        documents(
+        documents:getAllDocuments(
           organization:{
             uuid:"${organization.uuid}",
           },
@@ -77,7 +77,7 @@ test('deve retornar uma lista não vazia', async ({ client, assert }) => {
     .send({
       query: `
       {
-        documents(
+        documents:getAllDocuments(
           organization:{
             uuid:"${organization.uuid}",
           },
@@ -94,6 +94,44 @@ test('deve retornar uma lista não vazia', async ({ client, assert }) => {
   response.assertStatus(200)
   assert.exists(response.body.data.documents)
   assert.equal(response.body.data.documents.data.length, 1)
+})
+
+test('deve retornar um único documento', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+
+  const user = await Factory.model('App/Models/User').create({
+    organization_id: organization.id
+  })
+
+  const res = await client
+    .post('files')
+    .loginVia(user, 'jwt')
+    .attach('file', Helpers.tmpPath('helloworld.pdf'))
+    .end()
+
+  const response = await client
+    .post('/')
+    .loginVia(user, 'jwt')
+    .send({
+      query: `
+      {
+        document:getDocument(
+          organization:{
+            uuid: "${organization.uuid}",
+          },
+          document:{
+            uuid: "${res.body.document_uuid}",
+          }
+        ) {
+          uuid
+        }
+      }
+      `
+    }).end()
+
+  response.assertStatus(200)
+  assert.exists(response.body.data.document)
+  assert.equal(response.body.data.document.uuid, res.body.document_uuid)
 })
 
 test('deve retornar os documentos da análise', async ({ client, assert }) => {

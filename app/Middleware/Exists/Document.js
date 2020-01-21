@@ -5,19 +5,17 @@ const { list } = use('Antl')
 
 class Document {
   async gqlHandle (resolve, root, args, ctx, info) {
-    const { organization = {}, document = {}, user = {} } = args
+    const { document } = args
     const messages = list('validation')
 
+    const rules = {
+      document_uuid: 'required|existsInMongo:Document,uuid'
+    }
     const validation = await validate(
       {
-        organization_uuid: organization.uuid,
-        user_uuid: user.uuid,
         document_uuid: document.uuid
-      }, {
-        organization_uuid: 'exists:organizations,uuid',
-        user_uuid: 'exists:users,uuid',
-        document_uuid: 'existsInMongo:Document,uuid'
       },
+      rules,
       messages
     )
 

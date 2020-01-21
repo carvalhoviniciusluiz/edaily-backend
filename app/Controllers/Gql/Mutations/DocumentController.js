@@ -63,7 +63,7 @@ class DocumentController {
   static middlewares () {
     return {
       sendDocument: [
-        'documentValidator'
+        'documentExists'
       ]
     }
   }
