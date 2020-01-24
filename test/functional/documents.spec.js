@@ -189,6 +189,9 @@ test('deve encaminhar matéria', async ({ client, assert }) => {
       query: `
       mutation {
         document:sendDocument(
+          organization:{
+            uuid:"${organization.uuid}"
+          },
           document:{
             uuid:"${res.body.document_uuid}"
           }
@@ -226,6 +229,9 @@ test('deve retornar as matérias enviadas', async ({ client, assert }) => {
       query: `
       mutation {
         document:sendDocument(
+          organization:{
+            uuid:"${organization.uuid}"
+          },
           document:{
             uuid:"${resp.body.document_uuid}"
           }

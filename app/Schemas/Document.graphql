@@ -103,5 +103,8 @@ type Query {
 # }
 
 type Mutation {
-  sendDocument(document: DocumentFieldsInput!): Document
+  sendDocument(
+    organization: OrganizationFieldsInput!,
+    document: DocumentFieldsInput!
+  ): Document
 }

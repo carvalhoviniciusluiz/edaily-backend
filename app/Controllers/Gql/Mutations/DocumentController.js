@@ -12,7 +12,7 @@ class DocumentController {
    * @see https://www.comprasgovernamentais.gov.br/index.php/pen/numero-unico-de-protocolo
    */
   async sendDocument (parent, arg, { response, auth }) {
-    const { document } = arg
+    const { document, organization } = arg
 
     const d = await Document.findOne(document)
     if (d.protocol) {
@@ -22,7 +22,13 @@ class DocumentController {
     }
 
     const o = await Organization
-      .findByOrFail('uuid', d.organization.uuid)
+      .findByOrFail('uuid', organization.uuid)
+
+    if (d.organization.uuid !== o.uuid) {
+      return response
+        .status(400)
+        .send(false)
+    }
 
     const currentYear = getYear(new Date())
     const numberDocuments = await Document.countDocuments({
@@ -71,7 +77,8 @@ class DocumentController {
   static middlewares () {
     return {
       sendDocument: [
-        'documentExists'
+        'documentExists',
+        'organizationExists'
       ]
     }
   }
