@@ -35,9 +35,33 @@ const DocumentSchema = new mongoose.Schema(
       name: String,
       initials: String
     },
-    publishedAt: Date,
-    canceledAt: Date,
-    forwardedAt: Date
+    cancellation: {
+      author: {
+        uuid: String,
+        firstname: String,
+        lastname: String,
+        email: String
+      },
+      canceledAt: Date
+    },
+    publication: {
+      author: {
+        uuid: String,
+        firstname: String,
+        lastname: String,
+        email: String
+      },
+      publishedAt: Date
+    },
+    forwarding: {
+      author: {
+        uuid: String,
+        firstname: String,
+        lastname: String,
+        email: String
+      },
+      forwardedAt: Date
+    }
   },
   {
     timestamps: true
@@ -54,8 +78,8 @@ DocumentSchema.pre('save', function (next) {
 
 DocumentSchema.statics.paginate = function (params, options = {}, projection) {
   return new Promise((resolve, reject) => {
-    const perPage = parseInt(params.perPage) || 10
-    const offset = parseInt(params.page) || 1
+    const perPage = Number(params.perPage) || 10
+    const offset = Number(params.page) || 1
 
     const page = offset > 0 ? offset : 1
     const skip = (page - 1) * perPage
@@ -67,7 +91,7 @@ DocumentSchema.statics.paginate = function (params, options = {}, projection) {
         .limit(perPage)
         .lean(true)
         .sort({
-          forwardedAt: -1,
+          'forwarding.forwardedAt': -1,
           protocol: 1,
           createdAt: 1
         })

@@ -54,5 +54,6 @@ test('deve poder cancelar um arquivo', async ({ assert, client }) => {
   const document = await Document.findOne({ uuid: body.document_uuid })
 
   response.assertStatus(204)
-  assert.exists(document.canceledAt)
+  assert.exists(document.cancellation.canceledAt)
+  assert.equal(document.cancellation.author.uuid, user.uuid)
 })

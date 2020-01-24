@@ -61,10 +61,10 @@ class DocumentController {
         page,
         perPage
       }, {
-        forwardedAt: {
+        'forwarding.forwardedAt': {
           $exists: false
         },
-        canceledAt: {
+        'cancellation.canceledAt': {
           $exists: false
         },
         'organization.uuid': organization.uuid
@@ -93,10 +93,10 @@ class DocumentController {
         page,
         perPage
       }, {
-        forwardedAt: {
+        'forwarding.forwardedAt': {
           $exists: true
         },
-        canceledAt: {
+        'cancellation.canceledAt': {
           $exists: false
         },
         'organization.uuid': organization.uuid

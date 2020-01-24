@@ -26,7 +26,7 @@ class DocumentController {
 
     const currentYear = getYear(new Date())
     const numberDocuments = await Document.countDocuments({
-      forwardedAt: {
+      'forwarding.forwardedAt': {
         $gte: new Date(currentYear, 0, 0),
         $lte: new Date()
       },
@@ -37,7 +37,7 @@ class DocumentController {
     const secondSequence = String(numberDocuments + 1).padStart(8, '0')
     const thirdSequence = currentYear
 
-    const baseNumber = parseInt(
+    const baseNumber = Number(
       `${firstSequence}${secondSequence}${thirdSequence}`
     )
 
@@ -46,7 +46,15 @@ class DocumentController {
     d.protocol =
       `${firstSequence}.${secondSequence}/${thirdSequence}-${verifyingDigit}`
 
-    d.forwardedAt = new Date()
+    d.forwarding = {
+      author: {
+        uuid: auth.user.uuid,
+        firstname: auth.user.firstname,
+        lastname: auth.user.lastname,
+        email: auth.user.email
+      },
+      forwardedAt: new Date()
+    }
 
     d.responsable = {
       uuid: auth.user.uuid,

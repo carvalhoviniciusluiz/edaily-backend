@@ -103,11 +103,19 @@ class FileController {
     return response.download(Helpers.tmpPath(`files/${file.file}`))
   }
 
-  async destroy ({ params }) {
+  async destroy ({ params, auth }) {
     const { uuid } = await File.findByOrFail('uuid', params.id)
     const document = await Document.findOne({ 'file.uuid': uuid })
 
-    document.canceledAt = new Date()
+    document.cancellation = {
+      author: {
+        uuid: auth.user.uuid,
+        firstname: auth.user.firstname,
+        lastname: auth.user.lastname,
+        email: auth.user.email
+      },
+      canceledAt: new Date()
+    }
 
     await document.save()
   }

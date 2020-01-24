@@ -3,15 +3,37 @@ type Document {
   protocol: String
   file: File
   pages: [String]
-  author: User
-  reviser: User
-  responsable: User
+  author: Author
+  reviser: Author
+  responsable: Author
   organization: Organization
-  canceledAt: String
-  forwardedAt: String
-  publishedAt: String
+  cancellation: Cancellation
+  forwarding: Forwarding
+  publication: Publication
   updatedAt: String
   createdAt: String
+}
+
+type Author {
+  uuid: ID
+  firstname: String
+  lastname: String
+  email: String
+}
+
+type Cancellation {
+  author: Author
+  canceledAt: String
+}
+
+type Publication {
+  author: Author
+  publishedAt: String
+}
+
+type Forwarding {
+  author: Author
+  forwardedAt: String
 }
 
 input DocumentFieldsInput {
@@ -52,12 +74,33 @@ type Query {
 
 ## Mutation
 #
-input DocumentUpdateInput {
-  reviser: UserInput
-  publishedAt: String
-  canceledAt: String
-  forwardedAt: String
-}
+# input AuthorInput {
+#   firstname: String!
+#   lastname: String!
+#   email: String!
+# }
+
+# input DocumentInput {
+#   reviser: UserInput
+#   cancellation: CancellationInput
+#   forwarding: ForwardingInput
+#   publication: PublicationInput
+# }
+
+# input CancellationInput {
+#   author: AuthorInput!
+#   canceledAt: String!
+# }
+
+# input PublicationInput {
+#   author: AuthorInput!
+#   publishedAt: String!
+# }
+
+# input ForwardingInput {
+#   author: AuthorInput!
+#   forwardedAt: String!
+# }
 
 type Mutation {
   sendDocument(document: DocumentFieldsInput!): Document
