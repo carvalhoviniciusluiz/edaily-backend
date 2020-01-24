@@ -106,5 +106,5 @@ type Mutation {
   sendDocument(
     organization: OrganizationFieldsInput!,
     document: DocumentFieldsInput!
-  ): Document
+  ): ID
 }

@@ -188,25 +188,21 @@ test('deve encaminhar matéria', async ({ client, assert }) => {
     .send({
       query: `
       mutation {
-        document:sendDocument(
+        sendDocument(
           organization:{
             uuid:"${organization.uuid}"
           },
           document:{
             uuid:"${res.body.document_uuid}"
           }
-        ) {
-          uuid
-          protocol
-        }
+        )
       }
       `
     }).end()
 
   response.assertStatus(200)
-  assert.exists(response.body.data.document.uuid)
-  assert.exists(response.body.data.document.protocol)
-  assert.equal(response.body.data.document.uuid, res.body.document_uuid)
+  assert.exists(response.body.data)
+  assert.equal(response.body.data.sendDocument, res.body.document_uuid)
 })
 
 test('deve retornar as matérias enviadas', async ({ client, assert }) => {
@@ -228,17 +224,14 @@ test('deve retornar as matérias enviadas', async ({ client, assert }) => {
     .send({
       query: `
       mutation {
-        document:sendDocument(
+        sendDocument(
           organization:{
             uuid:"${organization.uuid}"
           },
           document:{
             uuid:"${resp.body.document_uuid}"
           }
-        ) {
-          uuid
-          protocol
-        }
+        )
       }
       `
     }).end()

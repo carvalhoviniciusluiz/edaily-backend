@@ -71,7 +71,7 @@ class DocumentController {
 
     await d.save()
 
-    return d
+    return d.uuid
   }
 
   static middlewares () {
