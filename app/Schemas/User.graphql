@@ -50,14 +50,14 @@ type UserResultSuccess {
 
 type Query {
   getAllUsers(
-    organization: OrganizationFieldsInput,
+    organization: OrganizationFieldsInput!,
     page: Int,
     perPage: Int
   ): UserResultSuccess
 
   getUser(
-    organization: OrganizationFieldsInput,
-    user: UserFieldsInput
+    organization: OrganizationFieldsInput!,
+    user: UserFieldsInput!
   ): User
 }
 
