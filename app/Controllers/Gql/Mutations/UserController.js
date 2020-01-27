@@ -28,7 +28,7 @@ class UserController {
     await u.load('organization')
     await u.load('avatar')
 
-    return u.toJSON()
+    return u.uuid
   }
 
   async updateUser (parent, arg, { auth }) {

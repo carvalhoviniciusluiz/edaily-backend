@@ -108,7 +108,7 @@ type Mutation {
   addUser(
     organization: OrganizationFieldsInput!,
     user: UserInput!
-  ): User
+  ): ID
 
   updateUser(
     organization: OrganizationFieldsInput!,

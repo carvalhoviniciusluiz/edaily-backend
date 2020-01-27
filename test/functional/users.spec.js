@@ -159,9 +159,7 @@ test('deve cadastrar um usuário', async ({ client, assert }) => {
           user: addUser (
             organization: $organization,
             user: $user
-          ) {
-            uuid
-          }
+          )
         }
       `,
       variables: {
@@ -173,7 +171,7 @@ test('deve cadastrar um usuário', async ({ client, assert }) => {
     }).end()
 
   response.assertStatus(200)
-  assert.exists(response.body.data.user.uuid)
+  assert.exists(response.body.data.user)
 })
 
 test('deve atualizar um usuário', async ({ client, assert }) => {
