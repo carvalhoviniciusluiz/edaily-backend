@@ -31,7 +31,13 @@ class CreateUser {
     )
 
     if (validation.fails()) {
-      return ctx.response.status(400).send(false)
+      const hasUnique = !!validation
+        .messages()
+        .find(o => o.validation === 'unique')
+
+      const statusCode = hasUnique ? 422 : 400
+
+      return ctx.response.status(statusCode).send(false)
     }
 
     const result = await resolve(root, args, ctx, info)

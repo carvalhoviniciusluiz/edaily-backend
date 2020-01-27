@@ -174,6 +174,62 @@ test('deve cadastrar um usuário', async ({ client, assert }) => {
   assert.exists(response.body.data.user)
 })
 
+test('deve evitar duplicar cadastro', async ({ client, assert }) => {
+  const organization = await Factory.model('App/Models/Organization').create()
+  const user = await Factory.model('App/Models/User').create()
+  const newUser = await Factory.model('App/Models/User').make({
+    password: undefined
+  })
+
+  await client
+    .post('/')
+    .loginVia(user, 'jwt')
+    .send({
+      query: `
+        mutation (
+          $organization: OrganizationFieldsInput!,
+          $user: UserInput!
+        ) {
+          user: addUser (
+            organization: $organization,
+            user: $user
+          )
+        }
+      `,
+      variables: {
+        organization: {
+          uuid: organization.uuid
+        },
+        user: { ...newUser.toJSON() }
+      }
+    }).end()
+
+  const response = await client
+    .post('/')
+    .loginVia(user, 'jwt')
+    .send({
+      query: `
+        mutation (
+          $organization: OrganizationFieldsInput!,
+          $user: UserInput!
+        ) {
+          user: addUser (
+            organization: $organization,
+            user: $user
+          )
+        }
+      `,
+      variables: {
+        organization: {
+          uuid: organization.uuid
+        },
+        user: { ...newUser.toJSON() }
+      }
+    }).end()
+
+  response.assertStatus(422)
+})
+
 test('deve atualizar um usuário', async ({ client, assert }) => {
   const organization = await Factory.model('App/Models/Organization').create()
   const user = await Factory.model('App/Models/User').create({
