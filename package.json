@@ -1,9 +1,8 @@
 {
-  "name": "adonis-api-app",
+  "name": "edaily-api-app",
   "version": "4.1.0",
   "adonis-version": "4.1.0",
-  "description": "Adonisjs boilerplate for API server with pre-configured JWT",
-  "main": "index.js",
+  "description": "Edaily API server with configured JWT and GraphQL",
   "scripts": {
     "dev": "npm-run-all -p dev:*",
     "dev:start": "nodemon --watch app --watch config --watch database --watch providers --watch start server.js",
@@ -15,9 +14,9 @@
     "adonisjs",
     "adonis-app"
   ],
-  "author": "",
-  "license": "UNLICENSED",
-  "private": true,
+  "author": "Vinícius Carvalho <carvalho.viniciusluiz@gmail.com>",
+  "license": "MIT",
+  "private": false,
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
