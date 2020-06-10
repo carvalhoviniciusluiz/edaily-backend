@@ -1,6 +1,6 @@
 {
   "name": "edaily-api-app",
-  "version": "4.1.0",
+  "version": "1.0.0",
   "adonis-version": "4.1.0",
   "description": "Edaily API server with configured JWT and GraphQL",
   "scripts": {
