@@ -14,3 +14,5 @@ database/*.sqlite
 
 # tmp file
 .DS_Store
+
+*-error.log
